@@ -1,9 +1,12 @@
 package com.dna.rna.domain;
 
+import com.dna.rna.domain.Admission.AdmissionUnit;
+import com.dna.rna.domain.School.School;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity for Club of RNA service.
@@ -20,14 +23,34 @@ import javax.persistence.*;
 @Table(name="club")
 public class Club {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long clubId;
-    @Column(nullable = false, updatable = false)
-    private Long schoolId;
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "CLUB_ID")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = School.SCHOOL_ID, nullable = false)
+    private School school;
 
     @Column(nullable = false)
     private String clubName;
 
+    // 단체의 기수를 나타내는 컬럼
+    @Column(nullable = false)
+    private String season;
+
+    @Column(nullable = false)
+    private String location;
+
+    @Column(nullable = false)
+    private String shortDescription;
+
+    @Column(nullable = false)
+    private String longDescription;
+
+    @OneToMany(mappedBy = "club")
+    private List<ClubUser> clubUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "clubAdmission")
+    private List<AdmissionUnit> admissionUnits = new ArrayList<>();
 
 }

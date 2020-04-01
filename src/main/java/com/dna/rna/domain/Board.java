@@ -18,14 +18,17 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name="board")
-public class Board {
+public class Board extends BaseAuditorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long boardId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "BOARD_ID")
+    private Long id;
 
-    @Column(nullable = false, updatable = false)
-    private Long clubId;
+    @ManyToOne
+    @JoinColumn(name = "CLUB_ID")
+    private Club club;
+
     @Column(nullable = false)
     private Long boardName;
 }

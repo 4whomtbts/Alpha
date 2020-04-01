@@ -2,6 +2,7 @@ package com.dna.rna.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,28 +20,33 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name="article")
-public class Article {
+public class Article extends BaseAuditorEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long articleId;
-    @Column(nullable = false, updatable = false)
-    private Long boardId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ARTICLE_ID")
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "BOARD_ID", nullable = false)
+    private Board board;
 
     @Column(nullable = false)
     private String title;
+
     @Column(nullable = false)
     private String content;
-    @Column(nullable = false)
+
+    @Column(nullable = false,
+            columnDefinition = "integer default 0")
     private int viewCount;
-    @Column(nullable = false)
+
+    @Column(nullable = false,
+            columnDefinition = "integer default 0")
     private int voteCount;
-    @Column(nullable = false)
+
+    @Column(nullable = false,
+            columnDefinition = "integer default 0")
     private int scrapCount;
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-    @Column(nullable = false)
-    private LocalDateTime modifiedAt;
-    @Column(nullable = false)
-    private LocalDateTime deletedAt;
+
 }

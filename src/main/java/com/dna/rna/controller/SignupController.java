@@ -1,7 +1,7 @@
 package com.dna.rna.controller;
 
-import com.dna.rna.domain.User;
-import com.dna.rna.persistent.UserRepository;
+import com.dna.rna.domain.User.User;
+import com.dna.rna.domain.User.UserRepository;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.Getter;
@@ -9,10 +9,11 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller class for signup api and related apis.
@@ -39,7 +40,7 @@ public class SignupController {
         @ApiResponse(code = 400, message = DUPLICATE_LOGIN_ID_EXISTS)
     })
     @PostMapping("/signup")
-    public ResponseEntity signuo(@RequestBody SignupForm signupForm) {
+    public ResponseEntity signup(@RequestBody SignupForm signupForm) {
         String loginId= signupForm.getLoginId();
         String userName= signupForm.getUserName();
         String password= signupForm.getPassword();
@@ -48,11 +49,9 @@ public class SignupController {
             return new ResponseEntity(DUPLICATE_LOGIN_ID_EXISTS, HttpStatus.BAD_REQUEST);
         }
 
-        User newUser = new User();
-        newUser.setLoginId(loginId);
-        newUser.setUserName(userName);
-        newUser.setPassword(password);
+        User newUser = User.of(loginId, userName, password);
         userRepository.save(newUser);
+        logger.info("New user '{}' has been created.", loginId);
         return new ResponseEntity(HttpStatus.OK);
     }
 }
@@ -60,7 +59,9 @@ public class SignupController {
 @Getter
 @Setter
 class SignupForm {
+
     private String loginId;
     private String userName;
     private String password;
+
 }
