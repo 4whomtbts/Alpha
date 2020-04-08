@@ -7,9 +7,15 @@ import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.School.SchoolUser;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -26,10 +32,11 @@ import static java.util.Objects.requireNonNull;
 @Getter
 @Setter
 @Entity
-@Table(name= "user")
+@Table(name= "USER")
+@ToString(exclude = "userRoles")
 public class User extends BaseAuditorEntity {
 
-    public  static final String USER_ID = "USER_ID";
+    public static final String USER_ID = "USER_ID";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = USER_ID)
@@ -54,11 +61,16 @@ public class User extends BaseAuditorEntity {
     @Column(nullable = false)
     private UserType userType = UserType.USER;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<SchoolUser> schoolUsers = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<ClubUser> clubUsers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user",
+               fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL)
+    private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<AdmissionCandidate> admissionCandidates = new ArrayList<>();
@@ -72,7 +84,7 @@ public class User extends BaseAuditorEntity {
         this.userName = userName;
     }
 
-    public static User of(final String loginId, final String password, final String userName) {
+    public static User of(final String loginId, final String userName, final String password) {
         requireNonNull(loginId, "loginId is null");
         requireNonNull(password, "password is null");
         requireNonNull(userName, "userName is null");

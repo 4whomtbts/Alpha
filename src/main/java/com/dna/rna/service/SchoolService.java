@@ -24,22 +24,15 @@ import static java.util.Objects.requireNonNull;
  */
 
 @Service
-@Transactional
 public class SchoolService {
 
-    private final Logger logger= LoggerFactory.getLogger(getClass());
+    private static final Logger logger= LoggerFactory.getLogger(SchoolService.class);
 
     private SchoolRepository schoolRepository;
-    private SchoolUserRepository schoolUserRepository;
-    private UserRepository userRepository;
 
     @Autowired
-    public SchoolService(SchoolRepository schoolRepository,
-                         SchoolUserRepository schoolUserRepository,
-                         UserRepository userRepository) {
+    public SchoolService(SchoolRepository schoolRepository) {
         this.schoolRepository = schoolRepository;
-        this.schoolUserRepository = schoolUserRepository;
-        this.userRepository = userRepository;
     }
 
 

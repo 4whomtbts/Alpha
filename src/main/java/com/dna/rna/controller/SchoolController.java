@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,13 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SchoolController {
 
-    private final Logger logger= LoggerFactory.getLogger(getClass());
+    private static final Logger logger= LoggerFactory.getLogger(SchoolController.class);
 
     private final SchoolService schoolService;
 
     @Autowired
     SchoolController(SchoolService schoolService) {
         this.schoolService = schoolService;
+    }
+
+    @GetMapping("/schools")
+    public String getSchools() {
+        return "you must be admin";
+    }
+
+    @GetMapping("/school")
+    public String getSchoolMain() {
+        return "hello bro";
     }
 
     @PostMapping("/school")
