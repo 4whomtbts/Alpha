@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // configure access rules
                 .antMatchers( "/school").permitAll()
                 .antMatchers( "/signup").permitAll()
-                .antMatchers( "/user").permitAll()
+                .antMatchers( "/user").hasRole("USER")
                 .antMatchers( HttpMethod.POST, "/login").permitAll()
                 .antMatchers("/schools").hasRole("USER")
                 .anyRequest().authenticated();

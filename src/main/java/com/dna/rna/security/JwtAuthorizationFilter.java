@@ -2,11 +2,10 @@ package com.dna.rna.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.dna.rna.BeanUtils;
 import com.dna.rna.config.JWtProperties;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.service.SigninService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,21 +22,11 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private SigninService signinService;
     private UserRepository userRepository;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setSigninService(SigninService signinService) {
-        this.signinService = signinService;
+        this.userRepository = (UserRepository) BeanUtils.getBean("UserRepository");
     }
 
     @Transactional

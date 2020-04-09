@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 
-@Repository
+@Repository("UserRepository")
 public interface UserRepository extends CrudRepository<User, Long> {
 
     @Transactional
