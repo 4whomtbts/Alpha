@@ -1,4 +1,4 @@
-package com.dna.rna.domain.Club;
+package com.dna.rna.domain.ClubUser;
 
 import lombok.Getter;
 

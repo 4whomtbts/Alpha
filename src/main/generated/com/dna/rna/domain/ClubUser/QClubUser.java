@@ -1,4 +1,4 @@
-package com.dna.rna.domain.Club;
+package com.dna.rna.domain.ClubUser;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QClubUser extends EntityPathBase<ClubUser> {
 
-    private static final long serialVersionUID = -1105506532L;
+    private static final long serialVersionUID = -1474606831L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -24,19 +24,19 @@ public class QClubUser extends EntityPathBase<ClubUser> {
 
     public final com.dna.rna.domain.QBaseAuditorEntity _super = new com.dna.rna.domain.QBaseAuditorEntity(this);
 
-    public final QClub club;
+    public final com.dna.rna.domain.Club.QClub club;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath joinSeason = createString("joinSeason");
+    public final NumberPath<Integer> joinSeason = createNumber("joinSeason", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final EnumPath<com.dna.rna.domain.ClubUser.ClubUserStatus> status = createEnum("status", com.dna.rna.domain.ClubUser.ClubUserStatus.class);
+    public final EnumPath<ClubUserStatus> status = createEnum("status", ClubUserStatus.class);
 
     public final com.dna.rna.domain.User.QUser user;
 
@@ -58,7 +58,7 @@ public class QClubUser extends EntityPathBase<ClubUser> {
 
     public QClubUser(Class<? extends ClubUser> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.club = inits.isInitialized("club") ? new QClub(forProperty("club"), inits.get("club")) : null;
+        this.club = inits.isInitialized("club") ? new com.dna.rna.domain.Club.QClub(forProperty("club"), inits.get("club")) : null;
         this.user = inits.isInitialized("user") ? new com.dna.rna.domain.User.QUser(forProperty("user"), inits.get("user")) : null;
     }
 

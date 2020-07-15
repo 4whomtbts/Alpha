@@ -35,7 +35,7 @@ public class SchoolService {
     public School createSchool(String schoolName) {
         requireNonNull(schoolName, "schoolName is null");
 
-        School existingSchool = schoolRepository.findSchoolBySchoolName(schoolName);
+        School existingSchool = schoolRepository.findBySchoolName(schoolName);
         if(existingSchool != null) {
             throw new AlreadyExistsException("schoolName", schoolName);
         }

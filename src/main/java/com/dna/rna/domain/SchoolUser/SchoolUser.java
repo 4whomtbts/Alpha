@@ -34,7 +34,7 @@ public class SchoolUser extends BaseAuditorEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SCHOOL_USER_ID)
-    private Long id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = USER_ID, nullable = false)

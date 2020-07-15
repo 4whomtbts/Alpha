@@ -6,6 +6,7 @@ import com.dna.rna.domain.User.QUser;
 import com.dna.rna.domain.User.User;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -19,12 +20,23 @@ public class SchoolUserRepository {
     @PersistenceContext
     EntityManager em;
 
-    public void save(SchoolUser schoolUser) {
+    @Transactional
+    public void save(final SchoolUser schoolUser) throws DataIntegrityViolationException {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QSchoolUser qSchoolUser = new QSchoolUser("su");
+        List<SchoolUser> exist = queryFactory.selectFrom(qSchoolUser).where(
+                qSchoolUser.school.id.eq(schoolUser.getUser().getId())
+                .and(qSchoolUser.user.id.eq(schoolUser.getSchool().getId()))).fetch();
+        if (exist.size() != 0) {
+            throw new DataIntegrityViolationException(String.format("user id = [%d], school id = [%d] 인" +
+                            "SchoolUser 가 이미 존재합니다.",
+                    schoolUser.getUser().getId(), schoolUser.getSchool().getId()));
+        }
         em.persist(schoolUser);
     }
 
     @Transactional
-    public List<SchoolUser> findByLoginIdAndSchoolId(String loginId, long schoolId) {
+    public List<SchoolUser> findByLoginIdAndSchoolId(final String loginId, final long schoolId) {
 
 
         JPAQuery query = new JPAQuery(em);
@@ -45,14 +57,6 @@ public class SchoolUserRepository {
         //schoolUsers.forEach(System.out::println);
         System.out.println(schoolUsers.size());
 
-        /*
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<SchoolUser> query = cb.createQuery(SchoolUser.class);
-        Root<SchoolUser> su = query.from(SchoolUser.class);
-
-        CriteriaQuery<SchoolUser> cq = query.select(su).where(cb.equal(su.get))
-        return em.createQuery("SELECT sm from SchoolUser sm WHERE sm.")
-        */
         return schoolUsers;
     }
 }

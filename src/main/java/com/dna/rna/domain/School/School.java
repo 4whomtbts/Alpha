@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;
 public class School extends BaseAuditorEntity {
 
     public static final String SCHOOL_ID = "school_id";
+    public static final String LEADER_ID = "leader_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SCHOOL_ID)
@@ -51,9 +52,16 @@ public class School extends BaseAuditorEntity {
     private School(String schoolName) {
         this.schoolName = schoolName;
     }
+    private School(long schoolId) {
+        this.id = schoolId;
+    }
 
     public static School of(final String schoolName) {
         requireNonNull(schoolName);
         return new School(schoolName);
+    }
+
+    public static School of(final long schoolId) {
+        return new School(schoolId);
     }
 }

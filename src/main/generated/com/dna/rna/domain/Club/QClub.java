@@ -22,13 +22,23 @@ public class QClub extends EntityPathBase<Club> {
 
     public static final QClub club = new QClub("club");
 
+    public final com.dna.rna.domain.QBaseAuditorEntity _super = new com.dna.rna.domain.QBaseAuditorEntity(this);
+
     public final ListPath<com.dna.rna.domain.Admission.AdmissionUnit, com.dna.rna.domain.Admission.QAdmissionUnit> admissionUnits = this.<com.dna.rna.domain.Admission.AdmissionUnit, com.dna.rna.domain.Admission.QAdmissionUnit>createList("admissionUnits", com.dna.rna.domain.Admission.AdmissionUnit.class, com.dna.rna.domain.Admission.QAdmissionUnit.class, PathInits.DIRECT2);
 
     public final StringPath clubName = createString("clubName");
 
     public final ListPath<ClubUser, QClubUser> clubUsers = this.<ClubUser, QClubUser>createList("clubUsers", ClubUser.class, QClubUser.class, PathInits.DIRECT2);
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
+
+    public final com.dna.rna.domain.User.QUser leader;
 
     public final StringPath location = createString("location");
 
@@ -39,6 +49,8 @@ public class QClub extends EntityPathBase<Club> {
     public final StringPath season = createString("season");
 
     public final StringPath shortDescription = createString("shortDescription");
+
+    public final DatePath<java.time.LocalDate> since = createDate("since", java.time.LocalDate.class);
 
     public QClub(String variable) {
         this(Club.class, forVariable(variable), INITS);
@@ -58,6 +70,7 @@ public class QClub extends EntityPathBase<Club> {
 
     public QClub(Class<? extends Club> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.leader = inits.isInitialized("leader") ? new com.dna.rna.domain.User.QUser(forProperty("leader"), inits.get("leader")) : null;
         this.school = inits.isInitialized("school") ? new com.dna.rna.domain.School.QSchool(forProperty("school")) : null;
     }
 
