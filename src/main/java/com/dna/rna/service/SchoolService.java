@@ -2,15 +2,11 @@ package com.dna.rna.service;
 
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.School.SchoolRepository;
-import com.dna.rna.domain.School.SchoolUserRepository;
-import com.dna.rna.domain.User.UserRepository;
 import com.dna.rna.exception.AlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 import static java.util.Objects.requireNonNull;
 

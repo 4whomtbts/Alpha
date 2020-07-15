@@ -1,5 +1,6 @@
-package com.dna.rna.domain;
+package com.dna.rna.domain.Club;
 
+import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.User.User;
 import lombok.Getter;
 import lombok.Setter;

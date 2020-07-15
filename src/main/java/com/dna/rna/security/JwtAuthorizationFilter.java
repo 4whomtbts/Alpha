@@ -3,6 +3,7 @@ package com.dna.rna.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.dna.rna.BeanUtils;
+import com.dna.rna.config.AuthGateway;
 import com.dna.rna.config.JWtProperties;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
@@ -22,11 +23,13 @@ import java.io.IOException;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final AuthGateway authGateway;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
         this.userRepository = (UserRepository) BeanUtils.getBean("UserRepository");
+        this.authGateway = (AuthGateway) BeanUtils.getBean("AuthGateway");
     }
 
     @Transactional
@@ -40,13 +43,19 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                             .getSubject();
 
             if (username != null) {
-                User user = userRepository.findUserByLoginId(username);
-                MainUserDetails mainUserDetails = new MainUserDetails(user);
-                UsernamePasswordAuthenticationToken auth =
-                        new UsernamePasswordAuthenticationToken(username, null, mainUserDetails.getAuthorities());
-                return auth;
-}
-            return null;
+                String contextPath = request.getContextPath();
+                String path = request.getRequestURI().toString();
+                System.out.println(path);
+                if (authGateway.immigration(path)) {
+
+                    User user = userRepository.findUserByLoginId(username);
+                    MainUserDetails mainUserDetails = new MainUserDetails(user);
+                    UsernamePasswordAuthenticationToken auth =
+                            new UsernamePasswordAuthenticationToken(username, null, mainUserDetails.getAuthorities());
+                    return auth;
+                }
+                return null;
+            }
         }
         return null;
     }

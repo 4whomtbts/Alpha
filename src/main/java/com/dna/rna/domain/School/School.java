@@ -1,7 +1,8 @@
 package com.dna.rna.domain.School;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.Club;
+import com.dna.rna.domain.Club.Club;
+import com.dna.rna.domain.SchoolUser.SchoolUser;
 import com.dna.rna.domain.User.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,22 +27,22 @@ import static java.util.Objects.requireNonNull;
 @Entity
 @Table(name= "school",
        uniqueConstraints = {
-        @UniqueConstraint(columnNames = "SCHOOL_NAME")})
+        @UniqueConstraint(columnNames = "school_name")})
 public class School extends BaseAuditorEntity {
 
-    public static final String SCHOOL_ID = "SCHOOL_ID";
+    public static final String SCHOOL_ID = "school_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SCHOOL_ID)
     private Long id;
 
-    @Column(name = "SCHOOL_NAME", nullable = false)
+    @Column(name = "school_name", nullable = false)
     private String schoolName;
 
-    @OneToMany(mappedBy = "school")
-    private List<User> schoolUsers = new ArrayList<>();
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
+    private List<SchoolUser> schoolUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "school")
+    @OneToMany(mappedBy = "school", fetch = FetchType.LAZY)
     private List<Club> schoolClubs = new ArrayList<>();
 
     // 기본생성자를 public 으로 바꿔야 할 시 논의 후 바꿀 것
@@ -53,7 +54,6 @@ public class School extends BaseAuditorEntity {
 
     public static School of(final String schoolName) {
         requireNonNull(schoolName);
-        School school = new School(schoolName);
-        return school;
+        return new School(schoolName);
     }
 }

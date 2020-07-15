@@ -2,22 +2,18 @@ package com.dna.rna.domain.User;
 
 import com.dna.rna.domain.Admission.AdmissionCandidate;
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.ClubUser;
+import com.dna.rna.domain.Club.ClubUser;
 import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolUser;
+import com.dna.rna.domain.SchoolUser.SchoolUser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import static com.dna.rna.domain.School.School.SCHOOL_ID;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -44,7 +40,7 @@ public class User extends BaseAuditorEntity {
 
     //@Column(nullable = false)
     @ManyToOne
-    @JoinColumn(name = "SCHOOL_ID")
+    @JoinColumn(name = SCHOOL_ID)
     private School school;
 
     private boolean school_authorized = false;
@@ -58,7 +54,7 @@ public class User extends BaseAuditorEntity {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private UserType userType = UserType.USER;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

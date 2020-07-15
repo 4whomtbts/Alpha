@@ -1,14 +1,13 @@
 version: "3.7"
 
-services:
-  rna_db_server:
-    # 컨테이너 이름을 주고 싶다면 작성한다
-    # container_name: test_database
-    image: mysql:5.6
-    environment:
-      MYSQL_DATABASE: rna_db
-      MYSQL_USER: root
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_ROOT_HOST: '%'
-    ports:
-      - 3307:3306
+          services:
+            rna_db_server:
+              container_name: dash_board_mysql
+              image: mysql:5.6
+              environment:
+                MYSQL_DATABASE: rna_db
+                MYSQL_USER: root
+                MYSQL_ROOT_PASSWORD: root
+                MYSQL_ROOT_HOST: '%'
+              ports:
+                - 3307:3306

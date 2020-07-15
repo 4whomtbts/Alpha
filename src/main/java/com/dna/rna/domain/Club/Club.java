@@ -1,4 +1,4 @@
-package com.dna.rna.domain;
+package com.dna.rna.domain.Club;
 
 import com.dna.rna.domain.Admission.AdmissionUnit;
 import com.dna.rna.domain.School.School;
@@ -23,8 +23,10 @@ import java.util.List;
 @Table(name="club")
 public class Club {
 
+    public static final String CLUB_ID = "club_id";
+
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "CLUB_ID")
+    @Column(name = CLUB_ID)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

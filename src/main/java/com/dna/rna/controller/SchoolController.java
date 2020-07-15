@@ -2,9 +2,12 @@ package com.dna.rna.controller;
 
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.School.SchoolRepository;
+import com.dna.rna.domain.SchoolUser.SchoolUser;
+import com.dna.rna.domain.SchoolUser.SchoolUserRepository;
 import com.dna.rna.exception.ApiErrorResponse;
 import com.dna.rna.service.SchoolService;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +19,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
+@RequiredArgsConstructor
 public class SchoolController {
 
     private static final Logger logger= LoggerFactory.getLogger(SchoolController.class);
 
     private final SchoolService schoolService;
-
-    @Autowired
-    SchoolController(SchoolService schoolService) {
-        this.schoolService = schoolService;
-    }
+    private final SchoolUserRepository schoolUserRepository;
 
     @GetMapping("/schools")
     public String getSchools() {
@@ -35,10 +37,11 @@ public class SchoolController {
 
     @GetMapping("/school")
     public String getSchoolMain() {
+        List<SchoolUser> list = schoolUserRepository.findByLoginIdAndSchoolId("hello", 1);
         return "hello bro";
     }
 
-    @PostMapping("/school")
+    @PostMapping("/schools/school")
     public ResponseEntity createSchool(@RequestBody SchoolCreateForm schoolCreateForm) {
         String schoolName = schoolCreateForm.getSchoolName();
 

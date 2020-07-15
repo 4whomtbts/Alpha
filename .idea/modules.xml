@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.dna.rna.iml" filepath="$PROJECT_DIR$/.idea/modules/com.dna.rna.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.dna.rna.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.dna.rna.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.dna.rna.querydsl.iml" filepath="$PROJECT_DIR$/.idea/modules/com.dna.rna.querydsl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.dna.rna.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.dna.rna.test.iml" />
+    </modules>
+  </component>
+</project>
