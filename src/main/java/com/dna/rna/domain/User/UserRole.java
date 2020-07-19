@@ -1,11 +1,9 @@
 package com.dna.rna.domain.User;
 
 import com.dna.rna.domain.CRUDPermissions;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;

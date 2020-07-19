@@ -13,7 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-@Repository
+@Repository("SchoolRepository")
 public class SchoolRepository {
 
     private static final Logger logger= LoggerFactory.getLogger(SchoolRepository.class);

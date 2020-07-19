@@ -1,19 +1,19 @@
 package com.dna.rna.domain.ClubUser;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 // 참고 https://woowabros.github.io/experience/2019/01/09/enum-converter.html
-public class ClubeUserStatusConverter implements AttributeConverter<ClubUserStatus, Integer> {
-
+@Converter(autoApply = true)
+public class ClubUserStatusConverter implements AttributeConverter<ClubUserStatus, Integer> {
 
     @Override
     public Integer convertToDatabaseColumn(ClubUserStatus attribute) {
-        return attribute.getOrdinalStatus();
+        return attribute.getStatusCode();
     }
 
     @Override
     public ClubUserStatus convertToEntityAttribute(Integer dbData) {
         return ClubUserStatus.ofOrdinalStatus(dbData);
     }
-
 }

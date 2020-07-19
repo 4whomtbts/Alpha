@@ -1,6 +1,5 @@
 package com.dna.rna.domain.ClubUser;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +11,13 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.dna.rna.domain.ClubUser.QClubUser.clubUser;
 import static java.util.Objects.requireNonNull;
 
 @Repository
 public class ClubUserRepository {
 
-    private static final Logger logger= LoggerFactory.getLogger(ClubUserRepository.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClubUserRepository.class);
 
     @PersistenceContext
     EntityManager em;
@@ -53,13 +53,13 @@ public class ClubUserRepository {
             throw exception;
         }
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        QClubUser qClubUser = QClubUser.clubUser;
-        BooleanExpression exist = queryFactory
-                .selectFrom(qClubUser)
-                .where(qClubUser.club.id.eq(clubId)
-                        .and(qClubUser.user.loginId.eq(loginId))).exists().eq(true).isTrue();
+        QClubUser qClubUser = clubUser;
 
-        return (exist != null);
+        List<ClubUser> exist = queryFactory
+                .selectFrom(qClubUser)
+                .where(qClubUser.user.loginId.eq(loginId)
+                        .and(qClubUser.club.id.eq(clubId))).fetch();
+        return (exist.size() > 0);
     }
 
 }

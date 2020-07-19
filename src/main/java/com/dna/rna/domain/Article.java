@@ -2,10 +2,8 @@ package com.dna.rna.domain;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * Entity for General Article of RNA service.

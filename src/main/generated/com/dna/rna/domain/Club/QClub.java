@@ -28,7 +28,7 @@ public class QClub extends EntityPathBase<Club> {
 
     public final StringPath clubName = createString("clubName");
 
-    public final ListPath<ClubUser, QClubUser> clubUsers = this.<ClubUser, QClubUser>createList("clubUsers", ClubUser.class, QClubUser.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.ClubUser.ClubUser.class, com.dna.rna.domain.ClubUser.QClubUser.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

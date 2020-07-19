@@ -1,7 +1,6 @@
 package com.dna.rna.domain.Admission;
 
 import com.dna.rna.domain.User.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 

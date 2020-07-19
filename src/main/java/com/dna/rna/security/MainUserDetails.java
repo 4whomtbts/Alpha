@@ -4,8 +4,6 @@ import com.dna.rna.BeanUtils;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.service.SigninService;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

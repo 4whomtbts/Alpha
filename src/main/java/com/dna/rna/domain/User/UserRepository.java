@@ -26,7 +26,7 @@ public class UserRepository {
         requireNonNull(user, "User 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QUser qUser = new QUser("qUser");
-        List<User> exist = queryFactory.selectFrom(qUser).where(qUser.userName.eq(user.getUserName())).fetch();
+        List<User> exist = queryFactory.selectFrom(qUser).where(qUser.loginId.eq(user.getUserName())).fetch();
 
         if (exist.size() != 0) {
             if (exist.size() > 1) logger.error(String.format("심각 : loginId = [%s] 인 유저가 2개 이상 이미 존재합니다.", user.getLoginId()));

@@ -31,7 +31,7 @@ public class QClubUser extends EntityPathBase<ClubUser> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> joinSeason = createNumber("joinSeason", Integer.class);
+    public final StringPath joinSeason = createString("joinSeason");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;

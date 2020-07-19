@@ -26,7 +26,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final ListPath<com.dna.rna.domain.Admission.AdmissionCandidate, com.dna.rna.domain.Admission.QAdmissionCandidate> admissionCandidates = this.<com.dna.rna.domain.Admission.AdmissionCandidate, com.dna.rna.domain.Admission.QAdmissionCandidate>createList("admissionCandidates", com.dna.rna.domain.Admission.AdmissionCandidate.class, com.dna.rna.domain.Admission.QAdmissionCandidate.class, PathInits.DIRECT2);
 
-    public final ListPath<com.dna.rna.domain.Club.ClubUser, com.dna.rna.domain.Club.QClubUser> clubUsers = this.<com.dna.rna.domain.Club.ClubUser, com.dna.rna.domain.Club.QClubUser>createList("clubUsers", com.dna.rna.domain.Club.ClubUser.class, com.dna.rna.domain.Club.QClubUser.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.ClubUser.ClubUser.class, com.dna.rna.domain.ClubUser.QClubUser.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

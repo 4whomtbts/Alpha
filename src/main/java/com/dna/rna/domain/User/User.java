@@ -2,7 +2,7 @@ package com.dna.rna.domain.User;
 
 import com.dna.rna.domain.Admission.AdmissionCandidate;
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.Club.ClubUser;
+import com.dna.rna.domain.ClubUser.ClubUser;
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.SchoolUser.SchoolUser;
 import lombok.Getter;

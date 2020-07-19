@@ -1,14 +1,11 @@
 package com.dna.rna;
 
 import com.dna.rna.controller.UserController;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.service.UserService;
 import com.dna.rna.service.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,9 +33,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@ContextConfiguration
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserControllerTest {
 
@@ -84,3 +81,5 @@ public class UserControllerTest {
                 .andDo(print());
     }
 }
+
+
