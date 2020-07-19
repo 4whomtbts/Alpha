@@ -1,4 +1,4 @@
-package com.dna.rna;
+package com.dna.rna.domain.Club;
 
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.Club.ClubRepository;
@@ -210,7 +210,7 @@ public class ClubRepositoryTest {
         long clubId = buildMockClubUsers("RNA", 10);
         assertThat(clubRepository.fetchCurrentSeasonUserCount(clubId)).isEqualTo(10);
     }
-d
+
     @Test
     public void fetchNumberOfAllMembersFailWhenNoClubOfClubId() {
         long clubId = buildMockClubUsers("RNA", 10);

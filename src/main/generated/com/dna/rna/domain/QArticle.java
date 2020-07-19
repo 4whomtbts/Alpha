@@ -24,7 +24,7 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final QBaseAuditorEntity _super = new QBaseAuditorEntity(this);
 
-    public final QBoard board;
+    public final com.dna.rna.domain.Board.QBoard board;
 
     public final StringPath content = createString("content");
 
@@ -62,7 +62,7 @@ public class QArticle extends EntityPathBase<Article> {
 
     public QArticle(Class<? extends Article> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.board = inits.isInitialized("board") ? new QBoard(forProperty("board"), inits.get("board")) : null;
+        this.board = inits.isInitialized("board") ? new com.dna.rna.domain.Board.QBoard(forProperty("board")) : null;
     }
 
 }

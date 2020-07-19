@@ -1,10 +1,13 @@
 package com.dna.rna.domain.Club;
 
+import com.dna.rna.domain.ClubBoard.ClubBoard;
+import com.dna.rna.domain.ClubBoard.ClubBoardRepository;
 import com.dna.rna.domain.ClubUser.ClubUserRepository;
 import com.dna.rna.domain.ClubUser.QClubUser;
 import com.dna.rna.domain.User.QUser;
 import com.dna.rna.domain.User.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sun.istack.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,8 @@ public class ClubRepository {
 
     private final ClubUserRepository clubUserRepository;
 
+    private final ClubBoardRepository clubBoardRepository;
+
     @Transactional
     public void save(final Club club) throws DataIntegrityViolationException {
         requireNonNull(club, "Club 은 null일 수 없습니다.");
@@ -46,6 +51,7 @@ public class ClubRepository {
 
     @Transactional
     public Club findByClubName(final String clubName) {
+        requireNonNull(clubName, "ClubName 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QClub qClub = new QClub("qClub");
         return queryFactory.selectFrom(qClub).where(qClub.clubName.eq(clubName)).fetchOne();
