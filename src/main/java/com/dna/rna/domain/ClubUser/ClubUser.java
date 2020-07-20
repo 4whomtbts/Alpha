@@ -3,6 +3,7 @@ package com.dna.rna.domain.ClubUser;
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.User.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,12 @@ public class ClubUser extends BaseAuditorEntity {
     @Column(name = CLUB_USER_ID)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = USER_ID, nullable = false)
     private User user;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = CLUB_ID, nullable = false)
     private Club club;

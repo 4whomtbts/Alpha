@@ -35,6 +35,8 @@ public class QClubBoard extends EntityPathBase<ClubBoard> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> displayOrder = createNumber("displayOrder", Integer.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 

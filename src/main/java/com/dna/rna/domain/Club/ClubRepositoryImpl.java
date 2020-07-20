@@ -37,11 +37,11 @@ public class ClubRepositoryImpl extends QuerydslRepositorySupport
     }
 /*
     @Transactional
-    public Club save(final Club club) throws DataIntegrityViolationException {
-        requireNonNull(club, "Club 은 null일 수 없습니다.");
+    public ClubDto save(final ClubDto club) throws DataIntegrityViolationException {
+        requireNonNull(club, "ClubDto 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QClub qClub =  QClub.club;
-        List<Club> exist = queryFactory.selectFrom(qClub).where(qClub.clubName.eq(club.getClubName())).fetch();
+        List<ClubDto> exist = queryFactory.selectFrom(qClub).where(qClub.clubName.eq(club.getClubName())).fetch();
 
         if (exist.size() != 0) {
             if (exist.size() > 1) logger.error(String.format("심각 : clubName = [%s]인 동아리가 2개 이상 이미 존재합니다.", club.getClubName()));

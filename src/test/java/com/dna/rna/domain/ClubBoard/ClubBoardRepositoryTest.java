@@ -56,7 +56,7 @@ public class ClubBoardRepositoryTest {
 
     public Club makeClub(School school, String clubName) {
         Club club = Club.of(school, clubName, LocalDate.now(),
-                "1기", "dongguk univ", "hello", "loooong");
+                "1기", "dongguk univ", "hello", "loooong", "good");
         clubRepository.save(club);
         return club;
     }
@@ -68,7 +68,7 @@ public class ClubBoardRepositoryTest {
         String newBoardName = "foo_board";
         Board board = Board.of("foo_board");
         boardRepository.save(board);
-        ClubBoard clubBoard = ClubBoard.of(club, board, null);
+        ClubBoard clubBoard = ClubBoard.of(club, board, null, 0);
         clubBoardRepository.save(clubBoard);
 
         List<ClubBoard> aClubBoard = clubBoardRepository.fetchBoardsOfClub(club, board);

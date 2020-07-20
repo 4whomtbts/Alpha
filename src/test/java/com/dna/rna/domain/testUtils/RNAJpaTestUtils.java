@@ -63,13 +63,13 @@ public class RNAJpaTestUtils {
 
     public Club buildAndSaveClub(String clubName) {
         School school = buildAndSaveSchool(clubName);
-        Club club = Club.of(school, defaultClubName, LocalDate.now(), defaultSeason, "dongguk", "short", "long");
+        Club club = Club.of(school, defaultClubName, LocalDate.now(), defaultSeason, "dongguk", "short", "long", "URI");
         return clubRepository.save(club);
     }
 
     public Club buildAndSaveClub() {
         School school = buildAndSaveSchool(defaultSchoolName);
-        Club club = Club.of(school, defaultClubName, LocalDate.now(), defaultSeason, "dongguk", "short", "long");
+        Club club = Club.of(school, defaultClubName, LocalDate.now(), defaultSeason, "dongguk", "short", "long", "URI");
         return clubRepository.save(club);
     }
 
@@ -79,7 +79,7 @@ public class RNAJpaTestUtils {
     }
 
     public ClubBoard buildAndSaveClubBoard(Club club, Board board, BoardGroup boardGroup) {
-        ClubBoard clubBoard = ClubBoard.of(club, board, boardGroup);
+        ClubBoard clubBoard = ClubBoard.of(club, board, boardGroup, 0);
         return clubBoardRepository.save(clubBoard);
     }
 

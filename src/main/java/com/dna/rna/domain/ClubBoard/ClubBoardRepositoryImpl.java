@@ -49,7 +49,7 @@ public class ClubBoardRepositoryImpl extends QuerydslRepositorySupport
     @Nullable
     @Transactional
     public List<ClubBoard> fetchBoardsOfClub(Club club, Board board) {
-        requireNonNull(club, "Club 은 null일 수 없습니다.");
+        requireNonNull(club, "ClubDto 은 null일 수 없습니다.");
         requireNonNull(board, "Board는 null일 수 없습니다.");
         return fetchBoardsOfClub(club.getId(), board.getId());
     }

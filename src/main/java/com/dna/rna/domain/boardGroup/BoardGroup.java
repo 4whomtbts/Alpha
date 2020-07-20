@@ -4,6 +4,9 @@ import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.Board.BoardItem;
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.ClubBoard.ClubBoard;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sun.istack.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -31,6 +34,7 @@ public class BoardGroup extends BaseAuditorEntity implements BoardItem  {
     @Column(name = BOARD_GROUP_ID)
     private long boardGroupId;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CLUB_ID)
     private Club club;
@@ -41,12 +45,14 @@ public class BoardGroup extends BaseAuditorEntity implements BoardItem  {
     @Column(name = "display_order")
     private int displayOrder;
 
-    @OneToMany(mappedBy = "boardGroup", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "boardGroup",
+               fetch = FetchType.EAGER)
     @Column(nullable = false)
     private List<ClubBoard> clubBoards;
 
     private BoardGroup(Club club, String boardGroupName, int displayOrder,
-                       List<ClubBoard> clubBoards) {
+                       @Nullable List<ClubBoard> clubBoards) {
         this.club = club;
         this.boardGroupName = boardGroupName;
         this.displayOrder = displayOrder;
@@ -54,10 +60,9 @@ public class BoardGroup extends BaseAuditorEntity implements BoardItem  {
     }
 
     public static BoardGroup of(Club club, String boardGroupName, int displayOrder,
-                                List<ClubBoard> clubBoards) {
+                                @Nullable List<ClubBoard> clubBoards) {
         requireNonNull(club, "club은 null이 될 수 없습니다.");
         requireNonNull(boardGroupName, "boardGroupName은 null이 될 수 없습니다.");
-        requireNonNull(clubBoards, "clubBoards는 null이 될 수 없습니다");
         return new BoardGroup(club, boardGroupName, displayOrder, clubBoards);
     }
 }

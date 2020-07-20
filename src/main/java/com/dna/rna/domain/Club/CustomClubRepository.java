@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 public interface CustomClubRepository {
 
     //@Transactional
-    //public Club save(final Club club) throws DataIntegrityViolationException;
+    //public ClubDto save(final ClubDto club) throws DataIntegrityViolationException;
 
     @Transactional
     public Club findByClubName(final String clubName);

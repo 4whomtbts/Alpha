@@ -30,7 +30,7 @@ public class QBoardGroup extends EntityPathBase<BoardGroup> {
 
     public final com.dna.rna.domain.Club.QClub club;
 
-    public final ListPath<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard> clubBoard = this.<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard>createList("clubBoard", com.dna.rna.domain.ClubBoard.ClubBoard.class, com.dna.rna.domain.ClubBoard.QClubBoard.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard> clubBoards = this.<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard>createList("clubBoards", com.dna.rna.domain.ClubBoard.ClubBoard.class, com.dna.rna.domain.ClubBoard.QClubBoard.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

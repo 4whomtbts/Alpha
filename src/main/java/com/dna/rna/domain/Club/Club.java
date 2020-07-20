@@ -5,6 +5,8 @@ import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.ClubUser.ClubUser;
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.User.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -19,7 +21,7 @@ import static com.dna.rna.domain.School.School.LEADER_ID;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Entity for Club of RNA service.
+ * Entity for ClubDto of RNA service.
  *
  * School.java
  * created 2020.3.25
@@ -41,10 +43,12 @@ public class Club extends BaseAuditorEntity {
     @Column(name = CLUB_ID)
     private Long id;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = School.SCHOOL_ID, nullable = false)
     private School school;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = LEADER_ID)
     private User leader;
@@ -71,11 +75,30 @@ public class Club extends BaseAuditorEntity {
     @Column(name = "profile_image_uri")
     private String profileImageUri;
 
-    @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "club",
+               fetch = FetchType.LAZY,
+               orphanRemoval = true)
     private List<ClubUser> clubUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clubAdmission", fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "clubAdmission",
+               fetch = FetchType.LAZY,
+               orphanRemoval = true)
     private List<AdmissionUnit> admissionUnits = new ArrayList<>();
+
+    //TODO mock data 바꾸기 (uri)
+    public static Club of(long schoolId, String clubName, LocalDate since, String season,
+                          String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+        School school = School.of(schoolId);
+        return new Club(school, clubName, since, season, location, shortDescription, longDescription, "uri");
+    }
+
+    public static Club of(School school, String clubName, LocalDate since, String season,
+                          String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+
+        return new Club(school, clubName, since, season, location, shortDescription, longDescription, "uri");
+    }
 
     public static Club of(long schoolId, String clubName, LocalDate since, String season,
                           String location, String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {

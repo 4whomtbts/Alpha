@@ -30,7 +30,7 @@ public class ClubUserRepositoryImpl extends QuerydslRepositorySupport implements
 
     @Transactional
     public void save(final ClubUser clubUser) {
-        requireNonNull(clubUser, "Club 은 null일 수 없습니다.");
+        requireNonNull(clubUser, "ClubDto 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QClubUser qClubUser = QClubUser.clubUser;
         List<ClubUser> exist = queryFactory

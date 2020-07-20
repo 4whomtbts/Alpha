@@ -5,6 +5,7 @@ import com.dna.rna.domain.Board.Board;
 import com.dna.rna.domain.Board.BoardItem;
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.boardGroup.BoardGroup;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -35,26 +36,32 @@ public class ClubBoard extends BaseAuditorEntity implements BoardItem {
     @JoinColumn(name = BOARD_ID, nullable = false)
     private Board board;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = CLUB_ID, nullable = false)
     private Club club;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = BOARD_GROUP_ID, nullable = false)
+    @JoinColumn(name = BOARD_GROUP_ID)
     private BoardGroup boardGroup;
 
-    public static ClubBoard of(Club club, Board board, BoardGroup boardGroup) {
+    @Column(name = "display_order")
+    private int displayOrder;
+
+    public static ClubBoard of(Club club, Board board, BoardGroup boardGroup, int displayOrder) {
         requireNonNull(board, "board는 null이 될 수 없습니다.");
         requireNonNull(club, "club은 null이 될 수 없습니다.");
-        return new ClubBoard(club, board, boardGroup);
+        return new ClubBoard(club, board, boardGroup, displayOrder);
     }
 
     private ClubBoard() {}
 
-    private ClubBoard(Club club, Board board, BoardGroup boardGroup) {
+    private ClubBoard(Club club, Board board, BoardGroup boardGroup, int displayOrder) {
         this.board = board;
         this.club = club;
         this.boardGroup = boardGroup;
+        this.displayOrder = displayOrder;
     }
 
 }

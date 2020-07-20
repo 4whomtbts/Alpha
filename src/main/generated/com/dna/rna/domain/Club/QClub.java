@@ -44,6 +44,8 @@ public class QClub extends EntityPathBase<Club> {
 
     public final StringPath longDescription = createString("longDescription");
 
+    public final StringPath profileImageUri = createString("profileImageUri");
+
     public final com.dna.rna.domain.School.QSchool school;
 
     public final StringPath season = createString("season");

@@ -1,6 +1,7 @@
 package com.dna.rna.service;
 
 import com.dna.rna.domain.School.School;
+import com.dna.rna.domain.School.SchoolRepository;
 import com.dna.rna.domain.School.SchoolRepositoryImpl;
 import com.dna.rna.exception.AlreadyExistsException;
 import org.slf4j.Logger;
@@ -24,10 +25,10 @@ public class SchoolService {
 
     private static final Logger logger= LoggerFactory.getLogger(SchoolService.class);
 
-    private SchoolRepositoryImpl schoolRepository;
+    private SchoolRepository schoolRepository;
 
     @Autowired
-    public SchoolService(SchoolRepositoryImpl schoolRepository) {
+    public SchoolService(SchoolRepository schoolRepository) {
         this.schoolRepository = schoolRepository;
     }
 
@@ -35,7 +36,7 @@ public class SchoolService {
     public School createSchool(String schoolName) {
         requireNonNull(schoolName, "schoolName is null");
 
-        School existingSchool = schoolRepository.findBySchoolName(schoolName);
+        School existingSchool = schoolRepository.findSchoolBySchoolName(schoolName);
         if(existingSchool != null) {
             throw new AlreadyExistsException("schoolName", schoolName);
         }
