@@ -1,12 +1,12 @@
 package com.dna.rna.domain.ClubBoard;
 
 import com.dna.rna.domain.Board.Board;
-import com.dna.rna.domain.Board.BoardRepository;
+import com.dna.rna.domain.Board.BoardRepositoryImpl;
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.Club.ClubRepository;
+import com.dna.rna.domain.Club.ClubRepositoryImpl;
 import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
-import org.junit.Before;
+import com.dna.rna.domain.School.SchoolRepositoryImpl;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -37,16 +37,16 @@ public class ClubBoardRepositoryTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Autowired
-    private SchoolRepository schoolRepository;
+    private SchoolRepositoryImpl schoolRepository;
 
     @Autowired
     private ClubRepository clubRepository;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardRepositoryImpl boardRepository;
 
     @Autowired
-    private ClubBoardRepository clubBoardRepository;
+    private ClubBoardRepositoryImpl clubBoardRepository;
 
     public School makeSchool(String schoolName) {
         School school = School.of(schoolName);
@@ -68,7 +68,7 @@ public class ClubBoardRepositoryTest {
         String newBoardName = "foo_board";
         Board board = Board.of("foo_board");
         boardRepository.save(board);
-        ClubBoard clubBoard = ClubBoard.of(club, board);
+        ClubBoard clubBoard = ClubBoard.of(club, board, null);
         clubBoardRepository.save(clubBoard);
 
         List<ClubBoard> aClubBoard = clubBoardRepository.fetchBoardsOfClub(club, board);

@@ -1,12 +1,10 @@
 package com.dna.rna.domain.Club;
 
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.Club.ClubRepository;
 import com.dna.rna.domain.ClubUser.ClubUser;
-import com.dna.rna.domain.ClubUser.ClubUserRepository;
+import com.dna.rna.domain.ClubUser.ClubUserRepositoryImpl;
 import com.dna.rna.domain.ClubUser.ClubUserStatus;
 import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
+import com.dna.rna.domain.School.SchoolRepositoryImpl;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
 import org.junit.Before;
@@ -28,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
@@ -45,9 +42,9 @@ public class ClubRepositoryTest {
     @Autowired
     private ClubRepository clubRepository;
     @Autowired
-    private ClubUserRepository clubUserRepository;
+    private ClubUserRepositoryImpl clubUserRepository;
     @Autowired
-    private SchoolRepository schoolRepository;
+    private SchoolRepositoryImpl schoolRepository;
 
     @Before
     public void setUp() {

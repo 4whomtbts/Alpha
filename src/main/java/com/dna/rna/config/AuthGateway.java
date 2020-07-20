@@ -1,6 +1,6 @@
 package com.dna.rna.config;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepository;
+import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class AuthGateway {
 
     private final UserRepository userRepository;
-    private final SchoolUserRepository schoolUserRepository;
+    private final SchoolUserRepositoryImpl schoolUserRepository;
 
     private boolean schoolUserImmigration(String URI) {
         User user = userRepository.findUserByLoginId("jun");

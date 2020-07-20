@@ -1,6 +1,6 @@
 package com.dna.rna.security;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepository;
+import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +12,7 @@ public class SchoolUserDetails implements UserDetails {
 
     private final String loginId;
     private final long schoolId;
-    private final SchoolUserRepository schoolUserRepository;
+    private final SchoolUserRepositoryImpl schoolUserRepository;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

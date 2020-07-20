@@ -2,7 +2,7 @@ package com.dna.rna.controller;
 
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.SchoolUser.SchoolUser;
-import com.dna.rna.domain.SchoolUser.SchoolUserRepository;
+import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
 import com.dna.rna.service.SchoolService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class SchoolController {
     private static final Logger logger= LoggerFactory.getLogger(SchoolController.class);
 
     private final SchoolService schoolService;
-    private final SchoolUserRepository schoolUserRepository;
+    private final SchoolUserRepositoryImpl schoolUserRepository;
 
     @GetMapping("/schools")
     public String getSchools() {

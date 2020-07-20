@@ -26,6 +26,8 @@ public class QClubBoard extends EntityPathBase<ClubBoard> {
 
     public final com.dna.rna.domain.Board.QBoard board;
 
+    public final com.dna.rna.domain.boardGroup.QBoardGroup boardGroup;
+
     public final com.dna.rna.domain.Club.QClub club;
 
     public final NumberPath<Long> clubBoardId = createNumber("clubBoardId", Long.class);
@@ -55,6 +57,7 @@ public class QClubBoard extends EntityPathBase<ClubBoard> {
     public QClubBoard(Class<? extends ClubBoard> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.board = inits.isInitialized("board") ? new com.dna.rna.domain.Board.QBoard(forProperty("board")) : null;
+        this.boardGroup = inits.isInitialized("boardGroup") ? new com.dna.rna.domain.boardGroup.QBoardGroup(forProperty("boardGroup"), inits.get("boardGroup")) : null;
         this.club = inits.isInitialized("club") ? new com.dna.rna.domain.Club.QClub(forProperty("club"), inits.get("club")) : null;
     }
 

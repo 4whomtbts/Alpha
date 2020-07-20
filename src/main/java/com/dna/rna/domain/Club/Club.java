@@ -68,6 +68,9 @@ public class Club extends BaseAuditorEntity {
     @Column(nullable = false)
     private String longDescription;
 
+    @Column(name = "profile_image_uri")
+    private String profileImageUri;
+
     @OneToMany(mappedBy = "club", fetch = FetchType.LAZY)
     private List<ClubUser> clubUsers = new ArrayList<>();
 
@@ -75,18 +78,18 @@ public class Club extends BaseAuditorEntity {
     private List<AdmissionUnit> admissionUnits = new ArrayList<>();
 
     public static Club of(long schoolId, String clubName, LocalDate since, String season,
-                          String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+                          String location, String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {
         if (schoolId < 0) {
             IllegalArgumentException exception = new IllegalArgumentException("schoolId 는 음수일 수 없습니다.");
             logger.error("심각 : schoolId 는 음수일 수 없습니다.", exception);
             throw exception;
         }
         School school = School.of(schoolId);
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription);
+        return new Club(school, clubName, since, season, location, shortDescription, longDescription, profileImageUri);
     }
 
     public static Club of(School school, String clubName, LocalDate since, String season,
-                           String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+                           String location, String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {
         requireNonNull(school, "school은 null이 될 수 없습니다.");
         requireNonNull(clubName, "clubName은 null이 될 수 없습니다.");
         requireNonNull(since, "since는 null이 될 수 없습니다.");
@@ -100,13 +103,13 @@ public class Club extends BaseAuditorEntity {
         if (season.equals("")) {
             throw new IllegalArgumentException("기수는 공백 문자일 수 없습니다.");
         }
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription);
+        return new Club(school, clubName, since, season, location, shortDescription, longDescription, profileImageUri);
     }
 
     private Club() {}
 
     protected Club(School school, String clubName, LocalDate since, String season,
-                   String location, String shortDescription, String longDescription) {
+                   String location, String shortDescription, String longDescription, String profileImageUri) {
         this.school = school;
         this.clubName = clubName;
         this.since = since;
@@ -114,5 +117,6 @@ public class Club extends BaseAuditorEntity {
         this.location = location;
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
+        this.profileImageUri = profileImageUri;
     }
 }

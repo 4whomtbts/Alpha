@@ -1,6 +1,6 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepository;
+import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.util.List;
 public class SchoolUserService {
 
     private static final Logger logger= LoggerFactory.getLogger(SchoolUserService.class);
-    private final SchoolUserRepository schoolUserRepository;
+    private final SchoolUserRepositoryImpl schoolUserRepository;
 
     public List<GrantedAuthority> getAuthorities(final String loginId) {
         return null;

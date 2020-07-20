@@ -1,7 +1,7 @@
 package com.dna.rna.service;
 
 import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
+import com.dna.rna.domain.School.SchoolRepositoryImpl;
 import com.dna.rna.exception.AlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,10 @@ public class SchoolService {
 
     private static final Logger logger= LoggerFactory.getLogger(SchoolService.class);
 
-    private SchoolRepository schoolRepository;
+    private SchoolRepositoryImpl schoolRepository;
 
     @Autowired
-    public SchoolService(SchoolRepository schoolRepository) {
+    public SchoolService(SchoolRepositoryImpl schoolRepository) {
         this.schoolRepository = schoolRepository;
     }
 
