@@ -1,9 +1,9 @@
 package com.dna.rna.controller;
 
-import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRepositoryImpl;
+import com.dna.rna.domain.user.User;
+import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.Getter;
@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -28,8 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 
-@RestController
+
+@Api(value ="Singup 컨트롤러 v1")
 @RequiredArgsConstructor
+@RequestMapping("/v1/api")
+@RestController
 public class SignupController {
 
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
@@ -59,7 +63,6 @@ public class SignupController {
         logger.info("New user '{}' has been created.", user.getLoginId());
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 }
 

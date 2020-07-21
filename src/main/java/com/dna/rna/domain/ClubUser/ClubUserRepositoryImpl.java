@@ -1,6 +1,6 @@
 package com.dna.rna.domain.ClubUser;
 
-import com.dna.rna.domain.Board.BoardItem;
+import com.dna.rna.domain.board.BoardItem;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

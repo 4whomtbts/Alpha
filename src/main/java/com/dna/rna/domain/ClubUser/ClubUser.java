@@ -1,8 +1,8 @@
 package com.dna.rna.domain.ClubUser;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.User.User;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import lombok.Getter;
@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
-import static com.dna.rna.domain.Club.Club.CLUB_ID;
-import static com.dna.rna.domain.User.User.USER_ID;
+import static com.dna.rna.domain.club.Club.CLUB_ID;
+import static com.dna.rna.domain.user.User.USER_ID;
 import static java.util.Objects.requireNonNull;
 
 @Getter

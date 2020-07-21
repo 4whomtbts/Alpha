@@ -1,6 +1,5 @@
 package com.dna.rna.domain.boardGroup;
 
-import com.dna.rna.domain.ClubBoard.ClubBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

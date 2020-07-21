@@ -1,9 +1,7 @@
 package com.dna.rna.domain.boardGroup;
 
-import com.dna.rna.domain.ClubBoard.ClubBoard;
+import com.dna.rna.domain.clubBoard.ClubBoard;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CustomBoardGroupRepository {

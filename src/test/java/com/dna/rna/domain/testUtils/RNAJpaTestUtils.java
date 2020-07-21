@@ -1,14 +1,13 @@
 package com.dna.rna.domain.testUtils;
 
-import com.dna.rna.domain.Board.Board;
-import com.dna.rna.domain.Board.BoardRepository;
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.Club.ClubRepository;
-import com.dna.rna.domain.Club.ClubRepositoryImpl;
-import com.dna.rna.domain.ClubBoard.ClubBoard;
-import com.dna.rna.domain.ClubBoard.ClubBoardRepository;
-import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
+import com.dna.rna.domain.board.Board;
+import com.dna.rna.domain.board.BoardRepository;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.club.ClubRepository;
+import com.dna.rna.domain.clubBoard.ClubBoard;
+import com.dna.rna.domain.clubBoard.ClubBoardRepository;
+import com.dna.rna.domain.school.School;
+import com.dna.rna.domain.school.SchoolRepository;
 import com.dna.rna.domain.boardGroup.BoardGroup;
 import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import org.junit.runner.RunWith;

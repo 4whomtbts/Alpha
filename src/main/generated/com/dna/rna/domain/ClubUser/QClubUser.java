@@ -24,7 +24,7 @@ public class QClubUser extends EntityPathBase<ClubUser> {
 
     public final com.dna.rna.domain.QBaseAuditorEntity _super = new com.dna.rna.domain.QBaseAuditorEntity(this);
 
-    public final com.dna.rna.domain.Club.QClub club;
+    public final com.dna.rna.domain.club.QClub club;
 
     public final EnumPath<ClubUserStatus> clubUserStatus = createEnum("clubUserStatus", ClubUserStatus.class);
 
@@ -38,7 +38,7 @@ public class QClubUser extends EntityPathBase<ClubUser> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.dna.rna.domain.User.QUser user;
+    public final com.dna.rna.domain.user.QUser user;
 
     public QClubUser(String variable) {
         this(ClubUser.class, forVariable(variable), INITS);
@@ -58,8 +58,8 @@ public class QClubUser extends EntityPathBase<ClubUser> {
 
     public QClubUser(Class<? extends ClubUser> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.club = inits.isInitialized("club") ? new com.dna.rna.domain.Club.QClub(forProperty("club"), inits.get("club")) : null;
-        this.user = inits.isInitialized("user") ? new com.dna.rna.domain.User.QUser(forProperty("user"), inits.get("user")) : null;
+        this.club = inits.isInitialized("club") ? new com.dna.rna.domain.club.QClub(forProperty("club"), inits.get("club")) : null;
+        this.user = inits.isInitialized("user") ? new com.dna.rna.domain.user.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }

@@ -1,7 +1,6 @@
 package com.dna.rna.domain.boardGroup;
 
-import com.dna.rna.domain.ClubBoard.ClubBoard;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.dna.rna.domain.clubBoard.ClubBoard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -9,9 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -71,15 +68,15 @@ public class BoardGroupRepositoryImpl extends QuerydslRepositorySupport implemen
             logger.error(error, exception);
             throw exception;
         }
-        List<ClubBoard> boards = boardGroup.getClubBoard();
+        List<clubBoard> boards = boardGroup.getClubBoard();
         if (boards == null) {
-            List<ClubBoard> newBoards = new ArrayList<>();
+            List<clubBoard> newBoards = new ArrayList<>();
         }
 
     }
 
     @Transactional
-    public void insertBoard(BoardGroup boardGroup, ClubBoard clubBoard, int index) throws IllegalArgumentException {
+    public void insertBoard(BoardGroup boardGroup, clubBoard clubBoard, int index) throws IllegalArgumentException {
         requireNonNull(boardGroup, "boardGroup은 null이 될 수 없습니다.");
         requireNonNull(clubBoard, "board는 null이 될 수 없습니다,");
         insertBoard(boardGroup.getBoardGroupId(), clubBoard.getClubBoardId(), index);

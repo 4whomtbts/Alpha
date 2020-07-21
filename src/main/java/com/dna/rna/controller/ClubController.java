@@ -1,39 +1,37 @@
 package com.dna.rna.controller;
 
-import com.dna.rna.domain.Board.Board;
-import com.dna.rna.domain.Board.BoardRepository;
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.Club.ClubRepository;
-import com.dna.rna.domain.ClubBoard.ClubBoard;
-import com.dna.rna.domain.ClubBoard.ClubBoardRepository;
+import com.dna.rna.domain.board.Board;
+import com.dna.rna.domain.board.BoardRepository;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.club.ClubRepository;
+import com.dna.rna.domain.clubBoard.ClubBoard;
+import com.dna.rna.domain.clubBoard.ClubBoardRepository;
 import com.dna.rna.domain.ClubUser.ClubUser;
 import com.dna.rna.domain.ClubUser.ClubUserRepository;
 import com.dna.rna.domain.ClubUser.ClubUserStatus;
-import com.dna.rna.domain.Project.Project;
-import com.dna.rna.domain.Project.ProjectRepository;
-import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
-import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRepositoryImpl;
+import com.dna.rna.domain.project.Project;
+import com.dna.rna.domain.project.ProjectRepository;
+import com.dna.rna.domain.school.School;
+import com.dna.rna.domain.school.SchoolRepository;
+import com.dna.rna.domain.user.User;
+import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.domain.boardGroup.BoardGroup;
 import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import com.dna.rna.dto.ClubDto;
 import com.dna.rna.service.ClubService;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-
-@RestController
+@Api(value ="club 컨트롤러 v1")
 @RequiredArgsConstructor
+@RequestMapping("/v1/api")
+@RestController
 public class ClubController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClubController.class);

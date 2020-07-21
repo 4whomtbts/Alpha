@@ -1,8 +1,8 @@
 package com.dna.rna.controller;
 
-import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.SchoolUser.SchoolUser;
-import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
+import com.dna.rna.domain.school.School;
+import com.dna.rna.domain.schoolUser.SchoolUser;
+import com.dna.rna.domain.schoolUser.SchoolUserRepositoryImpl;
 import com.dna.rna.service.SchoolService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

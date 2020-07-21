@@ -1,6 +1,6 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
+import com.dna.rna.domain.schoolUser.SchoolUserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

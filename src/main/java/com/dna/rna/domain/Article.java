@@ -1,6 +1,6 @@
 package com.dna.rna.domain;
 
-import com.dna.rna.domain.Board.Board;
+import com.dna.rna.domain.board.Board;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +9,7 @@ import javax.persistence.*;
 /**
  * Entity for General Article of RNA service.
  *
- * School.java
+ * school.java
  * created 2020.3.25
  * @author Hyounjun kim <4whomtbts@gmail.com>
  *

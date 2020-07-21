@@ -15,4 +15,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse("DATA_ALREADY_EXISTS", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(Exception ex, WebRequest req) {
+        ApiErrorResponse error = new ApiErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

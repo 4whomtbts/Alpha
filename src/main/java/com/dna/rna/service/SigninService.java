@@ -1,9 +1,8 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRepositoryImpl;
-import com.dna.rna.domain.User.UserRole;
+import com.dna.rna.domain.user.User;
+import com.dna.rna.domain.user.UserRepository;
+import com.dna.rna.domain.user.UserRole;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

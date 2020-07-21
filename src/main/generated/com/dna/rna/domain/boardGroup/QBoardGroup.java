@@ -28,9 +28,9 @@ public class QBoardGroup extends EntityPathBase<BoardGroup> {
 
     public final StringPath boardGroupName = createString("boardGroupName");
 
-    public final com.dna.rna.domain.Club.QClub club;
+    public final com.dna.rna.domain.club.QClub club;
 
-    public final ListPath<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard> clubBoards = this.<com.dna.rna.domain.ClubBoard.ClubBoard, com.dna.rna.domain.ClubBoard.QClubBoard>createList("clubBoards", com.dna.rna.domain.ClubBoard.ClubBoard.class, com.dna.rna.domain.ClubBoard.QClubBoard.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.clubBoard.ClubBoard, com.dna.rna.domain.clubBoard.QClubBoard> clubBoards = this.<com.dna.rna.domain.clubBoard.ClubBoard, com.dna.rna.domain.clubBoard.QClubBoard>createList("clubBoards", com.dna.rna.domain.clubBoard.ClubBoard.class, com.dna.rna.domain.clubBoard.QClubBoard.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -58,7 +58,7 @@ public class QBoardGroup extends EntityPathBase<BoardGroup> {
 
     public QBoardGroup(Class<? extends BoardGroup> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.club = inits.isInitialized("club") ? new com.dna.rna.domain.Club.QClub(forProperty("club"), inits.get("club")) : null;
+        this.club = inits.isInitialized("club") ? new com.dna.rna.domain.club.QClub(forProperty("club"), inits.get("club")) : null;
     }
 
 }

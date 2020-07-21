@@ -1,7 +1,6 @@
 package com.dna.rna.config;
 
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRepositoryImpl;
+import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.security.JwtAuthenticationFilter;
 import com.dna.rna.security.JwtAuthorizationFilter;
 import com.dna.rna.service.SigninService;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -72,12 +70,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 // configure access rules
-                .antMatchers( "/school").permitAll()
-                .antMatchers( "/signup").permitAll()
-                .antMatchers( "/user").hasRole("USER")
-                .antMatchers( HttpMethod.POST, "/login").permitAll()
-                .antMatchers("/schools").hasRole("USER")
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
+                //.antMatchers( "/school").permitAll()
+                //.antMatchers( "/signup").permitAll()
+                //.antMatchers( "/user").hasRole("USER")
+                //.antMatchers("/schools").hasRole("USER");
     }
 
 

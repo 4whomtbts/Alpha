@@ -1,9 +1,9 @@
 package com.dna.rna.domain.boardGroup;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.Board.BoardItem;
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.ClubBoard.ClubBoard;
+import com.dna.rna.domain.board.BoardItem;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.clubBoard.ClubBoard;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sun.istack.Nullable;
@@ -16,7 +16,7 @@ import javax.persistence.*;
 
 import java.util.List;
 
-import static com.dna.rna.domain.Club.Club.CLUB_ID;
+import static com.dna.rna.domain.club.Club.CLUB_ID;
 import static java.util.Objects.requireNonNull;
 
 @Getter

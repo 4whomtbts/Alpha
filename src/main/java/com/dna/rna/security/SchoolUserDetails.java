@@ -1,6 +1,6 @@
 package com.dna.rna.security;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
+import com.dna.rna.domain.schoolUser.SchoolUserRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

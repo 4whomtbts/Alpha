@@ -1,17 +1,14 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.Club.ClubRepository;
-import com.dna.rna.domain.ClubBoard.ClubBoard;
-import com.dna.rna.domain.ClubBoard.ClubBoardRepository;
-import com.dna.rna.domain.Project.Project;
-import com.dna.rna.domain.Project.ProjectRepository;
-import com.dna.rna.dto.ClubUserDto;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.club.ClubRepository;
+import com.dna.rna.domain.clubBoard.ClubBoard;
+import com.dna.rna.domain.clubBoard.ClubBoardRepository;
+import com.dna.rna.domain.project.Project;
+import com.dna.rna.domain.project.ProjectRepository;
+import com.dna.rna.dto.*;
 import com.dna.rna.domain.boardGroup.BoardGroup;
 import com.dna.rna.domain.boardGroup.BoardGroupRepository;
-import com.dna.rna.dto.BoardItemDto;
-import com.dna.rna.dto.ClubDto;
-import com.dna.rna.dto.ProjectDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +43,7 @@ public class ClubService {
                             curr.getBoardGroupId(),
                             BoardItemDto.BoardItemType.GROUP,
                             curr.getBoardGroupName(),
-                            curr.getClubBoards()));
+                            ClubBoardDto.clubBoardsToClubBoardDtos(clubBoards)));
         }
 
         for (int i=0; i < clubBoards.size(); i++) {

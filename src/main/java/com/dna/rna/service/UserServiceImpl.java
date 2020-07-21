@@ -1,7 +1,8 @@
 package com.dna.rna.service;
 
 import com.dna.rna.domain.CRUDPermissions;
-import com.dna.rna.domain.User.*;
+import com.dna.rna.domain.user.*;
+import com.dna.rna.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public User createUser(String loginId, String userName, String encodedPassword) {
+    public User createUser(final String loginId, final String userName, final String encodedPassword) {
         User newUser = User.of(loginId, userName, encodedPassword);
         UserRole newUserRole = new UserRole();
         List<CRUDPermissions> permissionsList = new ArrayList<>();
@@ -38,13 +39,12 @@ public class UserServiceImpl implements UserService {
         for (UserRole role : user.getUserRoles()) {
             System.out.println(role.getRoleName());
         }
-
         return newUser;
     }
 
     @Transactional
     @Override
-    public String getUserRoles(String loginId) {
+    public String getUserRoles(final String loginId) {
         User user = userRepository.findUserByLoginId(loginId);
         if(user.getUserRoles() != null) {
             for (int i=0; i < user.getUserRoles().size(); i++) {
@@ -52,5 +52,11 @@ public class UserServiceImpl implements UserService {
             }
         }
         return user.getUserRoles().get(0).getRoleName();
+    }
+
+    @Override
+    public UserDto fetchUserMyPage(final String loginId) {
+        User user = userRepository.findUserByLoginId(loginId);
+        return null;
     }
 }

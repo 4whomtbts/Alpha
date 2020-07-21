@@ -1,9 +1,8 @@
 package com.dna.rna.config;
 
-import com.dna.rna.domain.SchoolUser.SchoolUserRepositoryImpl;
-import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRepositoryImpl;
+import com.dna.rna.domain.schoolUser.SchoolUserRepositoryImpl;
+import com.dna.rna.domain.user.User;
+import com.dna.rna.domain.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 

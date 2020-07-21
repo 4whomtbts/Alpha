@@ -1,8 +1,7 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.School.School;
-import com.dna.rna.domain.School.SchoolRepository;
-import com.dna.rna.domain.School.SchoolRepositoryImpl;
+import com.dna.rna.domain.school.School;
+import com.dna.rna.domain.school.SchoolRepository;
 import com.dna.rna.exception.AlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

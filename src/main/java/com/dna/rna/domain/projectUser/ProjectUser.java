@@ -1,15 +1,15 @@
 package com.dna.rna.domain.projectUser;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.Project.Project;
-import com.dna.rna.domain.User.User;
+import com.dna.rna.domain.project.Project;
+import com.dna.rna.domain.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-import static com.dna.rna.domain.Project.Project.PROJECT_ID;
-import static com.dna.rna.domain.User.User.USER_ID;
+import static com.dna.rna.domain.project.Project.PROJECT_ID;
+import static com.dna.rna.domain.user.User.USER_ID;
 import static java.util.Objects.requireNonNull;
 
 @Getter

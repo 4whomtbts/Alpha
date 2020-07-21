@@ -32,11 +32,11 @@ public class QProjectUser extends EntityPathBase<ProjectUser> {
 
     public final BooleanPath leader = createBoolean("leader");
 
-    public final com.dna.rna.domain.Project.QProject project;
+    public final com.dna.rna.domain.project.QProject project;
 
     public final StringPath projectUserId = createString("projectUserId");
 
-    public final com.dna.rna.domain.User.QUser user;
+    public final com.dna.rna.domain.user.QUser user;
 
     public QProjectUser(String variable) {
         this(ProjectUser.class, forVariable(variable), INITS);
@@ -56,8 +56,8 @@ public class QProjectUser extends EntityPathBase<ProjectUser> {
 
     public QProjectUser(Class<? extends ProjectUser> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.project = inits.isInitialized("project") ? new com.dna.rna.domain.Project.QProject(forProperty("project"), inits.get("project")) : null;
-        this.user = inits.isInitialized("user") ? new com.dna.rna.domain.User.QUser(forProperty("user"), inits.get("user")) : null;
+        this.project = inits.isInitialized("project") ? new com.dna.rna.domain.project.QProject(forProperty("project"), inits.get("project")) : null;
+        this.user = inits.isInitialized("user") ? new com.dna.rna.domain.user.QUser(forProperty("user"), inits.get("user")) : null;
     }
 
 }

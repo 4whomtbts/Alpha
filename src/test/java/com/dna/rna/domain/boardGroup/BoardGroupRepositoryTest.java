@@ -1,8 +1,8 @@
 package com.dna.rna.domain.boardGroup;
 
-import com.dna.rna.domain.Club.Club;
-import com.dna.rna.domain.ClubBoard.ClubBoard;
-import com.dna.rna.domain.School.School;
+import com.dna.rna.domain.club.Club;
+import com.dna.rna.domain.clubBoard.ClubBoard;
+import com.dna.rna.domain.school.School;
 import com.dna.rna.domain.testUtils.RNAJpaTestUtils;
 import org.junit.Test;
 

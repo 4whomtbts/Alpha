@@ -1,7 +1,6 @@
 package com.dna.rna.domain.projectUser;
 
-import com.dna.rna.domain.Project.CustomProjectRepository;
-import com.dna.rna.domain.Project.ProjectRepositoryImpl;
+import com.dna.rna.domain.project.CustomProjectRepository;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
