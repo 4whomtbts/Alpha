@@ -1,6 +1,7 @@
 package com.dna.rna.config;
 
 import com.dna.rna.domain.User.UserRepository;
+import com.dna.rna.domain.User.UserRepositoryImpl;
 import com.dna.rna.security.JwtAuthenticationFilter;
 import com.dna.rna.security.JwtAuthorizationFilter;
 import com.dna.rna.service.SigninService;
@@ -35,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepository;
 
     @Autowired
-    public SecurityConfig(UserDetailService userDetailService, UserRepository userRepository,  SigninService signinService) {
+    public SecurityConfig(UserDetailService userDetailService, UserRepository userRepository, SigninService signinService) {
         this.userDetailService = userDetailService;
         this.userRepository = userRepository;
         this.signinService = signinService;
@@ -68,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // add jwt filters (1. authentication, 2. authorization)
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                 // configure access rules
                 .antMatchers( "/school").permitAll()

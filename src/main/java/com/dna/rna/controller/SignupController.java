@@ -2,6 +2,7 @@ package com.dna.rna.controller;
 
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
+import com.dna.rna.domain.User.UserRepositoryImpl;
 import com.dna.rna.service.UserService;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

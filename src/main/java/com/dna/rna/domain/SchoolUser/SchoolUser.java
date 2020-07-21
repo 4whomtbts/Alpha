@@ -52,7 +52,7 @@ public class SchoolUser extends BaseAuditorEntity {
             joinColumns = @JoinColumn(name = SCHOOL_USER_ID, nullable = true))
     private Set<SchoolUserPermissions> schoolUserPermissions = new HashSet<>();
 
-    private SchoolUser() {}
+    protected SchoolUser() {}
 
     private SchoolUser(final User user, final School school, final boolean admin) {
         this.user = user;

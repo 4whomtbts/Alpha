@@ -2,6 +2,7 @@ package com.dna.rna.domain.ClubBoard;
 
 import com.dna.rna.domain.Board.Board;
 import com.dna.rna.domain.Club.Club;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sun.istack.Nullable;
 import org.slf4j.Logger;
@@ -52,6 +53,18 @@ public class ClubBoardRepositoryImpl extends QuerydslRepositorySupport
         requireNonNull(club, "ClubDto 은 null일 수 없습니다.");
         requireNonNull(board, "Board는 null일 수 없습니다.");
         return fetchBoardsOfClub(club.getId(), board.getId());
+    }
+
+    @Override
+    @Transactional
+    public List<ClubBoard> findClubBoardsByClubAndBoardGroupIsNullOrderByDisplayOrderAsc(long clubId) {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QClubBoard qClubBoard = QClubBoard.clubBoard;
+        return queryFactory.selectFrom(qClubBoard)
+                           .where(qClubBoard.club.id.eq(clubId)
+                           .and(qClubBoard.boardGroup.isNull()))
+                           .orderBy(qClubBoard.displayOrder.asc())
+                           .fetch();
     }
 
 

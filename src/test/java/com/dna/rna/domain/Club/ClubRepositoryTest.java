@@ -6,7 +6,7 @@ import com.dna.rna.domain.ClubUser.ClubUserStatus;
 import com.dna.rna.domain.School.School;
 import com.dna.rna.domain.School.SchoolRepositoryImpl;
 import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
+import com.dna.rna.domain.User.UserRepositoryImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class ClubRepositoryTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
     @Autowired
     private ClubRepository clubRepository;
     @Autowired

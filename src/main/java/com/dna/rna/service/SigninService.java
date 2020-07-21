@@ -2,6 +2,7 @@ package com.dna.rna.service;
 
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
+import com.dna.rna.domain.User.UserRepositoryImpl;
 import com.dna.rna.domain.User.UserRole;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class SigninService {
 
     @Transactional
     public List<GrantedAuthority> getAuthorities(final String loginId) {
-        User newUser = userRepository.findUserByLoginId("jun");
+        User newUser = userRepository.findUserByLoginId("4whomtbts");
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(newUser.getUserType().toString()));
         List<UserRole> userRoles = newUser.getUserRoles();

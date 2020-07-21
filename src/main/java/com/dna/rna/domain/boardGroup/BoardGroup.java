@@ -51,6 +51,8 @@ public class BoardGroup extends BaseAuditorEntity implements BoardItem  {
     @Column(nullable = false)
     private List<ClubBoard> clubBoards;
 
+    protected BoardGroup() {}
+
     private BoardGroup(Club club, String boardGroupName, int displayOrder,
                        @Nullable List<ClubBoard> clubBoards) {
         this.club = club;

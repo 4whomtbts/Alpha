@@ -55,7 +55,7 @@ public class ClubBoard extends BaseAuditorEntity implements BoardItem {
         return new ClubBoard(club, board, boardGroup, displayOrder);
     }
 
-    private ClubBoard() {}
+    protected ClubBoard() {}
 
     private ClubBoard(Club club, Board board, BoardGroup boardGroup, int displayOrder) {
         this.board = board;

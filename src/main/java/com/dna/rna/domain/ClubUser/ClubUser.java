@@ -64,7 +64,7 @@ public class ClubUser extends BaseAuditorEntity {
         return new ClubUser(user, club, joinSeason, status);
     }
 
-    private ClubUser() {}
+    protected ClubUser() {}
 
     private ClubUser(User user, Club club, String joinSeason, ClubUserStatus status) {
         this.user = user;

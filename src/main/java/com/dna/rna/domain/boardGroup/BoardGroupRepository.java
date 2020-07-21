@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface BoardGroupRepository extends JpaRepository<BoardGroup, Long>, CustomBoardGroupRepository {
 
-    public List<BoardGroup> findBoardGroupsByClubIdOOrderByDisplayOrder(long clubId);
+    public List<BoardGroup> findBoardGroupsByClubIdOrderByDisplayOrder(long clubId);
 
 }
 

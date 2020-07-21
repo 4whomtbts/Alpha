@@ -38,7 +38,7 @@ public class Board extends BaseAuditorEntity {
     @Column(nullable = false, name = "board_name")
     private String boardName;
 
-    private Board() {}
+    protected Board() {}
 
     private Board(String boardName) {
         this.boardName = boardName;

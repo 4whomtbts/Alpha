@@ -50,7 +50,7 @@ public class Club extends BaseAuditorEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = LEADER_ID)
+    @JoinColumn(name = LEADER_ID, nullable = false)
     private User leader;
 
     @Column(nullable = false)
@@ -88,31 +88,35 @@ public class Club extends BaseAuditorEntity {
     private List<AdmissionUnit> admissionUnits = new ArrayList<>();
 
     //TODO mock data 바꾸기 (uri)
-    public static Club of(long schoolId, String clubName, LocalDate since, String season,
-                          String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+    public static Club of(long schoolId, String clubName, User leader,
+                          LocalDate since, String season, String location,
+                          String shortDescription, String longDescription) throws IllegalArgumentException {
         School school = School.of(schoolId);
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription, "uri");
+        return new Club(school, clubName, leader, since, season, location, shortDescription, longDescription, "uri");
     }
 
-    public static Club of(School school, String clubName, LocalDate since, String season,
-                          String location, String shortDescription, String longDescription) throws IllegalArgumentException {
+    public static Club of(School school, String clubName, User leader,
+                          LocalDate since, String season, String location,
+                          String shortDescription, String longDescription) throws IllegalArgumentException {
 
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription, "uri");
+        return new Club(school, clubName, leader, since, season, location, shortDescription, longDescription, "uri");
     }
 
-    public static Club of(long schoolId, String clubName, LocalDate since, String season,
-                          String location, String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {
+    public static Club of(long schoolId, String clubName, User leader,
+                          LocalDate since, String season, String location, String shortDescription,
+                          String longDescription, String profileImageUri) throws IllegalArgumentException {
         if (schoolId < 0) {
             IllegalArgumentException exception = new IllegalArgumentException("schoolId 는 음수일 수 없습니다.");
             logger.error("심각 : schoolId 는 음수일 수 없습니다.", exception);
             throw exception;
         }
         School school = School.of(schoolId);
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription, profileImageUri);
+        return new Club(school, clubName, leader, since, season, location, shortDescription, longDescription, profileImageUri);
     }
 
-    public static Club of(School school, String clubName, LocalDate since, String season,
-                           String location, String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {
+    public static Club of(School school, String clubName, User leader,
+                        LocalDate since, String season, String location,
+                        String shortDescription, String longDescription, String profileImageUri) throws IllegalArgumentException {
         requireNonNull(school, "school은 null이 될 수 없습니다.");
         requireNonNull(clubName, "clubName은 null이 될 수 없습니다.");
         requireNonNull(since, "since는 null이 될 수 없습니다.");
@@ -126,15 +130,17 @@ public class Club extends BaseAuditorEntity {
         if (season.equals("")) {
             throw new IllegalArgumentException("기수는 공백 문자일 수 없습니다.");
         }
-        return new Club(school, clubName, since, season, location, shortDescription, longDescription, profileImageUri);
+        return new Club(school, clubName, leader, since, season, location, shortDescription, longDescription, profileImageUri);
     }
 
-    private Club() {}
+    protected Club() {}
 
-    protected Club(School school, String clubName, LocalDate since, String season,
-                   String location, String shortDescription, String longDescription, String profileImageUri) {
+    protected Club(School school, String clubName, User leader,
+                   LocalDate since, String season, String location,
+                   String shortDescription, String longDescription, String profileImageUri) {
         this.school = school;
         this.clubName = clubName;
+        this.leader = leader;
         this.since = since;
         this.season = season;
         this.location = location;

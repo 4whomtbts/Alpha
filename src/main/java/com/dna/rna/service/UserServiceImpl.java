@@ -1,10 +1,7 @@
 package com.dna.rna.service;
 
 import com.dna.rna.domain.CRUDPermissions;
-import com.dna.rna.domain.User.User;
-import com.dna.rna.domain.User.UserRepository;
-import com.dna.rna.domain.User.UserRole;
-import com.dna.rna.domain.User.UserType;
+import com.dna.rna.domain.User.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,20 +1,25 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.Board.BoardItem;
 import com.dna.rna.domain.Club.Club;
 import com.dna.rna.domain.Club.ClubRepository;
 import com.dna.rna.domain.ClubBoard.ClubBoard;
 import com.dna.rna.domain.ClubBoard.ClubBoardRepository;
+import com.dna.rna.domain.Project.Project;
+import com.dna.rna.domain.Project.ProjectRepository;
+import com.dna.rna.dto.ClubUserDto;
 import com.dna.rna.domain.boardGroup.BoardGroup;
 import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import com.dna.rna.dto.BoardItemDto;
 import com.dna.rna.dto.ClubDto;
+import com.dna.rna.dto.ProjectDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +32,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubBoardRepository clubBoardRepository;
     private final BoardGroupRepository boardGroupRepository;
+    private final ProjectRepository projectRepository;
 
 
     public BoardItemDto.BoardList getBoardList(List<BoardGroup> boardGroups, List<ClubBoard> clubBoards) {
@@ -58,12 +64,36 @@ public class ClubService {
     public ClubDto.Response getClubHome(final long clubId) {
 
         List<ClubBoard> clubBoards =
-                clubBoardRepository.findClubBoardsByClub_ClubIdAndBoardGroupIsNullOrderByDisplayOrderAsc(clubId);
+                clubBoardRepository.findClubBoardsByClubAndBoardGroupIsNullOrderByDisplayOrderAsc(clubId);
         List<BoardGroup> boardGroups =
-                boardGroupRepository.findBoardGroupsByClubIdOOrderByDisplayOrder(clubId);
+                boardGroupRepository.findBoardGroupsByClubIdOrderByDisplayOrder(clubId);
 
-        Club club = clubRepository.findById(clubId)
-                                  .orElseThrow();
+        List<Club> clubs = clubRepository.findAll();
+        Club club = clubRepository.getOne(clubId);
+        System.out.println(clubs.size());
+
+        List<Project> projects = projectRepository.findProjectsByClub_Id(clubId);
+        List<ProjectDto.Card> projectCards = new ArrayList<>();
+        for (int i=0; i < projects.size(); i++) {
+            Project project = projects.get(i);
+            long remainDay = project.getHiring() ?
+                    (ChronoUnit.DAYS.between(LocalDate.now(), project.getHiringDueDate())) :
+                    -1;
+            projectCards.add(
+                    new ProjectDto.Card(
+                            project.getProjectId(),
+                            remainDay,
+                            new ClubUserDto.Response(
+                                    project.getMentor().getId(),
+                                    project.getMentor().getUser().getId(),
+                                    project.getMentor().getUser().getUserName()),
+                            project.getCurrentMember(),
+                            project.getTotalMember(),
+                            project.getStartDate(),
+                            project.getEndDate(),
+                            project.getHiring()));
+        }
+
         return new ClubDto.Response(
                 club.getProfileImageUri(),
                 club.getSchool().getSchoolName(),
@@ -74,7 +104,8 @@ public class ClubService {
                                         .ofPattern("yyyy.MM.dd")),
                 club.getSeason(),
                 club.getLocation(),
-                getBoardList(boardGroups, clubBoards));
+                getBoardList(boardGroups, clubBoards),
+                projectCards);
     }
 
 }

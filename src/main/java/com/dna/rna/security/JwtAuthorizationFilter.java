@@ -7,6 +7,7 @@ import com.dna.rna.config.AuthGateway;
 import com.dna.rna.config.JWtProperties;
 import com.dna.rna.domain.User.User;
 import com.dna.rna.domain.User.UserRepository;
+import com.dna.rna.domain.User.UserRepositoryImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,9 +27,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final UserRepository userRepository;
     private final AuthGateway authGateway;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
-        this.userRepository = (UserRepository) BeanUtils.getBean("UserRepository");
+        this.userRepository = userRepository;
         this.authGateway = (AuthGateway) BeanUtils.getBean("AuthGateway");
     }
 

@@ -42,6 +42,8 @@ public class ProjectUser extends BaseAuditorEntity {
         return new ProjectUser(project, user, leader);
     }
 
+    protected ProjectUser() {}
+
     private ProjectUser(Project project, User user, Boolean leader) {
         this.project = project;
         this.user = user;

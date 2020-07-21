@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 @Getter
 @Setter
 @Entity
-@Table(name= "USER")
+@Table(name= "user")
 @ToString(exclude = "userRoles")
 public class User extends BaseAuditorEntity {
 

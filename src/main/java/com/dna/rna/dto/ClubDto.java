@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 public class ClubDto {
 
     @Getter
@@ -19,5 +21,6 @@ public class ClubDto {
         private String season;
         private String location;
         private BoardItemDto.BoardList boardList;
+        private List<ProjectDto.Card> projectCards;
     }
 }
