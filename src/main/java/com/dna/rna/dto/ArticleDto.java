@@ -26,4 +26,17 @@ public class ArticleDto {
             this.createdAt = article.getCreatedAt();
         }
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class ResArticle {
+        private long articleId;
+        private String title;
+        private UserDto.ResAuthor author;
+        private int viewCount;
+        private int voteCount;
+        private LocalDateTime createdAt;
+    }
+
 }

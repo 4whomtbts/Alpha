@@ -1,7 +1,5 @@
 package com.dna.rna.controller;
 
-import com.dna.rna.domain.article.ArticleRepository;
-import com.dna.rna.domain.board.BoardRepository;
 import com.dna.rna.dto.ArticleDto;
 import com.dna.rna.service.BoardService;
 import com.dna.rna.service.util.PageRequest;
@@ -11,14 +9,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(value ="board 컨트롤러 v1")
+@Api(tags= "게시판 컨트롤러", value ="board 컨트롤러 v1")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController

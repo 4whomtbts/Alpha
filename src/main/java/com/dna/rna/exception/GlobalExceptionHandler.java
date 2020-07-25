@@ -21,4 +21,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiErrorResponse error = new ApiErrorResponse("INTERNAL_SERVER_ERROR", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(RnaException.class)
+    public ResponseEntity<ApiErrorResponse> handleRnaException(RnaException ex, WebRequest req) {
+
+        ApiErrorResponse error = new ApiErrorResponse(ex.getErrorMessage(), ex.getDebugMessage());
+        return new ResponseEntity<>(error, ex.getStatusCode());
+    }
 }

@@ -55,7 +55,6 @@ public class Article extends BaseAuditorEntity {
     @Column(name = "vote_count")
     private int voteCount;
 
-
     public static Article of(User author, Board board, List<RNAFile> attachedFiles, String title, String content) {
         requireNonNull(author, "Article의 생성자에서 author는 null이 될 수 없습니다.");
         requireNonNull(board, "Article의 생성자에서 board는 null이 될 수 없습니다.");
@@ -83,5 +82,17 @@ public class Article extends BaseAuditorEntity {
         this.content = content;
         this.viewCount = 0;
         this.voteCount = 0;
+    }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
+    public void increaseVoteCount() {
+        this.voteCount++;
+    }
+
+    public void decreaseVoteCount() {
+        this.voteCount--;
     }
 }
