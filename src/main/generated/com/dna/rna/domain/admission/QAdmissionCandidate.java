@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QAdmissionCandidate extends EntityPathBase<AdmissionCandidate> {
 
-    private static final long serialVersionUID = -1789668324L;
+    private static final long serialVersionUID = -1351303172L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

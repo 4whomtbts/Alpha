@@ -11,12 +11,12 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QClubBoard is a Querydsl query type for clubBoard
+ * QClubBoard is a Querydsl query type for ClubBoard
  */
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QClubBoard extends EntityPathBase<ClubBoard> {
 
-    private static final long serialVersionUID = 445609973L;
+    private static final long serialVersionUID = -807686123L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

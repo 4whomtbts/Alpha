@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 
 import static com.dna.rna.domain.board.Board.BOARD_ID;
@@ -49,7 +50,7 @@ public class ClubBoard extends BaseAuditorEntity implements BoardItem {
     @Column(name = "display_order")
     private int displayOrder;
 
-    public static ClubBoard of(Club club, Board board, BoardGroup boardGroup, int displayOrder) {
+    public static ClubBoard of(Club club, Board board, @Nullable BoardGroup boardGroup, int displayOrder) {
         requireNonNull(board, "board는 null이 될 수 없습니다.");
         requireNonNull(club, "club은 null이 될 수 없습니다.");
         return new ClubBoard(club, board, boardGroup, displayOrder);
@@ -57,7 +58,7 @@ public class ClubBoard extends BaseAuditorEntity implements BoardItem {
 
     protected ClubBoard() {}
 
-    private ClubBoard(Club club, Board board, BoardGroup boardGroup, int displayOrder) {
+    private ClubBoard(Club club, Board board, @Nullable BoardGroup boardGroup, int displayOrder) {
         this.board = board;
         this.club = club;
         this.boardGroup = boardGroup;

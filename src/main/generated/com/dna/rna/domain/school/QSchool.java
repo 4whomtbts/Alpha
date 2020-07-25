@@ -11,12 +11,12 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QSchool is a Querydsl query type for school
+ * QSchool is a Querydsl query type for School
  */
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QSchool extends EntityPathBase<School> {
 
-    private static final long serialVersionUID = 2011856497L;
+    private static final long serialVersionUID = 1212894865L;
 
     public static final QSchool school = new QSchool("school");
 

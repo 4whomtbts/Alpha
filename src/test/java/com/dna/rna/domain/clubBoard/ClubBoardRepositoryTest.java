@@ -6,6 +6,7 @@ import com.dna.rna.domain.club.Club;
 import com.dna.rna.domain.club.ClubRepository;
 import com.dna.rna.domain.school.School;
 import com.dna.rna.domain.school.SchoolRepositoryImpl;
+import com.dna.rna.domain.testUtils.RNAJpaTestUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -25,24 +26,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
-@EnableJpaAuditing
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ClubBoardRepositoryTest {
+public class ClubBoardRepositoryTest extends RNAJpaTestUtils {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Autowired
-    private SchoolRepositoryImpl schoolRepository;
-
-    @Autowired
-    private ClubRepository clubRepository;
-
-    @Autowired
-    private BoardRepositoryImpl boardRepository;
 
     @Autowired
     private ClubBoardRepositoryImpl clubBoardRepository;
@@ -54,7 +41,7 @@ public class ClubBoardRepositoryTest {
     }
 
     public Club makeClub(School school, String clubName) {
-        Club club = Club.of(school, clubName, LocalDate.now(),
+        Club club = Club.of(school, clubName, buildUser(), LocalDate.now(),
                 "1기", "dongguk univ", "hello", "loooong", "good");
         clubRepository.save(club);
         return club;

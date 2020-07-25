@@ -11,12 +11,12 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QUser is a Querydsl query type for user
+ * QUser is a Querydsl query type for User
  */
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QUser extends EntityPathBase<User> {
 
-    private static final long serialVersionUID = -1060219695L;
+    private static final long serialVersionUID = 1230779633L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -26,7 +26,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final ListPath<com.dna.rna.domain.admission.AdmissionCandidate, com.dna.rna.domain.admission.QAdmissionCandidate> admissionCandidates = this.<com.dna.rna.domain.admission.AdmissionCandidate, com.dna.rna.domain.admission.QAdmissionCandidate>createList("admissionCandidates", com.dna.rna.domain.admission.AdmissionCandidate.class, com.dna.rna.domain.admission.QAdmissionCandidate.class, PathInits.DIRECT2);
 
-    public final ListPath<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.ClubUser.ClubUser.class, com.dna.rna.domain.ClubUser.QClubUser.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.clubUser.ClubUser, com.dna.rna.domain.clubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.clubUser.ClubUser, com.dna.rna.domain.clubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.clubUser.ClubUser.class, com.dna.rna.domain.clubUser.QClubUser.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

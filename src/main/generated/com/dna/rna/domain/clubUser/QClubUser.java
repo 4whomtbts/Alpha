@@ -1,4 +1,4 @@
-package com.dna.rna.domain.ClubUser;
+package com.dna.rna.domain.clubUser;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QClubUser extends EntityPathBase<ClubUser> {
 
-    private static final long serialVersionUID = -1474606831L;
+    private static final long serialVersionUID = -1118369487L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

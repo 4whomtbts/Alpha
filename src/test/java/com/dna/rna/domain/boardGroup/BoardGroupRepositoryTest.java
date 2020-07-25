@@ -22,7 +22,7 @@ public class BoardGroupRepositoryTest extends RNAJpaTestUtils {
         School school = School.of("dgu");
         schoolRepository.save(school);
         school = schoolRepository.findSchoolBySchoolName("dgu");
-        Club club = Club.of(school, "rna", LocalDate.now(), "1기", "학관", "short", "long", "uri");
+        Club club = Club.of(school, "rna", buildUser(), LocalDate.now(), "1기", "학관", "short", "long", "uri");
         clubRepository.save(club);
         BoardGroup boardGroup = BoardGroup.of(club, "boardGroup", 0, Collections.emptyList());
         boardGroupRepository.save(boardGroup);
@@ -31,7 +31,7 @@ public class BoardGroupRepositoryTest extends RNAJpaTestUtils {
     }
 
     public BoardGroup buildAndSaveMockBoardGroup(String boardName) {
-        Club club = buildAndSaveClub();
+        Club club = buildAndSaveClub(buildUser());
         BoardGroup boardGroup = buildAndSaveBoardGroup(club, "foo_group", 0, new ArrayList<>());
         assertThat(boardGroup.getBoardGroupName()).isEqualTo("foo_group");
         assertThat(boardGroup.getClubBoards().size()).isEqualTo(0);

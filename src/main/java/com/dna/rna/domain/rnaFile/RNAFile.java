@@ -1,4 +1,4 @@
-package com.dna.rna.domain.articleFile;
+package com.dna.rna.domain.rnaFile;
 
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.article.Article;
@@ -25,13 +25,17 @@ import static java.util.Objects.requireNonNull;
 @Table(name = "rna_file")
 public class RNAFile extends BaseAuditorEntity {
 
-    private static final Logger logger = LoggerFactory.getLogger("article_file");
+    private static final Logger logger = LoggerFactory.getLogger("rna_file");
 
-    public static final String RNA_FILE_ID = "article_file_id";
+    public static final String RNA_FILE_ID = "rna_file_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = RNA_FILE_ID)
-    private long articleFileId;
+    private long rnaFileId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = ARTICLE_ID)
+    private Article article;
 
     @Column(name = "file_name", nullable = false)
     private String fileName;
@@ -43,12 +47,12 @@ public class RNAFile extends BaseAuditorEntity {
     @Column(name = "expired_at")
     private LocalDate expiredAt;
 
-    private static RNAFile of(String fileName, String uri, LocalDate expiredAt) {
-        return new RNAFile(fileName, uri, expiredAt);
+    private static RNAFile of(Article article, String fileName, String uri, LocalDate expiredAt) {
+        return new RNAFile(article, fileName, uri, expiredAt);
     }
 
-    private static RNAFile of(String fileName, String uri) {
-        return new RNAFile(fileName, uri, null);
+    private static RNAFile of(Article article, String fileName, String uri) {
+        return new RNAFile(article, fileName, uri, null);
     }
 
     protected RNAFile() {
@@ -56,7 +60,7 @@ public class RNAFile extends BaseAuditorEntity {
     }
 
     // TODO expiredAt 을 null로 해도 될까?
-    private RNAFile(String fileName, String uri, @Nullable LocalDate expiredAt) {
+    private RNAFile(Article article, String fileName, String uri, @Nullable LocalDate expiredAt) {
         requireNonNull(fileName, "RNAFile 생성자에서 fileName은 null이 될 수 없습니다.");
         requireNonNull(uri, "RNAFile 생성자에서 uri는 null이 될 수 없습니다.");
         //requireNonNull(expiredAt, "RNAFile 생성자에서 expiredAt은 null이 될 수 없습니다.");
@@ -65,8 +69,8 @@ public class RNAFile extends BaseAuditorEntity {
         this.expiredAt = expiredAt;
     }
 
-    private RNAFile(String fileName, String uri) {
-        this(fileName, uri, null);
+    private RNAFile(Article article, String fileName, String uri) {
+        this(article, fileName, uri, null);
     }
 
 }

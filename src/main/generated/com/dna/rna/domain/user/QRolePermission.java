@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QRolePermission extends EntityPathBase<RolePermission> {
 
-    private static final long serialVersionUID = -818159509L;
+    private static final long serialVersionUID = -2071455605L;
 
     public static final QRolePermission rolePermission = new QRolePermission("rolePermission");
 

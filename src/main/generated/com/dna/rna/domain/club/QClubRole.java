@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QClubRole extends EntityPathBase<ClubRole> {
 
-    private static final long serialVersionUID = -1105599545L;
+    private static final long serialVersionUID = -1904561177L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

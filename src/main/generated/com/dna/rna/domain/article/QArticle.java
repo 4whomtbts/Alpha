@@ -1,4 +1,4 @@
-package com.dna.rna.domain;
+package com.dna.rna.domain.article;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,13 +16,19 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QArticle extends EntityPathBase<Article> {
 
-    private static final long serialVersionUID = 1214814809L;
+    private static final long serialVersionUID = 879619681L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QArticle article = new QArticle("article");
 
-    public final QBaseAuditorEntity _super = new QBaseAuditorEntity(this);
+    public final com.dna.rna.domain.QBaseAuditorEntity _super = new com.dna.rna.domain.QBaseAuditorEntity(this);
+
+    public final NumberPath<Long> articleId = createNumber("articleId", Long.class);
+
+    public final ListPath<com.dna.rna.domain.rnaFile.RNAFile, com.dna.rna.domain.rnaFile.QRNAFile> attachedFiles = this.<com.dna.rna.domain.rnaFile.RNAFile, com.dna.rna.domain.rnaFile.QRNAFile>createList("attachedFiles", com.dna.rna.domain.rnaFile.RNAFile.class, com.dna.rna.domain.rnaFile.QRNAFile.class, PathInits.DIRECT2);
+
+    public final com.dna.rna.domain.user.QUser author;
 
     public final com.dna.rna.domain.board.QBoard board;
 
@@ -31,12 +37,8 @@ public class QArticle extends EntityPathBase<Article> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final NumberPath<Long> id = createNumber("id", Long.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
-
-    public final NumberPath<Integer> scrapCount = createNumber("scrapCount", Integer.class);
 
     public final StringPath title = createString("title");
 
@@ -62,6 +64,7 @@ public class QArticle extends EntityPathBase<Article> {
 
     public QArticle(Class<? extends Article> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.author = inits.isInitialized("author") ? new com.dna.rna.domain.user.QUser(forProperty("author"), inits.get("author")) : null;
         this.board = inits.isInitialized("board") ? new com.dna.rna.domain.board.QBoard(forProperty("board")) : null;
     }
 

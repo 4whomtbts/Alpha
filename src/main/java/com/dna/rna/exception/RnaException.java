@@ -1,4 +1,4 @@
 package com.dna.rna.exception;
 
-public class RnaException {
+public class RnaException extends RuntimeException {
 }

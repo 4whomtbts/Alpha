@@ -11,12 +11,12 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QClub is a Querydsl query type for club
+ * QClub is a Querydsl query type for Club
  */
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QClub extends EntityPathBase<Club> {
 
-    private static final long serialVersionUID = -1344000079L;
+    private static final long serialVersionUID = 946999249L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -28,7 +28,7 @@ public class QClub extends EntityPathBase<Club> {
 
     public final StringPath clubName = createString("clubName");
 
-    public final ListPath<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.ClubUser.ClubUser, com.dna.rna.domain.ClubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.ClubUser.ClubUser.class, com.dna.rna.domain.ClubUser.QClubUser.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.clubUser.ClubUser, com.dna.rna.domain.clubUser.QClubUser> clubUsers = this.<com.dna.rna.domain.clubUser.ClubUser, com.dna.rna.domain.clubUser.QClubUser>createList("clubUsers", com.dna.rna.domain.clubUser.ClubUser.class, com.dna.rna.domain.clubUser.QClubUser.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;

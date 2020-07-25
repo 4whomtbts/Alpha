@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QUserRole extends EntityPathBase<UserRole> {
 
-    private static final long serialVersionUID = 1428977895L;
+    private static final long serialVersionUID = 630016263L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

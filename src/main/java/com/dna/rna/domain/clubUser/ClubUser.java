@@ -1,4 +1,4 @@
-package com.dna.rna.domain.ClubUser;
+package com.dna.rna.domain.clubUser;
 
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.club.Club;

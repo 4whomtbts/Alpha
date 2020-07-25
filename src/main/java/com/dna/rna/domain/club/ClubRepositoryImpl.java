@@ -1,8 +1,8 @@
 package com.dna.rna.domain.club;
 
 import com.dna.rna.domain.clubBoard.ClubBoardRepositoryImpl;
-import com.dna.rna.domain.ClubUser.ClubUserRepositoryImpl;
-import com.dna.rna.domain.ClubUser.QClubUser;
+import com.dna.rna.domain.clubUser.ClubUserRepositoryImpl;
+import com.dna.rna.domain.clubUser.QClubUser;
 import com.dna.rna.domain.user.QUser;
 import com.dna.rna.domain.user.User;
 import com.querydsl.jpa.impl.JPAQueryFactory;

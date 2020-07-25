@@ -1,15 +1,12 @@
 package com.dna.rna.domain.board;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.articleFile.RNAFile;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -40,16 +37,6 @@ public class Board extends BaseAuditorEntity {
     @Column(name = "board_name", nullable = false)
     private String boardName;
 
-    @OneToMany(mappedBy = BOARD_ID, orphanRemoval = true)
-    @Column(name = "attached_files", nullable = false)
-    private List<RNAFile> attachedFiles;
-
-    protected Board() {}
-
-    private Board(String boardName) {
-        this.boardName = boardName;
-    }
-
     public static Board of(String boardName) {
         requireNonNull(boardName, "boardName은 null이 될 수 없습니다.");
         if (boardName.equals("")) {
@@ -58,6 +45,12 @@ public class Board extends BaseAuditorEntity {
             throw exception;
         }
         return new Board(boardName);
+    }
+
+    protected Board() {}
+
+    private Board(String boardName) {
+        this.boardName = boardName;
     }
 
 }

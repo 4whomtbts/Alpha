@@ -1,4 +1,4 @@
-package com.dna.rna.domain.ClubUser;
+package com.dna.rna.domain.clubUser;
 
 import com.dna.rna.domain.board.BoardItem;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import static com.dna.rna.domain.ClubUser.QClubUser.clubUser;
+import static com.dna.rna.domain.clubUser.QClubUser.clubUser;
 import static java.util.Objects.requireNonNull;
 
 @Repository

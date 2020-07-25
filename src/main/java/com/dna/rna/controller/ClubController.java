@@ -1,14 +1,16 @@
 package com.dna.rna.controller;
 
+import com.dna.rna.domain.article.Article;
+import com.dna.rna.domain.article.ArticleRepository;
 import com.dna.rna.domain.board.Board;
 import com.dna.rna.domain.board.BoardRepository;
 import com.dna.rna.domain.club.Club;
 import com.dna.rna.domain.club.ClubRepository;
 import com.dna.rna.domain.clubBoard.ClubBoard;
 import com.dna.rna.domain.clubBoard.ClubBoardRepository;
-import com.dna.rna.domain.ClubUser.ClubUser;
-import com.dna.rna.domain.ClubUser.ClubUserRepository;
-import com.dna.rna.domain.ClubUser.ClubUserStatus;
+import com.dna.rna.domain.clubUser.ClubUser;
+import com.dna.rna.domain.clubUser.ClubUserRepository;
+import com.dna.rna.domain.clubUser.ClubUserStatus;
 import com.dna.rna.domain.project.Project;
 import com.dna.rna.domain.project.ProjectRepository;
 import com.dna.rna.domain.school.School;
@@ -27,10 +29,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Api(value ="club 컨트롤러 v1")
 @RequiredArgsConstructor
-@RequestMapping("/v1/api")
+@RequestMapping("/api/v1")
 @RestController
 public class ClubController {
 
@@ -45,6 +48,7 @@ public class ClubController {
     private final ClubUserRepository clubUserRepository;
     private final BoardRepository boardRepository;
     private final ClubBoardRepository clubBoardRepository;
+    private final ArticleRepository articleRepository;
 
     @ResponseBody
     @GetMapping("/clubs/club/{clubId}")
@@ -72,7 +76,14 @@ public class ClubController {
         clubBoard1 = clubBoardRepository.save(clubBoard1);
         Project project1 = Project.of("spring", "스프링 스터디", club, clubUser, 10, LocalDate.now(), LocalDate.now());
         project1 = projectRepository.save(project1);
-        return club.getId().toString();
+        boardRepository.save(board);
+        List<Article> articleList = new ArrayList<>();
+        for (int i=0; i < 30; i++) {
+            Article article = Article.of(user, board, new ArrayList<>(), "title" + i, "content" + i);
+            articleList.add(article);
+            articleRepository.save(article);
+        }
+        return club.getId().toString() + "," + board.getId();
     }
 
 }

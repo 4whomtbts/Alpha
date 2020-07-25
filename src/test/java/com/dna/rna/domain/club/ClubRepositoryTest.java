@@ -1,50 +1,24 @@
 package com.dna.rna.domain.club;
 
-import com.dna.rna.domain.ClubUser.ClubUser;
-import com.dna.rna.domain.ClubUser.ClubUserRepositoryImpl;
-import com.dna.rna.domain.ClubUser.ClubUserStatus;
+import com.dna.rna.domain.clubUser.ClubUser;
+import com.dna.rna.domain.clubUser.ClubUserStatus;
 import com.dna.rna.domain.school.School;
-import com.dna.rna.domain.school.SchoolRepositoryImpl;
+import com.dna.rna.domain.testUtils.RNAJpaTestUtils;
 import com.dna.rna.domain.user.User;
-import com.dna.rna.domain.user.UserRepositoryImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.stereotype.Repository;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
-@EnableJpaAuditing
-@ActiveProfiles("test")
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class ClubRepositoryTest {
+public class ClubRepositoryTest extends RNAJpaTestUtils {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
-    @Autowired
-    private UserRepositoryImpl userRepository;
-    @Autowired
-    private ClubRepository clubRepository;
-    @Autowired
-    private ClubUserRepositoryImpl clubUserRepository;
-    @Autowired
-    private SchoolRepositoryImpl schoolRepository;
 
     @Before
     public void setUp() {
@@ -54,9 +28,9 @@ public class ClubRepositoryTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void saveDoesntAllowDuplicate() {
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1", "seoul", "hello", "toooo long");
-        Club club1 = Club.of(school, "MOCK CLUB", LocalDate.now(), "1", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1", "seoul", "hello", "toooo long");
+        Club club1 = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         clubRepository.save(club1);
         thrown.expect(DataIntegrityViolationException.class);
@@ -64,8 +38,8 @@ public class ClubRepositoryTest {
 
     @Test
     public void findClubByName() {
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         Club result = clubRepository.findByClubName(club.getClubName());
         assertThat(result).isNotNull();
@@ -77,8 +51,8 @@ public class ClubRepositoryTest {
         final String mockUserLoginId = "mock";
         User mockUser = User.of(mockUserLoginId, "hello", "password");
         userRepository.save(mockUser);
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         ClubUser clubUser = ClubUser.of(mockUser, club, "1", ClubUserStatus.ACTIVE);
         clubUserRepository.save(clubUser);
@@ -90,8 +64,8 @@ public class ClubRepositoryTest {
         final String mockUserLoginId = "mock";
         User mockUser = User.of(mockUserLoginId, "hello", "password");
         userRepository.save(mockUser);
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1기", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1기", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         ClubUser clubUser = ClubUser.of(mockUser, club, "1기", ClubUserStatus.ACTIVE);
         clubUserRepository.save(clubUser);
@@ -104,8 +78,8 @@ public class ClubRepositoryTest {
         final String invalidUserLoginId = "notexisits";
         User mockUser = User.of(mockUserLoginId, "hello", "password");
         userRepository.save(mockUser);
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1기", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1기", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         ClubUser clubUser = ClubUser.of(mockUser, club, "1기", ClubUserStatus.ACTIVE);
         clubUserRepository.save(clubUser);
@@ -118,8 +92,8 @@ public class ClubRepositoryTest {
         final String mockUserLoginId = "mock";
         User mockUser = User.of(mockUserLoginId, "hello", "password");
         userRepository.save(mockUser);
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1기", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1기", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         Club savedClub = clubRepository.findByClubName(club.getClubName());
         clubRepository.grantUserLeaderRole(savedClub.getId(), mockUserLoginId);
@@ -129,23 +103,17 @@ public class ClubRepositoryTest {
     @Test(expected = IllegalArgumentException.class)
     public void grantUserLeaderRoleDoesntAllowNotClubMemberUserTobeLeader() {
         String invalidUserLoginId= "not existing user";
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, "MOCK CLUB", LocalDate.now(), "1기", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, "MOCK CLUB", buildUser(), LocalDate.now(), "1기", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         Club savedClub = clubRepository.findByClubName(club.getClubName());
         clubRepository.grantUserLeaderRole(savedClub.getId(), invalidUserLoginId);
         thrown.expect(IllegalArgumentException.class);
     }
 
-    private User buildUser(String mockUserName) {
-        User mockUser = User.of(mockUserName, "hello", "password");
-        userRepository.save(mockUser);
-        return mockUser;
-    }
-
     private Club buildClub(String mockClubName) {
-        School school = schoolRepository.findBySchoolName("univ");
-        Club club = Club.of(school, mockClubName, LocalDate.now(), "1기", "seoul", "hello", "toooo long");
+        School school = schoolRepository.findSchoolBySchoolName("univ");
+        Club club = Club.of(school, mockClubName, buildUser(), LocalDate.now(), "1기", "seoul", "hello", "toooo long");
         clubRepository.save(club);
         return club;
     }
@@ -154,7 +122,7 @@ public class ClubRepositoryTest {
     public void fetchLeader() {
         final String mockUserLoginId = "MOCKUSER";
         final String mockClubName = "MOCK CLUB";
-        User mockUser = buildUser(mockUserLoginId);
+        User mockUser = buildAndSaveUser(mockUserLoginId, "jun", "password");
         Club club = buildClub(mockClubName);
         Club savedClub = clubRepository.findByClubName(mockClubName);
         assertThat(clubRepository.fetchLeader(savedClub.getId())).isNull();
@@ -162,7 +130,7 @@ public class ClubRepositoryTest {
         clubUserRepository.save(clubUser);
         clubRepository.grantUserLeaderRole(club.getId(), mockUserLoginId);
         //assertThat(clubRepository.fetchLeader(club.getId()).getId()).isEqualTo(mockUser.getId());
-        clubUserRepository.isUserMemberOfClub(club.getId(), mockUser.getLoginId());
+        //clubUserRepository.(club.getId(), mockUser.getLoginId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -170,7 +138,7 @@ public class ClubRepositoryTest {
         final long invalidClubId = Long.MAX_VALUE;
         final String mockUserLoginId = "MOCKUSER";
         final String mockClubName = "MOCK CLUB";
-        User mockUser = buildUser(mockUserLoginId);
+        User mockUser = buildAndSaveUser(mockUserLoginId, "jun", "password");
         Club club = buildClub(mockClubName);
         Club savedClub = clubRepository.findByClubName(mockClubName);
         assertThat(clubRepository.fetchLeader(savedClub.getId())).isNull();
@@ -187,7 +155,7 @@ public class ClubRepositoryTest {
 
         for (int i=0; i < numberOfUsers; i++) {
             String userLoginId = mockUserLoginId + i;
-            User mockUser = buildUser(userLoginId);
+            User mockUser = buildAndSaveUser(userLoginId, "jun", "password");
             ClubUser clubUser = ClubUser.of(mockUser, club, "1기", ClubUserStatus.ACTIVE);
             clubUserRepository.save(clubUser);
         }

@@ -1,4 +1,4 @@
-package com.dna.rna.domain.ClubUser;
+package com.dna.rna.domain.clubUser;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

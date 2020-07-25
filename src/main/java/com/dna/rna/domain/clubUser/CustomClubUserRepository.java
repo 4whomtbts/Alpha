@@ -1,4 +1,4 @@
-package com.dna.rna.domain.ClubUser;
+package com.dna.rna.domain.clubUser;
 
 public interface CustomClubUserRepository {
 }

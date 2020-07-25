@@ -15,15 +15,14 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Repository
-public class UserRepositoryImpl extends QuerydslRepositorySupport
-    implements CustomUserRepository {
+public class UserRepositoryImpl extends QuerydslRepositorySupport implements CustomUserRepository {
 
     private static final Logger logger= LoggerFactory.getLogger(UserRepositoryImpl.class);
 
     @PersistenceContext
     EntityManager em;
 
-    UserRepositoryImpl() {
+    public UserRepositoryImpl() {
         super(User.class);
     }
 

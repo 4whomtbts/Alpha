@@ -8,6 +8,8 @@ import com.dna.rna.domain.clubBoard.ClubBoardRepository;
 import com.dna.rna.domain.school.School;
 import com.dna.rna.domain.boardGroup.BoardGroup;
 import com.dna.rna.domain.boardGroup.BoardGroupRepository;
+import com.dna.rna.domain.testUtils.RNAJpaTestUtils;
+import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.BoardItemDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +20,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.stereotype.Repository;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,16 +37,18 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@EnableJpaAuditing
 @ExtendWith(MockitoExtension.class)
-@JsonTest
-public class ClubServiceTest {
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Repository.class))
+@EnableJpaAuditing
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class ClubServiceTest extends RNAJpaTestUtils {
 
-    @Mock
+    @Autowired
     private ClubRepository clubRepository;
-    @Mock
+    @Autowired
     private ClubBoardRepository clubBoardRepository;
-    @Mock
+    @Autowired
     private BoardGroupRepository boardGroupRepository;
 
     @InjectMocks
@@ -48,10 +59,12 @@ public class ClubServiceTest {
         JacksonTester.initFields(this, ObjectMapper::new);
         MockitoAnnotations.initMocks(this);
     }
+
     @Test
     public void getBoardList() throws JsonProcessingException {
         School school = School.of("dgu");
-        Club club = Club.of(school, "rna", LocalDate.now(), "1기", "학관", "short", "long", "uri");
+        User user = buildAndSaveUser("4whomtbts", "jun", "world");
+        Club club = Club.of(school, "rna", user, LocalDate.now(), "1기", "학관", "short", "long", "uri");
         String boardGroupName = "boardGroup";
         List<BoardGroup> boardGroups = new ArrayList<>();
         List<ClubBoard> clubBoards = new ArrayList<>();
@@ -71,9 +84,9 @@ public class ClubServiceTest {
         List<BoardItemDto.Item> item = result.getBoardItems();
         assertThat(item.get(0).getBoardItemType()).isEqualTo(BoardItemDto.BoardItemType.GROUP);
         assertThat(item.get(0).getNestedItems().size()).isEqualTo(3);
-        assertThat(item.get(0).getNestedItems().get(0).getBoard().getBoardName()).isEqualTo("board1");
-        assertThat(item.get(0).getNestedItems().get(1).getBoard().getBoardName()).isEqualTo("board2");
-        assertThat(item.get(0).getNestedItems().get(2).getBoard().getBoardName()).isEqualTo("board3");
+        assertThat(item.get(0).getNestedItems().get(0).getBoardName()).isEqualTo("board1");
+        assertThat(item.get(0).getNestedItems().get(1).getBoardName()).isEqualTo("board2");
+        assertThat(item.get(0).getNestedItems().get(2).getBoardName()).isEqualTo("board3");
         assertThat(item.get(1).getBoardItemType()).isEqualTo(BoardItemDto.BoardItemType.BOARD);
         assertThat(item.get(1).getNestedItems()).isNull();
         assertThat(item.get(1).getBoardItemName()).isEqualTo("dep");

@@ -2,7 +2,7 @@ package com.dna.rna.domain.project;
 
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.club.Club;
-import com.dna.rna.domain.ClubUser.ClubUser;
+import com.dna.rna.domain.clubUser.ClubUser;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 import static com.dna.rna.domain.club.Club.CLUB_ID;
-import static com.dna.rna.domain.ClubUser.ClubUser.CLUB_USER_ID;
+import static com.dna.rna.domain.clubUser.ClubUser.CLUB_USER_ID;
 import static java.util.Objects.requireNonNull;
 
 @Getter

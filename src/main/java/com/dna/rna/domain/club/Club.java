@@ -2,7 +2,7 @@ package com.dna.rna.domain.club;
 
 import com.dna.rna.domain.admission.AdmissionUnit;
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.ClubUser.ClubUser;
+import com.dna.rna.domain.clubUser.ClubUser;
 import com.dna.rna.domain.school.School;
 import com.dna.rna.domain.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
