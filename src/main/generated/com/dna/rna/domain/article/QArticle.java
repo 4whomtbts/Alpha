@@ -32,6 +32,8 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final com.dna.rna.domain.board.QBoard board;
 
+    public final ListPath<com.dna.rna.domain.article.articleComment.ArticleComment, com.dna.rna.domain.article.articleComment.QArticleComment> comments = this.<com.dna.rna.domain.article.articleComment.ArticleComment, com.dna.rna.domain.article.articleComment.QArticleComment>createList("comments", com.dna.rna.domain.article.articleComment.ArticleComment.class, com.dna.rna.domain.article.articleComment.QArticleComment.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
     //inherited

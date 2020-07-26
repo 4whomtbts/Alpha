@@ -1,5 +1,7 @@
 package com.dna.rna.service;
 
+import com.dna.rna.domain.boardGroup.BoardGroup;
+import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import com.dna.rna.domain.club.Club;
 import com.dna.rna.domain.club.ClubRepository;
 import com.dna.rna.domain.clubBoard.ClubBoard;
@@ -7,8 +9,6 @@ import com.dna.rna.domain.clubBoard.ClubBoardRepository;
 import com.dna.rna.domain.project.Project;
 import com.dna.rna.domain.project.ProjectRepository;
 import com.dna.rna.dto.*;
-import com.dna.rna.domain.boardGroup.BoardGroup;
-import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

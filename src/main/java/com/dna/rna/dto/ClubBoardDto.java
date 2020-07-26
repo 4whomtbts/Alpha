@@ -2,7 +2,10 @@ package com.dna.rna.dto;
 
 import com.dna.rna.domain.clubBoard.ClubBoard;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;

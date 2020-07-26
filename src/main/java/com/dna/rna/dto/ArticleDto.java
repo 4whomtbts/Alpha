@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ArticleDto {
 
@@ -32,10 +32,12 @@ public class ArticleDto {
     @AllArgsConstructor
     public static class ResArticle {
         private long articleId;
-        private String title;
         private UserDto.ResAuthor author;
+        private String title;
+        private String content;
         private int viewCount;
         private int voteCount;
+        private List<ArticleCommentDto.ResAsArticleItem> comments;
         private LocalDateTime createdAt;
     }
 

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 
 import static com.dna.rna.domain.article.Article.ARTICLE_ID;

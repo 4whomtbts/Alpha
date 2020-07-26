@@ -8,10 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 @Repository
 public class BoardGroupRepositoryImpl extends QuerydslRepositorySupport implements

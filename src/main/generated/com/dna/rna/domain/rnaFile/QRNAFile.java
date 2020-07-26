@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QRNAFile extends EntityPathBase<RNAFile> {
 
-    private static final long serialVersionUID = -368705633L;
+    private static final long serialVersionUID = -1545672969L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

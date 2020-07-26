@@ -1,15 +1,17 @@
 package com.dna.rna.domain.article;
 
 import com.dna.rna.domain.BaseAuditorEntity;
+import com.dna.rna.domain.article.articleComment.ArticleComment;
 import com.dna.rna.domain.board.Board;
 import com.dna.rna.domain.rnaFile.RNAFile;
 import com.dna.rna.domain.user.User;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.dna.rna.domain.board.Board.BOARD_ID;
@@ -18,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 
 @Getter
+@Setter
 @Entity
 @Table(name = "article")
 public class Article extends BaseAuditorEntity {
@@ -55,6 +58,10 @@ public class Article extends BaseAuditorEntity {
     @Column(name = "vote_count")
     private int voteCount;
 
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
+    @Column(nullable = false)
+    private List<ArticleComment> comments;
+
     public static Article of(User author, Board board, List<RNAFile> attachedFiles, String title, String content) {
         requireNonNull(author, "Article의 생성자에서 author는 null이 될 수 없습니다.");
         requireNonNull(board, "Article의 생성자에서 board는 null이 될 수 없습니다.");
@@ -71,7 +78,8 @@ public class Article extends BaseAuditorEntity {
         return new Article(author, board, attachedFiles, title, content);
     }
 
-    private Article() {}
+    private Article() {
+    }
 
     private Article(User author, Board board, List<RNAFile> attachedFiles, String title, String content) {
 
@@ -82,17 +90,10 @@ public class Article extends BaseAuditorEntity {
         this.content = content;
         this.viewCount = 0;
         this.voteCount = 0;
+        this.comments = new ArrayList<>();
     }
 
     public void increaseViewCount() {
         this.viewCount++;
-    }
-
-    public void increaseVoteCount() {
-        this.voteCount++;
-    }
-
-    public void decreaseVoteCount() {
-        this.voteCount--;
     }
 }

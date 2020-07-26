@@ -3,8 +3,8 @@ package com.dna.rna.domain.clubBoard;
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.board.Board;
 import com.dna.rna.domain.board.BoardItem;
-import com.dna.rna.domain.club.Club;
 import com.dna.rna.domain.boardGroup.BoardGroup;
+import com.dna.rna.domain.club.Club;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +15,8 @@ import javax.annotation.Nullable;
 import javax.persistence.*;
 
 import static com.dna.rna.domain.board.Board.BOARD_ID;
-import static com.dna.rna.domain.club.Club.CLUB_ID;
 import static com.dna.rna.domain.boardGroup.BoardGroup.BOARD_GROUP_ID;
+import static com.dna.rna.domain.club.Club.CLUB_ID;
 import static java.util.Objects.requireNonNull;
 
 @Getter

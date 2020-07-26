@@ -2,6 +2,8 @@ package com.dna.rna.controller;
 
 import com.dna.rna.domain.article.Article;
 import com.dna.rna.domain.article.ArticleRepository;
+import com.dna.rna.domain.article.articleComment.ArticleComment;
+import com.dna.rna.dto.ArticleCommentDto;
 import com.dna.rna.dto.ArticleDto;
 import com.dna.rna.dto.UserDto;
 import com.dna.rna.exception.RnaException;
@@ -15,6 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+
 @Api(tags = "게시글 컨트롤러", value = "article 컨트롤러 v1")
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -25,6 +31,7 @@ public class ArticleController {
 
     private final ArticleRepository articleRepository;
 
+    @Transactional
     @ApiOperation(value = "게시글 조회", notes = "articleId 를 이용해서 게시글을 조회한다.")
     @GetMapping("/articles/article/{articleId}")
     public ArticleDto.ResArticle getArticle(
@@ -45,9 +52,14 @@ public class ArticleController {
         article.increaseViewCount();
         articleRepository.save(article);
 
+        List<ArticleCommentDto.ResAsArticleItem> comments = new ArrayList<>();
+        for (ArticleComment comment : article.getComments()) {
+            comments.add(ArticleCommentDto.ResAsArticleItem.ofArticleComment(comment));
+        }
         return new ArticleDto.ResArticle(
-                article.getArticleId(), article.getTitle(), new UserDto.ResAuthor(article.getAuthor()),
-                article.getViewCount(), article.getVoteCount(), article.getCreatedAt());
+                article.getArticleId(), new UserDto.ResAuthor(article.getAuthor()), article.getTitle(),
+                article.getContent(), article.getViewCount(), article.getVoteCount(), comments,
+                article.getCreatedAt());
     }
 
     //TODO User 확인해서 중복추천 금지
@@ -67,7 +79,7 @@ public class ArticleController {
     }
 
     //TODO User 확인해서 중복 비추천 금지
-    @ApiOperation(value = "게시글 추천", notes = "articleId 를 이용해서 게시글을 한 번 비추천한다. 총 추천수는 음수도 가능하다.")
+    @ApiOperation(value = "게시글 비추천", notes = "articleId 를 이용해서 게시글을 한 번 비추천한다. 총 추천수는 음수도 가능하다.")
     @PutMapping("/articles/article/{articleId}/downvote")
     public ResponseEntity downvoteArticle(
             @ApiParam(name = "articleId", value = "게시글 id", required = true)

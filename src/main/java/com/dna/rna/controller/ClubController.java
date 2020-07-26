@@ -2,8 +2,12 @@ package com.dna.rna.controller;
 
 import com.dna.rna.domain.article.Article;
 import com.dna.rna.domain.article.ArticleRepository;
+import com.dna.rna.domain.article.articleComment.ArticleComment;
+import com.dna.rna.domain.article.articleComment.ArticleCommentRepository;
 import com.dna.rna.domain.board.Board;
 import com.dna.rna.domain.board.BoardRepository;
+import com.dna.rna.domain.boardGroup.BoardGroup;
+import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import com.dna.rna.domain.club.Club;
 import com.dna.rna.domain.club.ClubRepository;
 import com.dna.rna.domain.clubBoard.ClubBoard;
@@ -17,8 +21,6 @@ import com.dna.rna.domain.school.School;
 import com.dna.rna.domain.school.SchoolRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
-import com.dna.rna.domain.boardGroup.BoardGroup;
-import com.dna.rna.domain.boardGroup.BoardGroupRepository;
 import com.dna.rna.dto.ClubDto;
 import com.dna.rna.service.ClubService;
 import io.swagger.annotations.Api;
@@ -27,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +52,7 @@ public class ClubController {
     private final BoardRepository boardRepository;
     private final ClubBoardRepository clubBoardRepository;
     private final ArticleRepository articleRepository;
+    private final ArticleCommentRepository articleCommentRepository;
 
     @ResponseBody
     @GetMapping("/clubs/club/{clubId}")
@@ -56,6 +60,7 @@ public class ClubController {
          return clubService.getClubHome(clubId);
     }
 
+    @Transactional
     @ResponseBody
     @GetMapping("/init")
     public String init() {
@@ -80,9 +85,28 @@ public class ClubController {
         List<Article> articleList = new ArrayList<>();
         for (int i=0; i < 30; i++) {
             Article article = Article.of(user, board, new ArrayList<>(), "title" + i, "content" + i);
+            article = articleRepository.save(article);
+
+            List<ArticleComment> comments = new ArrayList<>();
+            ArticleComment newComment = ArticleComment.of(article, user, "hello world!" + i, null);
+            newComment = articleCommentRepository.save(newComment);
+            comments.add(newComment);
+            if (i==0) {
+                List<ArticleComment> nestedComments = new ArrayList<>();
+                for (int j=0; j < 5; j++) {
+                    ArticleComment nestedComment = ArticleComment.ofNestedComment("I'm nested!" + j, newComment);
+                    nestedComments.add(nestedComment);
+                }
+                articleCommentRepository.saveAll(nestedComments);
+                newComment.setNestedComments(nestedComments);
+            }
+            article.setComments(comments);
+            articleCommentRepository.saveAll(comments);
             articleList.add(article);
             articleRepository.save(article);
+
         }
+
         return club.getId().toString() + "," + board.getId();
     }
 
