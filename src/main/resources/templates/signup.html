@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+</head>
+
+<style>
+    label {
+        font-size: 11px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    input {
+        display: block;
+        font-size: 11px;
+        padding: 4px 2px;
+        border: solid 1px #aacfe4;
+        width: 200px;
+        margin: 2px 0 20px 10px;
+    }
+</style>
+
+<body>
+<h1>회원 가입</h1>
+<hr>
+
+<form th:action="@{/signup}" method="post">
+    <label> 아이디 </label> <input type="text" name="loginId" placeholder="아이디">
+    <label> 비밀번호 </label> <input type="password" name="password" placeholder="비밀번호">
+    <label> 이름 </label> <input type="text" name="userName" placeholder="이름">
+    <label> 서비스 이용 기관 </label> <input type="text" name="organization" placeholder="서비스 이용 기관">
+    <label> 사용자 소속 </label> <input type="text" name="userGroup" placeholder="사용자 소속">
+    <label> 허가코드 </label> <input type="text" name="permitCode" placeholder="허가 코드">
+    <button type="submit">가입하기</button>
+</form>
+</body>
+</html>

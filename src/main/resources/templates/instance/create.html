@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+</head>
+<body>
+<div>
+    <h3>인스턴스 생성</h3>
+    <p>인스턴스 정보 입력</p>
+    <form th:action="@{/instance/create}" th:object="${instance}" method="post">
+        <table border=1>
+            <tr>
+                <td>인스턴스 이름</td>
+                <td>
+                    <input type="text" placeholder="책 제목을 입력하세요">
+                </td>
+            </tr>
+            <tr>
+                <td>사용종료 일시</td>
+                <td>
+                    <input type="text"  placeholder="저자명을 입력하세요">
+                </td>
+            </tr>
+        </table>
+        <button type="submit" >생성</button>
+    </form>
+</div>
+</body>
+</html>

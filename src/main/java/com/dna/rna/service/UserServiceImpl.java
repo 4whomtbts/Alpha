@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-
+/*
     @Transactional
     @Override
     public User createUser(final String loginId, final String userName, final String encodedPassword) {
@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
         }
         return newUser;
     }
+*/
 
     @Transactional
     @Override

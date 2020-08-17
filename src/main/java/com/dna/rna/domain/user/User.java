@@ -1,19 +1,15 @@
 package com.dna.rna.domain.user;
 
 import com.dna.rna.domain.BaseAuditorEntity;
-import com.dna.rna.domain.admission.AdmissionCandidate;
-import com.dna.rna.domain.clubUser.ClubUser;
-import com.dna.rna.domain.school.School;
-import com.dna.rna.domain.schoolUser.SchoolUser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dna.rna.domain.school.School.SCHOOL_ID;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -24,7 +20,6 @@ import static java.util.Objects.requireNonNull;
  * @author Hyounjun kim <4whomtbts@gmail.com>
  *
  */
-
 @Getter
 @Setter
 @Entity
@@ -38,13 +33,6 @@ public class User extends BaseAuditorEntity {
     @Column(name = USER_ID)
     private Long id;
 
-    //@Column(nullable = false)
-    @ManyToOne
-    @JoinColumn(name = SCHOOL_ID)
-    private School school;
-
-    private boolean school_authorized = false;
-
     @Column(nullable = false, updatable = false)
     private String loginId;
 
@@ -54,38 +42,40 @@ public class User extends BaseAuditorEntity {
     @Column(nullable = false)
     private String userName;
 
+    @Column(nullable = false)
+    private String organization;
+
+    @Column(nullable = false)
+    private String userGroup;
+
     @Column(nullable = true)
     private UserType userType = UserType.USER;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<SchoolUser> schoolUsers = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<ClubUser> clubUsers = new ArrayList<>();
-
     @OneToMany(mappedBy = "user",
-               fetch = FetchType.LAZY,
-               cascade = CascadeType.ALL)
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
     private List<UserRole> userRoles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<AdmissionCandidate> admissionCandidates = new ArrayList<>();
 
     // 기본생성자를 public 으로 바꿔야 할 시 논의 후 바꿀 것
     protected User() {}
 
-    private User(final String loginId, final String password, final String userName) {
+    private User(final String loginId, final String password, final String userName,
+                 final String organization, final String userGroup) {
         this.loginId = loginId;
         this.password = password;
         this.userName = userName;
+        this.organization = organization;
+        this.userGroup = userGroup;
     }
 
-    public static User of(final String loginId, final String userName, final String password) {
+    public static User of(final String loginId, final String userName, final String password,
+                          final String organization, final String userGroup) {
         requireNonNull(loginId, "loginId is null");
         requireNonNull(password, "password is null");
         requireNonNull(userName, "userName is null");
-
-        User user = new User(loginId, password, userName);
+        requireNonNull(organization, "organization is null");
+        requireNonNull(userGroup, "userGroup is null");
+        User user = new User(loginId, password, userName, organization, userGroup);
         return user;
     }
 }

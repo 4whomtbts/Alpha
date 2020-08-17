@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    table, th, td {
+        border: 1px solid black;
+        text-align: center;
+    }
+
+    th {
+        font-size: 16px;
+    }
+
+    td {
+        font-size: 13px;
+    }
+
+    a {
+        line-height: 1em;
+        text-decoration: none;
+        margin-right: 14px;
+    }
+</style>
+<body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<!-- HEADER -->
+<script>
+    var selectedList = new Set();
+    function onClickCheckBox(self) {
+        var instanceId = self.name;
+        if (selectedList.has(instanceId)) {
+            selectedList.delete(instanceId);
+        } else {
+            selectedList.add(instanceId);
+        }
+    }
+
+</script>
+
+<a th:href="@{/post}">인스턴스 생성 </a>
+<a th:href="@{/post}">인스턴스 삭제 </a>
+
+<table>
+    <thead>
+    <tr>
+        <th class="one wide"></th>
+        <th class="ten wide">인스턴스 아이디</th>
+        <th class="ten wide">인스턴스 해쉬</th>
+        <th class="ten wide">이름</th>
+        <th class="two wide">이미지</th>
+        <th class="three wide">상태</th>
+        <th class="three wide">자원</th>
+        <th class="three wide">외부접속IP</th>
+        <th class="three wide">외부노출포트</th>
+        <th class="three wide">내부접속IP</th>
+        <th class="three wide">내부노출포트</th>
+        <th class="three wide">사용기간</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <!-- CONTENTS !-->
+    <tr th:each="instance : ${instanceList}">
+        <td>
+            <input type="checkbox" name="${instance.instanceId}" onclick="onClickCheckBox(this)">
+        </td>
+        <td>
+            <span th:text="${instance.instanceContainerId}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.instanceHash}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.instanceName}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.containerImageNickName}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.status}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.resources}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.externalIP}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.externalPorts}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.internalIP}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.internalPorts}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.period}"></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- FOOTER -->
+</body>
+</html>
