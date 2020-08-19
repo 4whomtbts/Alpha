@@ -32,7 +32,11 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath loginId = createString("loginId");
 
+    public final StringPath organization = createString("organization");
+
     public final StringPath password = createString("password");
+
+    public final StringPath userGroup = createString("userGroup");
 
     public final StringPath userName = createString("userName");
 

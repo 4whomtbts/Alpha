@@ -36,6 +36,9 @@ public class Instance extends BaseAuditorEntity {
     @Column(name = "instance_name")
     private String instanceName;
 
+    @Column(name = "purpose")
+    private String purpose;
+
     // docker container 이름
     @Column(name = "instance_container_id")
     private String instanceContainerId;
@@ -66,7 +69,7 @@ public class Instance extends BaseAuditorEntity {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
-    private Instance() {}
+    protected Instance() {}
 
     public Instance(String instanceName, String instanceContainerId, String instanceHash, ContainerImage containerImage,
                     Server server, ServerResource allocatedResources, InstanceNetworkSetting instanceNetworkSetting,
@@ -115,11 +118,11 @@ public class Instance extends BaseAuditorEntity {
             if (serverPort.isExternal()) {
                 externalPortsBuilder.append(serverPort.getTag());
                 externalPortsBuilder.append(" : ");
-                externalPortsBuilder.append(serverPort.getPort());
+                externalPortsBuilder.append(serverPort.getFrom());
             } else {
                 internalPortsBuilder.append(serverPort.getTag());
                 internalPortsBuilder.append(" : ");
-                internalPortsBuilder.append(serverPort.getPort());
+                internalPortsBuilder.append(serverPort.getFrom());
             }
         }
         /*
@@ -142,7 +145,7 @@ public class Instance extends BaseAuditorEntity {
         */
 
         return new InstanceDto(
-                this.instanceContainerId, this.instanceHash.substring(0, 12), this.instanceName, this.containerImage.getContainerImageNickName(),
+                this.instanceId, this.instanceContainerId, this.instanceHash.substring(0, 12), this.instanceName, this.containerImage.getContainerImageNickName(),
                 "RUNNING", gpuResource.toString(), server.getInternalIP(), "210.94.223.123",
                  externalPortsBuilder.toString(), internalPortsBuilder.toString(), periodBuilder.toString());
     }

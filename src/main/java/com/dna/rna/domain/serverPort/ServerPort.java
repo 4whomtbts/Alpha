@@ -14,8 +14,7 @@ import javax.persistence.*;
 @Table(name= "server_port")
 public class ServerPort {
 
-    public static final String SERVER_PORT = "server_port";
-    public static final int MIN_PORT = 9000;
+    public static final String SERVER_PORT = "server_port_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SERVER_PORT)
@@ -27,23 +26,22 @@ public class ServerPort {
     @Column(name = "external")
     private boolean external;
 
-    @Column(name = "port")
-    private int port;
+    @Column(name = "port_from")
+    private int from;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Server server;
+    @Column(name = "port_to")
+    private int to;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Instance instance;
 
     protected ServerPort() {}
 
-    public ServerPort(String tag, boolean external, int port,
-                      Server server, Instance instance) {
+    public ServerPort(String tag, boolean external, int from, int to, Instance instance) {
         this.tag = tag;
         this.external = external;
-        this.port = port;
-        this.server = server;
+        this.from = from;
+        this.to = to;
         this.instance = instance;
     }
 }

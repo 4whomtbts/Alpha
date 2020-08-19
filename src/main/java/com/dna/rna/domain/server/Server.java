@@ -16,6 +16,8 @@ import java.util.List;
 public class Server {
 
     public static final String SERVER_ID = "server_id";
+    public static final int PORT_RANGE = 100;
+    public static final int MIN_INTERNAL_PORT = 10000;
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SERVER_ID)
@@ -30,6 +32,12 @@ public class Server {
     @Column(name = "ssh_port")
     private int sshPort;
 
+    @Column(name = "min_external_port")
+    private int minExternalPort;
+
+    @Column(name = "min_internal_port")
+    private int minInternalPort;
+
     @Embedded
     private ServerResource serverResource;
 
@@ -39,10 +47,12 @@ public class Server {
 
     private Server() {}
 
-    public Server(int serverNum, String internalIP, int sshPort, ServerResource serverResource) {
+    public Server(int serverNum, String internalIP, int sshPort, int minExternalPort, ServerResource serverResource) {
         this.serverNum = serverNum;
         this.internalIP = internalIP;
         this.sshPort = sshPort;
+        this.minExternalPort= minExternalPort;
+        this.minInternalPort = MIN_INTERNAL_PORT;
         this.serverResource = serverResource;
         this.instanceList = new ArrayList<>();
     }

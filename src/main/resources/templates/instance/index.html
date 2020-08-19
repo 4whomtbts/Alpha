@@ -34,8 +34,9 @@
 <!-- HEADER -->
 <script>
     var selectedList = new Set();
+
     function onClickCheckBox(self) {
-        var instanceId = self.name;
+        var instanceId = self.id;
         if (selectedList.has(instanceId)) {
             selectedList.delete(instanceId);
         } else {
@@ -43,10 +44,26 @@
         }
     }
 
+    function deleteInstances(self) {
+        var arr = Array.from(selectedList);
+        for (var i=0; i < arr.length; i++) {
+            var result = $.ajax({
+                url: "/instances/instance/"+arr[i],
+                dataType: "text",
+                method: "DELETE"
+            }).done(function (data) {
+               console.log("인스턴스 삭제 완료");
+            }).fail(function (a, status, error) {
+                alert("서버 에러 발생" + JSON.stringify(a) + ",  " + status + ", " + error)
+            });
+        }
+        location.reload();
+    }
+
 </script>
 
 <a th:href="@{/post}">인스턴스 생성 </a>
-<a th:href="@{/post}">인스턴스 삭제 </a>
+<a href="javascript:void(0);" onclick="deleteInstances()">인스턴스 삭제 </a>
 
 <table>
     <thead>
@@ -70,7 +87,7 @@
     <!-- CONTENTS !-->
     <tr th:each="instance : ${instanceList}">
         <td>
-            <input type="checkbox" name="${instance.instanceId}" onclick="onClickCheckBox(this)">
+            <input th:id="${instance.instanceId}" type="checkbox" onclick="onClickCheckBox(this)">
         </td>
         <td>
             <span th:text="${instance.instanceContainerId}"></span>

@@ -1,0 +1,33 @@
+delete from container_image;
+delete from instance;
+delete from instance_external_ports;
+delete from instance_gpus;
+delete from instance_internal_ports;
+delete from instance_ports;
+delete from permissions;
+delete from server;
+delete from server_gpus;
+delete from server_instance;
+delete from server_port;
+delete from server_ports;
+delete from user;
+delete from user_role;
+
+drop table container_image;
+drop table instance;
+drop table instance_external_ports;
+drop table instance_gpus;
+drop table instance_internal_ports;
+drop table instance_ports;
+drop table permissions;
+drop table server;
+drop table server_gpus;
+drop table server_instance;
+drop table server_port;
+drop table server_ports;
+drop table user;
+drop table user_role;
+
+select * from server;
+select * from server_gpus;
+select * from instance;

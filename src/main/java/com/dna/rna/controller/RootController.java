@@ -93,7 +93,7 @@ public class RootController {
     public String initGET() {
         List<Server> servers = new ArrayList<>();
         for (int i=0; i < 6; i++) {
-            Server server = new Server(i+1, "192.168.1.1" + (i+1), 8081 + i, new ServerResource());
+            Server server = new Server(i+1, "192.168.1.1" + (i+1), 8081 + i, 9000 + (i * 100), new ServerResource());
             serverRepository.save(server);
             servers.add(server);
         }
