@@ -17,6 +17,7 @@ public class InstancesController {
         instanceService.deleteInstance(instanceHash);
         return new ResponseEntity(HttpStatus.OK);
     }
+
     @RequestMapping(value = "/instances/instance/{instance_hash}", method= RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity food(@PathVariable("instance_hash") String instanceHash) throws Exception {

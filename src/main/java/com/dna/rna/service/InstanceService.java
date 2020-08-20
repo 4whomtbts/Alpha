@@ -10,6 +10,7 @@ import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.server.ServerRepository;
 import com.dna.rna.domain.serverPort.ServerPort;
 import com.dna.rna.domain.serverPort.ServerPortRepository;
+import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.InstanceCreationDto;
 import com.dna.rna.dto.ServerPortDto;
 import com.dna.rna.service.util.InstanceNetworkAllocator;
@@ -68,7 +69,7 @@ public class InstanceService {
     }
 
     @Transactional
-    public void createInstance(String instanceName, ContainerImage containerImage, int requestedGPU,
+    public void createInstance(String instanceName, User owner, ContainerImage containerImage, int requestedGPU,
                                boolean useResourceExclusively, List<ServerPortDto.Creation> externalPorts,
                                List<ServerPortDto.Creation> internalPorts, LocalDateTime expiredAt) throws Exception {
         externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
@@ -136,7 +137,7 @@ public class InstanceService {
                 sshExecutor.createNewInstance(selectedServer.getSshPort(), selectedPortList, new ServerResource(result.getGpus()));
         Instance instance =
                 new Instance(instanceName, instanceCreationResult.getInstanceUUID(), instanceCreationResult.getInstanceHash(),
-                        containerImage, selectedServer, new ServerResource(), null, expiredAt);
+                        owner, containerImage, selectedServer, new ServerResource(), null, expiredAt);
         instance.getAllocatedResources().setGpus(result.getGpus());
         instanceRepository.save(instance);
         serverPortRepository.saveAll(selectedPortList);

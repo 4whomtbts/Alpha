@@ -1,10 +1,8 @@
+
 package com.dna.rna.service;
 
-import com.dna.rna.domain.CRUDPermissions;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
-import com.dna.rna.domain.user.UserRole;
-import com.dna.rna.domain.user.UserType;
 import com.dna.rna.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -12,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

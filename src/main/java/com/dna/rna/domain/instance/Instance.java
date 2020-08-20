@@ -5,6 +5,7 @@ import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.serverPort.ServerPort;
+import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.InstanceDto;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 import static com.dna.rna.domain.containerImage.ContainerImage.CONTAINER_IMAGE_ID;
 import static com.dna.rna.domain.server.Server.SERVER_ID;
+import static com.dna.rna.domain.user.User.USER_ID;
 
 
 @Getter
@@ -55,6 +57,10 @@ public class Instance extends BaseAuditorEntity {
     private ContainerImage containerImage;
 
     @ManyToOne
+    @JoinColumn(name = USER_ID, nullable = true)
+    private User owner;
+
+    @ManyToOne
     @JoinColumn(name = SERVER_ID, nullable = false)
     private Server server;
 
@@ -71,12 +77,13 @@ public class Instance extends BaseAuditorEntity {
 
     protected Instance() {}
 
-    public Instance(String instanceName, String instanceContainerId, String instanceHash, ContainerImage containerImage,
+    public Instance(String instanceName, String instanceContainerId, String instanceHash, User owner, ContainerImage containerImage,
                     Server server, ServerResource allocatedResources, InstanceNetworkSetting instanceNetworkSetting,
                     LocalDateTime expiredAt) {
         this.instanceName = instanceName;
         this.instanceContainerId = instanceContainerId;
         this.instanceHash = instanceHash;
+        this.owner = owner;
         this.containerImage = containerImage;
         this.server = server;
         this.allocatedResources = allocatedResources;

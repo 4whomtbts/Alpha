@@ -1,6 +1,8 @@
 package com.dna.rna.domain.user;
 
 import com.dna.rna.domain.BaseAuditorEntity;
+import com.dna.rna.domain.instance.Instance;
+import com.dna.rna.domain.userRole.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,7 +29,7 @@ import static java.util.Objects.requireNonNull;
 @ToString(exclude = "userRoles")
 public class User extends BaseAuditorEntity {
 
-    public static final String USER_ID = "USER_ID";
+    public static final String USER_ID = "user_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = USER_ID)
@@ -44,6 +46,9 @@ public class User extends BaseAuditorEntity {
 
     @Column(nullable = false)
     private String organization;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
+    private List<Instance> instanceList;
 
     @Column(nullable = false)
     private String userGroup;
@@ -63,6 +68,7 @@ public class User extends BaseAuditorEntity {
                  final String organization, final String userGroup) {
         this.loginId = loginId;
         this.password = password;
+        this.instanceList = new ArrayList<>();
         this.userName = userName;
         this.organization = organization;
         this.userGroup = userGroup;

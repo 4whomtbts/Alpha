@@ -9,6 +9,9 @@ import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.server.ServerRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
+import com.dna.rna.dto.SignupForm;
+import com.dna.rna.exception.AlphaException;
+import com.dna.rna.service.SigninService;
 import com.dna.rna.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -18,10 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +57,8 @@ public class RootController {
     private final ContainerImageRepository containerImageRepository;
     private final InstanceRepository instanceRepository;
     private final ServerRepository serverRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final SigninService signinService;
 
     @GetMapping("/")
     public String index() {
@@ -69,24 +75,27 @@ public class RootController {
         return "/signup";
     }
 
-    @PostMapping("/signup")
-    public String signupPOST(SignupForm signupForm) {
-        String loginId= signupForm.getLoginId();
-        signupForm.setPassword(passwordEncoder.encode(signupForm.getPassword()));
-        if(userRepository.findUserByLoginId(loginId) != null) {
-            return "/denied";
+    @ResponseBody
+    @PostMapping(value = "/signup", produces = "application/json")
+    public ResponseEntity<String> signupPOST(@RequestBody SignupForm signupForm) {
+        try {
+            signinService.SignUp(signupForm);
+        } catch (AlphaException exception) {
+            return new ResponseEntity<>(exception.getErrorMessage(), exception.getStatusCode());
         }
-
-        User user = signupForm.toUserEntity();
-        userRepository.save(user);
-
-        logger.info("New user '{}' has been created.", user.getLoginId());
-        return "/login";
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/login")
     public String loginGET() {
         return "/login";
+    }
+
+    @Secured(value = {"ROLE_ADMIN"})
+    @GetMapping("/admin")
+    public String adminGET(Principal principal) {
+        System.out.println(principal.getName());
+        return "/AdminController";
     }
 
     @GetMapping("/init")
@@ -99,35 +108,9 @@ public class RootController {
         }
         ContainerImage containerImage = new ContainerImage("aitf", "기본 이미지", "ssh, xrdp, jupyter");
         containerImageRepository.save(containerImage);
-        /*
-        Instance instance = new Instance("test", "a", "b", containerImage, servers.get(0), new ServerResource(), null, LocalDateTime.now().plusDays(10));
-        Instance instance1 = new Instance("test", "c", "d", containerImage, servers.get(0), new ServerResource(), null, null);
-        instanceRepository.save(instance);
-        instanceRepository.save(instance1);
-        */
+
         return "/";
     }
 
 }
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-class SignupForm {
-
-    private Long id;
-    private String loginId;
-    private String userName;
-    private String password;
-    private String organization;
-    private String userGroup;
-    private String permitCode;
-
-    public User toUserEntity() {
-        return User.of(this.loginId, this.userName, this.password,
-                       this.organization, this.userGroup);
-    }
-
-}

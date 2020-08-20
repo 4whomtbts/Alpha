@@ -2,6 +2,7 @@ package com.dna.rna.domain.user;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.dna.rna.domain.userRole.UserRole;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;

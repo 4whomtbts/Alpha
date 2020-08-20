@@ -3,6 +3,7 @@ package com.dna.rna.security;
 import com.dna.rna.BeanUtils;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.service.SigninService;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.transaction.Transactional;
 import java.util.Collection;
 
+@Getter
 @NoArgsConstructor
 public class MainUserDetails implements UserDetails {
 

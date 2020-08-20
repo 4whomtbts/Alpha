@@ -1,6 +1,7 @@
-package com.dna.rna.domain.user;
+package com.dna.rna.domain.userRole;
 
 import com.dna.rna.domain.CRUDPermissions;
+import com.dna.rna.domain.user.User;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,8 @@ import java.util.List;
 @Table(name = "user_role")
 public class UserRole implements GrantedAuthority {
 
+    public static final String USER_ROLE_MEMBER = "MEMBER";
+
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
@@ -32,8 +35,14 @@ public class UserRole implements GrantedAuthority {
         joinColumns = @JoinColumn(name = "USER_ROLE_ID"))
     private List<CRUDPermissions> permissions = new ArrayList<>();
 
+    protected UserRole() {}
+
+    public UserRole(User user, String roleName) {
+        this.user = user;
+        this.roleName = roleName;
+    }
     @Override
-    public String getAuthority() {
-        return roleName;
+        public String getAuthority() {
+            return roleName;
     }
 }

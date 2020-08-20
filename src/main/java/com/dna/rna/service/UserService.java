@@ -12,7 +12,7 @@ public interface UserService {
 
     @Transactional
     String getUserRoles(final String loginId);
-
+    
     UserDto fetchUserMyPage(final String loginId);
 
 }

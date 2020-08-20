@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,20 +27,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Log
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableTransactionManagement
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-    private final SigninService signinService;
     private final UserDetailService userDetailService;
-    private final UserRepository userRepository;
 
     @Autowired
-    public SecurityConfig(UserDetailService userDetailService, UserRepository userRepository, SigninService signinService) {
+    public SecurityConfig(UserRepository userRepository, UserDetailService userDetailService) {
         this.userDetailService = userDetailService;
-        this.userRepository = userRepository;
-        this.signinService = signinService;
     }
 
     @Bean
@@ -55,21 +53,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return daoAuthenticationProvider;
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        http.csrf().disable();
+        //http.csrf().disable();
 
         http.authorizeRequests()
                 // 페이지 권한 설정
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/instances").hasRole("ADMIN")
                 .antMatchers("/user/myinfo").hasRole("MEMBER")
-                .antMatchers("/**").permitAll()
                 .and() // 로그인 설정
                 .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/")
-                .permitAll()
                 .and() // 로그아웃 설정
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
@@ -85,8 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
     }
 

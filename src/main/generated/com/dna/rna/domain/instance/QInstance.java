@@ -48,6 +48,10 @@ public class QInstance extends EntityPathBase<Instance> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
+    public final com.dna.rna.domain.user.QUser owner;
+
+    public final StringPath purpose = createString("purpose");
+
     public final com.dna.rna.domain.server.QServer server;
 
     public QInstance(String variable) {
@@ -71,6 +75,7 @@ public class QInstance extends EntityPathBase<Instance> {
         this.allocatedResources = inits.isInitialized("allocatedResources") ? new com.dna.rna.domain.QServerResource(forProperty("allocatedResources")) : null;
         this.containerImage = inits.isInitialized("containerImage") ? new com.dna.rna.domain.containerImage.QContainerImage(forProperty("containerImage")) : null;
         this.instanceNetworkSetting = inits.isInitialized("instanceNetworkSetting") ? new QInstanceNetworkSetting(forProperty("instanceNetworkSetting")) : null;
+        this.owner = inits.isInitialized("owner") ? new com.dna.rna.domain.user.QUser(forProperty("owner")) : null;
         this.server = inits.isInitialized("server") ? new com.dna.rna.domain.server.QServer(forProperty("server"), inits.get("server")) : null;
     }
 
