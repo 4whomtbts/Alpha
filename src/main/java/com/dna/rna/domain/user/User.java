@@ -1,6 +1,9 @@
 package com.dna.rna.domain.user;
 
 import com.dna.rna.domain.BaseAuditorEntity;
+import com.dna.rna.domain.allowCode.AllowCode;
+import com.dna.rna.domain.groupUser.GroupUser;
+import com.dna.rna.domain.groupUser.GroupUserType;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.userRole.UserRole;
 import lombok.Getter;
@@ -61,6 +64,15 @@ public class User extends BaseAuditorEntity {
             cascade = CascadeType.ALL)
     private List<UserRole> userRoles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user",
+               fetch = FetchType.LAZY,
+               orphanRemoval = true)
+    private List<AllowCode> allowCodeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user",
+               fetch = FetchType.LAZY)
+    private List<GroupUser> groupUserList = new ArrayList<>();
+
     // 기본생성자를 public 으로 바꿔야 할 시 논의 후 바꿀 것
     protected User() {}
 
@@ -72,6 +84,8 @@ public class User extends BaseAuditorEntity {
         this.userName = userName;
         this.organization = organization;
         this.userGroup = userGroup;
+        this.allowCodeList = new ArrayList<>();
+        this.groupUserList = new ArrayList<>();
     }
 
     public static User of(final String loginId, final String userName, final String password,

@@ -2,7 +2,6 @@ package com.dna.rna.domain.user;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.dna.rna.domain.userRole.UserRole;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -23,8 +22,12 @@ public class QUser extends EntityPathBase<User> {
 
     public final com.dna.rna.domain.QBaseAuditorEntity _super = new com.dna.rna.domain.QBaseAuditorEntity(this);
 
+    public final ListPath<com.dna.rna.domain.allowCode.AllowCode, com.dna.rna.domain.allowCode.QAllowCode> allowCodeList = this.<com.dna.rna.domain.allowCode.AllowCode, com.dna.rna.domain.allowCode.QAllowCode>createList("allowCodeList", com.dna.rna.domain.allowCode.AllowCode.class, com.dna.rna.domain.allowCode.QAllowCode.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final ListPath<com.dna.rna.domain.groupUser.GroupUserType, EnumPath<com.dna.rna.domain.groupUser.GroupUserType>> groupUserTypes = this.<com.dna.rna.domain.groupUser.GroupUserType, EnumPath<com.dna.rna.domain.groupUser.GroupUserType>>createList("groupUserTypes", com.dna.rna.domain.groupUser.GroupUserType.class, EnumPath.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -43,7 +46,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath userName = createString("userName");
 
-    public final ListPath<UserRole, QUserRole> userRoles = this.<UserRole, QUserRole>createList("userRoles", UserRole.class, QUserRole.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.userRole.UserRole, com.dna.rna.domain.userRole.QUserRole> userRoles = this.<com.dna.rna.domain.userRole.UserRole, com.dna.rna.domain.userRole.QUserRole>createList("userRoles", com.dna.rna.domain.userRole.UserRole.class, com.dna.rna.domain.userRole.QUserRole.class, PathInits.DIRECT2);
 
     public final EnumPath<UserType> userType = createEnum("userType", UserType.class);
 

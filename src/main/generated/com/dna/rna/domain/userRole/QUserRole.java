@@ -1,8 +1,7 @@
-package com.dna.rna.domain.user;
+package com.dna.rna.domain.userRole;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
-import com.dna.rna.domain.userRole.UserRole;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
@@ -17,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.EntitySerializer")
 public class QUserRole extends EntityPathBase<UserRole> {
 
-    private static final long serialVersionUID = 630016263L;
+    private static final long serialVersionUID = 2052419889L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -29,7 +28,7 @@ public class QUserRole extends EntityPathBase<UserRole> {
 
     public final StringPath roleName = createString("roleName");
 
-    public final QUser user;
+    public final com.dna.rna.domain.user.QUser user;
 
     public QUserRole(String variable) {
         this(UserRole.class, forVariable(variable), INITS);
@@ -49,7 +48,7 @@ public class QUserRole extends EntityPathBase<UserRole> {
 
     public QUserRole(Class<? extends UserRole> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.user = inits.isInitialized("user") ? new QUser(forProperty("user")) : null;
+        this.user = inits.isInitialized("user") ? new com.dna.rna.domain.user.QUser(forProperty("user")) : null;
     }
 
 }

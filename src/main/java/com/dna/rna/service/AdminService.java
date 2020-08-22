@@ -2,6 +2,10 @@ package com.dna.rna.service;
 
 import com.dna.rna.domain.allowCode.AllowCode;
 import com.dna.rna.domain.allowCode.AllowCodeRepository;
+import com.dna.rna.domain.allowCode.AllowCodeType;
+import com.dna.rna.domain.user.User;
+import com.dna.rna.domain.user.UserRepository;
+import com.dna.rna.exception.DCloudException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +28,12 @@ public class AdminService {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
+    private final UserRepository userRepository;
     private final AllowCodeRepository allowCodeRepository;
+
+    public List<User> fetchUserList() {
+        return userRepository.findAll();
+    }
 
     @Transactional
     public String getRandomUnExpiredAllowCodeAndExpiresIt() throws UnsupportedEncodingException {
@@ -38,16 +47,39 @@ public class AdminService {
     }
 
     @Transactional
-    public void generateNnewAllowCodeAndSave(int n) throws UnsupportedEncodingException {
-        List<AllowCode> result = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            result.add(new AllowCode(generateAllowCode()));
+    public String generateSignUpAllowCode(String loginId, AllowCodeType allowCodeType) throws UnsupportedEncodingException {
+
+        if (loginId == null || loginId.equals(""))
+            throw DCloudException.ofIllegalArgumentException("유효하지 않은 유저 아이디 입니다.");
+
+
+        boolean alreadyGotRegisterAllowCode = false;
+        User user = userRepository.findUserByLoginId(loginId);
+
+        if (user == null)
+            throw DCloudException.ofIllegalArgumentException("존재하지 않은 유저 아이디 입니다.");
+
+        List<AllowCode> allowCodeList = user.getAllowCodeList();
+
+        for (int i=0; i < allowCodeList.size(); i++) {
+            AllowCode allowCode = allowCodeList.get(i);
+            if (allowCode.getAllowCodeType() == AllowCodeType.ACCOUNT_REGISTRATION) {
+                alreadyGotRegisterAllowCode = true;
+            }
+            if (alreadyGotRegisterAllowCode)
+                throw DCloudException.ofIllegalArgumentException("이미 허가 하에 가입 된 유저입니다.");
         }
-        allowCodeRepository.saveAll(result);
+
+        AllowCode allowCode = new AllowCode(user, generateAllowCode(user), allowCodeType);
+        allowCodeList.add(allowCode);
+        user.setAllowCodeList(allowCodeList);
+        allowCodeRepository.save(allowCode);
+        userRepository.save(user);
+        return allowCode.getAllowCode();
     }
 
-    private String generateAllowCode() throws UnsupportedEncodingException {
-        String randomString = System.currentTimeMillis() + generateRandomString();
+    private String generateAllowCode(User user) throws UnsupportedEncodingException {
+        String randomString = System.currentTimeMillis() + generateRandomString() + Integer.toString(user.hashCode());
         String sha1 = null;
         try {
             MessageDigest msdDigest = MessageDigest.getInstance("SHA-1");

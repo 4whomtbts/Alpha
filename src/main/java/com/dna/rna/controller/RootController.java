@@ -3,14 +3,12 @@ package com.dna.rna.controller;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.containerImage.ContainerImageRepository;
-import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.instance.InstanceRepository;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.server.ServerRepository;
-import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.dto.SignupForm;
-import com.dna.rna.exception.AlphaException;
+import com.dna.rna.exception.DCloudException;
 import com.dna.rna.service.SigninService;
 import com.dna.rna.service.UserService;
 import io.swagger.annotations.Api;
@@ -21,14 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
-import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,7 +73,7 @@ public class RootController {
     public ResponseEntity<String> signupPOST(@RequestBody SignupForm signupForm) {
         try {
             signinService.SignUp(signupForm);
-        } catch (AlphaException exception) {
+        } catch (DCloudException exception) {
             return new ResponseEntity<>(exception.getErrorMessage(), exception.getStatusCode());
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -91,12 +84,14 @@ public class RootController {
         return "/login";
     }
 
+    /*
     @Secured(value = {"ROLE_ADMIN"})
     @GetMapping("/admin")
     public String adminGET(Principal principal) {
         System.out.println(principal.getName());
         return "/AdminController";
     }
+    */
 
     @GetMapping("/init")
     public String initGET() {

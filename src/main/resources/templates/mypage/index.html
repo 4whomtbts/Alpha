@@ -51,26 +51,14 @@
     })
 
 </script>
-<h1>어드민 페이지입니다.</h1>
+<h1>마이페이지.</h1>
 <hr>
 <h3 sec:authentication="name">Spring security username</h3>
 <h3> [[${#authentication.name}]]</h3>
 <h3> [[${#authentication.principal}]]</h3>
 <div>
-    <span>허가코드</span><input id="loginId" type="text"><input type="button" id="gen_allow_code" value="generate">
+    <span>발급된 허가코드</span>
 </div>
-
-<table>
-    <thead>
-        <tr>
-            <td class = "userId">ID</td>
-            <td class = "loginId">아이디</td>
-            <td class = "userName">유저이름</td>
-            <td class = "organization">사용단체</td>
-            <td class = "userGroup">소속단체</td>
-        </tr>
-    </thead>
-</table>
 
 </body>
 </html>

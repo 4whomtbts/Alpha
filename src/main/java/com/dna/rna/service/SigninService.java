@@ -6,7 +6,7 @@ import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.domain.userRole.UserRole;
 import com.dna.rna.domain.userRole.UserRoleRepository;
 import com.dna.rna.dto.SignupForm;
-import com.dna.rna.exception.AlphaException;
+import com.dna.rna.exception.DCloudException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,17 +48,19 @@ public class SigninService {
     }
 
     @Transactional
-    public void SignUp(SignupForm signupForm) throws AlphaException {
+    public void SignUp(SignupForm signupForm) throws DCloudException {
         String loginId= signupForm.getLoginId();
         signupForm.setPassword(passwordEncoder.encode(signupForm.getPassword()));
 
         if(userRepository.findUserByLoginId(loginId) != null) {
-            throw AlphaException.ofIllegalArgumentException("중복되는 아이디명입니다.");
+            throw DCloudException.ofIllegalArgumentException("중복되는 아이디명입니다.");
         }
 
+        /*
         if(allowCodeRepository.findByAllowCode(signupForm.getAllowCode()) == null) {
-            throw AlphaException.ofIllegalArgumentException("유효하지 않은 허가 코드입니다.");
+            throw DCloudException.ofIllegalArgumentException("유효하지 않은 허가 코드입니다.");
         }
+        */
 
         User user = signupForm.toUserEntity();
         User newUser = userRepository.save(user);
