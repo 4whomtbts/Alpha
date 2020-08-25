@@ -53,49 +53,41 @@ public class User extends BaseAuditorEntity {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Instance> instanceList;
 
-    @Column(nullable = false)
-    private String userGroup;
-
     @Column(nullable = true)
     private UserType userType = UserType.USER;
 
     @OneToMany(mappedBy = "user",
-            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<UserRole> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",
-               fetch = FetchType.LAZY,
                orphanRemoval = true)
     private List<AllowCode> allowCodeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user",
-               fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private List<GroupUser> groupUserList = new ArrayList<>();
 
     // 기본생성자를 public 으로 바꿔야 할 시 논의 후 바꿀 것
     protected User() {}
 
     private User(final String loginId, final String password, final String userName,
-                 final String organization, final String userGroup) {
+                 final String organization) {
         this.loginId = loginId;
         this.password = password;
         this.instanceList = new ArrayList<>();
         this.userName = userName;
         this.organization = organization;
-        this.userGroup = userGroup;
         this.allowCodeList = new ArrayList<>();
         this.groupUserList = new ArrayList<>();
     }
 
     public static User of(final String loginId, final String userName, final String password,
-                          final String organization, final String userGroup) {
+                          final String organization) {
         requireNonNull(loginId, "loginId is null");
         requireNonNull(password, "password is null");
         requireNonNull(userName, "userName is null");
         requireNonNull(organization, "organization is null");
-        requireNonNull(userGroup, "userGroup is null");
-        User user = new User(loginId, password, userName, organization, userGroup);
+        User user = new User(loginId, password, userName, organization);
         return user;
     }
 }

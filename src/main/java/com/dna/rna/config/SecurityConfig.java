@@ -1,9 +1,6 @@
 package com.dna.rna.config;
 
 import com.dna.rna.domain.user.UserRepository;
-import com.dna.rna.security.JwtAuthenticationFilter;
-import com.dna.rna.security.JwtAuthorizationFilter;
-import com.dna.rna.service.SigninService;
 import com.dna.rna.service.UserDetailService;
 import lombok.extern.java.Log;
 import org.slf4j.Logger;
@@ -18,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -66,8 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 // 페이지 권한 설정
-                .antMatchers("/instances").hasRole("ADMIN")
-                .antMatchers("/user/myinfo").hasRole("MEMBER")
                 .and() // 로그인 설정
                 .formLogin()
                 .loginPage("/login")
@@ -84,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+       web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
     }
 
     @Autowired

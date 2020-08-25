@@ -16,12 +16,10 @@ public class SignupForm {
     private String userName;
     private String password;
     private String organization;
-    private String userGroup;
     private String allowCode;
 
     public User toUserEntity() {
-        return User.of(this.loginId, this.userName, this.password,
-                this.organization, this.userGroup);
+        return User.of(this.loginId, this.userName, this.password,this.organization);
     }
 
 }

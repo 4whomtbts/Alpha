@@ -17,6 +17,9 @@ import java.util.List;
 public class Group extends BaseAuditorEntity {
 
     public static final String GROUP_ID = "group_id";
+
+    public static final int NOT_CONFIRMED = 0;
+    public static final int CONFIRMED = 1;
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = GROUP_ID)
     private long groupId;
@@ -30,11 +33,15 @@ public class Group extends BaseAuditorEntity {
     @Column(name = "group_share_dir_name")
     private String groupShareDirName;
 
+    @Column(name = "group_status")
+    private int groupStatus;
+
     protected Group() {}
 
     public Group(String groupName) {
         this.groupName = groupName;
         this.members = new ArrayList<>();
         this.groupShareDirName = DCloudUtil.generateRandomMd5DirName(this.groupName);
+        this.groupStatus = NOT_CONFIRMED;
     }
 }

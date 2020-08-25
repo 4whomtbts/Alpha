@@ -34,8 +34,8 @@ public class DCloudException extends RuntimeException {
         return new DCloudException(errorMessage, debugMessage, HttpStatus.BAD_REQUEST);
     }
 
-    public static DCloudException ofInternalServerError(String errorMessage) {
-        return DCloudException.ofInternalServerError(errorMessage, null);
+    public static DCloudException ofInternalServerError(String debugMessage) {
+        return DCloudException.ofInternalServerError("서버에 오류가 발생했습니다.", debugMessage);
     }
 
     public static DCloudException ofInternalServerError(String errorMessage, String debugMessage) {

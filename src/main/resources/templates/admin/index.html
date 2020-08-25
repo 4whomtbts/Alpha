@@ -48,7 +48,80 @@
                 }
             });
         })
+
+        $(".allow_group").on('click', function() {
+            var groupId = $(this).attr('id');
+            console.log("그룹 아이디 = " + groupId);
+            $.ajax({
+                url : "/admin/allow_group_create/" + groupId,
+                type : "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                cache: false,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function(res) {
+                    console.log(res);
+                    alert("그룹 설립 승인에 성공했습니다!")
+                    location.reload();
+                },
+                error: function(jqXHR, status, e) {
+                    alert("오류가 발생했습니다! + " + JSON.stringify(jqXHR) + ", " + status + " : " + e);
+                }
+            });
+        });
+
+        $(".confirm_signup").on('click', function() {
+            var loginId = $(this).attr('id');
+            console.log("그룹 아이디 = " + loginId);
+            $.ajax({
+                url : "/admin/allow_signup/" + loginId,
+                type : "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                cache: false,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function(res) {
+                    console.log(res);
+                    alert("유저 가입 승인에 성공했습니다!")
+                    location.reload();
+                },
+                error: function(jqXHR, status, e) {
+                    alert("오류가 발생했습니다! + " + JSON.stringify(jqXHR) + ", " + status + " : " + e);
+                }
+            });
+        });
     })
+
+    var selectedList = new Set();
+
+    function onClickCheckBox(self) {
+        var instanceId = self.id;
+        if (selectedList.has(instanceId)) {
+            selectedList.delete(instanceId);
+        } else {
+            selectedList.add(instanceId);
+        }
+    }
+
+    function deleteInstances(self) {
+        var arr = Array.from(selectedList);
+        for (var i=0; i < arr.length; i++) {
+            var result = $.ajax({
+                url: "/instances/instance/"+arr[i],
+                dataType: "text",
+                method: "DELETE"
+            }).done(function (data) {
+                console.log("인스턴스 삭제 완료");
+            }).fail(function (a, status, error) {
+                alert("서버 에러 발생" + JSON.stringify(a) + ",  " + status + ", " + error)
+            });
+        }
+        location.reload();
+    }
 
 </script>
 <h1>어드민 페이지입니다.</h1>
@@ -66,10 +139,136 @@
             <td class = "userId">ID</td>
             <td class = "loginId">아이디</td>
             <td class = "userName">유저이름</td>
-            <td class = "organization">사용단체</td>
-            <td class = "userGroup">소속단체</td>
+            <td class = "userGroup">소속</td>
+            <td class = "instanceGroup">소속그룹</td>
+            <td class = "confirm">가입승인</td>
         </tr>
     </thead>
+    <tr th:each="user, stat : ${userList}">
+        <td>
+            <span th:text="${user.getId()}"></span>
+        </td>
+        <td>
+            <span th:text="${user.getLoginId()}"></span>
+        </td>
+        <td>
+            <span th:text="${user.getUserName()}"></span>
+        </td>
+        <td>
+            <span th:text="${user.getOrganization()}"></span>
+        </td>
+        <td>
+            <p th:each="groupUser: ${user.getGroupUserList()}"
+                  th:text="${groupUser.getGroup().getGroupName()}"></p>
+        </td>
+        <td>
+            <th:block th:if="${isMemberList.get(stat.index)}">
+                <p> 가입됨 </p>
+            </th:block>
+            <th:block th:if="${isMemberList.get(stat.index) == false}">
+                <button th:id="${userList.get(stat.index).getLoginId()}" class="confirm_signup">가입승인</button>
+            </th:block>
+        </td>
+    </tr>
+</table>
+
+<br><br><br>
+<table>
+    <thead>
+    <tr>
+        <td class = "groupId">ID</td>
+        <td class = "groupName">그룹이름</td>
+        <td class = "memberNum">멤버수</td>
+        <td class = "memberList">멤버목록</td>
+        <td class = "groupShareDirName">공유디렉터리명</td>
+    </tr>
+    </thead>
+    <tr th:each="group, stat : ${groupList}">
+        <td>
+            <span th:text="${group.getGroupId()}"></span>
+        </td>
+        <td>
+            <span th:text="${group.getGroupName()}"></span>
+        </td>
+        <td>
+            <span th:text="${group.getMembers().size()}"></span>
+        </td>
+        <td>
+            <p th:each="user : ${group?.getMembers()}"
+               th:text="${user.getUser().getLoginId()}"></p>
+        </td>
+        <td>
+            <span th:text="${group.getGroupShareDirName()}"></span>
+        </td>
+        <td>
+            <th:block th:if="${isGroupCreationConfirmedList.get(stat.index)}">
+                <p> 설립됨 </p>
+            </th:block>
+            <th:block th:if="${isGroupCreationConfirmedList.get(stat.index) == false}">
+                <button th:id="${groupList.get(stat.index).getGroupId()}" class="allow_group">그룹승인</button>
+            </th:block>
+        </td>
+    </tr>
+</table>
+<table>
+    <thead>
+    <tr>
+        <th class="one wide"></th>
+        <th class="ten wide">인스턴스 아이디</th>
+        <th class="ten wide">인스턴스 해쉬</th>
+        <th class="ten wide">이름</th>
+        <th class="two wide">이미지</th>
+        <th class="three wide">상태</th>
+        <th class="three wide">자원</th>
+        <th class="three wide">외부접속IP</th>
+        <th class="three wide">외부노출포트</th>
+        <th class="three wide">내부접속IP</th>
+        <th class="three wide">내부노출포트</th>
+        <th class="three wide">사용기간</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <!-- CONTENTS !-->
+    <tr th:each="instance : ${instanceList}">
+        <td>
+            <input th:id="${instance.instanceId}" type="checkbox" onclick="onClickCheckBox(this)">
+        </td>
+        <td>
+            <span th:text="${instance.instanceContainerId}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.instanceHash}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.instanceName}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.containerImageNickName}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.status}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.resources}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.externalIP}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.externalPorts}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.internalIP}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.internalPorts}"></span>
+        </td>
+        <td>
+            <span th:text="${instance.period}"></span>
+        </td>
+    </tr>
+    </tbody>
 </table>
 
 </body>

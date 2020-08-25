@@ -65,8 +65,8 @@ public class SigninService {
         User user = signupForm.toUserEntity();
         User newUser = userRepository.save(user);
         List<UserRole> userRoleList = new ArrayList<>();
-        userRoleList.add(new UserRole(newUser, UserRole.USER_ROLE_MEMBER));
-        userRoleList = userRoleRepository.saveAll(userRoleList);
+        //userRoleList.add(new UserRole(newUser, UserRole.USER_ROLE_MEMBER));
+        //userRoleList = userRoleRepository.saveAll(userRoleList);
         newUser.setUserRoles(userRoleList);
         userRepository.save(newUser);
 

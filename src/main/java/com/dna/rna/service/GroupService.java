@@ -26,8 +26,11 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final GroupUserRepository groupUserRepository;
 
+    public User getUser(User user) {
+        return userRepository.findUserByLoginId(user.getLoginId());
+    }
+
     public List<GroupUser> getUserGroups(User user) {
-        user = userRepository.findUserByLoginId(user.getLoginId());
         return groupUserRepository.findByUser(user);
     }
 
@@ -35,7 +38,7 @@ public class GroupService {
         String groupName = groupCreation.getGroupName();
         String representative = groupCreation.getRepresentative();
         logger.info("새로운 그룹 생성 요청 user = {}, groupCreation = {}, {}",
-                    user.getLoginId(), groupName, representative);
+                user.getLoginId(), groupName, representative);
 
         Group group = groupRepository.findByGroupName(groupName);
         if (group != null) {
@@ -47,5 +50,22 @@ public class GroupService {
         GroupUser newGroupUser = new GroupUser(user, newGroup, GroupUserType.MANAGER);
         groupRepository.save(newGroup);
         groupUserRepository.save(newGroupUser);
+    }
+
+    // 귀찮아서 일단 초대하면 바로 가입되도록 함..
+    public void inviteUserToGroup(long groupId, String loginId) {
+        User user = userRepository.findUserByLoginId(loginId);
+        Group group = groupRepository.findById(groupId).orElseThrow(() ->
+                DCloudException.ofIllegalArgumentException("["+groupId+"] 는 존재하지 않는 유저입니다."));
+        GroupUser groupUser = new GroupUser(user, group, GroupUserType.MEMBER);
+        groupUserRepository.save(groupUser);
+    }
+
+    public void confirmGroupCreation(long groupId) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않은 groupId = [" + groupId + "]  가 입력 되었습니다."));
+        group.setGroupStatus(Group.CONFIRMED);
+        groupRepository.save(group);
+
     }
 }

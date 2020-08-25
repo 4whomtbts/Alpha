@@ -3,8 +3,14 @@ package com.dna.rna.service;
 import com.dna.rna.domain.allowCode.AllowCode;
 import com.dna.rna.domain.allowCode.AllowCodeRepository;
 import com.dna.rna.domain.allowCode.AllowCodeType;
+import com.dna.rna.domain.group.Group;
+import com.dna.rna.domain.group.GroupRepository;
+import com.dna.rna.domain.instance.Instance;
+import com.dna.rna.domain.instance.InstanceRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
+import com.dna.rna.domain.userRole.UserRole;
+import com.dna.rna.domain.userRole.UserRoleRepository;
 import com.dna.rna.exception.DCloudException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -29,10 +35,43 @@ public class AdminService {
     private static final Logger logger = LoggerFactory.getLogger(AdminService.class);
 
     private final UserRepository userRepository;
+    private final GroupRepository groupRepository;
+    private final UserRoleRepository userRoleRepository;
     private final AllowCodeRepository allowCodeRepository;
+    private final InstanceRepository instanceRepository;
 
+    @Transactional
     public List<User> fetchUserList() {
         return userRepository.findAll();
+    }
+
+    @Transactional
+    public List<Group> fetchAllGroup() {
+        return groupRepository.findAll();
+    }
+
+    @Transactional
+    public List<Instance> fetchAllInstance() {
+        return instanceRepository.findAll();
+    }
+
+    @Transactional
+    public void allowSignup(String loginId) {
+        User targetUser = userRepository.findUserByLoginId(loginId);
+        if (targetUser == null) throw DCloudException.ofIllegalArgumentException("존재하지 않는 loginId 입니다.");
+        List<UserRole> userRoles = targetUser.getUserRoles();
+        userRoles.add(new UserRole(targetUser, UserRole.USER_ROLE_MEMBER));
+        userRoles = userRoleRepository.saveAll(userRoles);
+        targetUser.setUserRoles(userRoles);
+        userRepository.save(targetUser);
+    }
+
+    @Transactional
+    public void allowGroupCreate(long groupId) {
+        Group group = groupRepository.findById(groupId).orElseThrow(() ->
+                DCloudException.ofIllegalArgumentException("["+groupId+"] 은 존재하지 않는 groupId 입니다."));
+        group.setGroupStatus(Group.CONFIRMED);
+        groupRepository.save(group);
     }
 
     @Transactional

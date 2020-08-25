@@ -6,73 +6,181 @@
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>회원가입 페이지</title>
 </head>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function() {
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#top_nav").load("/topNav");
+
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
 
-        $("#signup_button").on('click', function() {
+        $("#signup_button").on('click', function () {
             $.ajax({
                 url: "/signup",
                 type: "POST",
                 contentType: 'application/json',
-                cache :false,
+                cache: false,
                 data: JSON.stringify({
                     "loginId": $("#loginId").val(),
                     "password": $("#password").val(),
-                    "userName" : $("#userName").val(),
-                    "organization" : $("#organization").val(),
-                    "userGroup" : $("#userGroup").val(),
+                    "userName": $("#userName").val(),
+                    "organization": $("#organization").val(),
+                    "userGroup": $("#userGroup").val(),
                     "allowCode": $("#allowCode").val()
                 }),
-                beforeSend: function(xhr) {
+                beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
                 },
-                success: function(result) {
+                success: function (result) {
                     console.log("성공" + JSON.stringify(result));
-                        window.location.replace("/")
+                    window.location.replace("/")
                 },
-                error: function(request, status, error) {
-                    alert(JSON.stringify(request)+ ", " + JSON.stringify(status) + ", " + error);
+                error: function (request, status, error) {
+                    alert(JSON.stringify(request) + ", " + JSON.stringify(status) + ", " + error);
                 }
             });
         });
     });
 
 
-
 </script>
 
 <style>
-    label {
-        font-size: 11px;
-        font-weight: bold;
-        text-align: right;
+
+    body {
+        margin: 0;
+        padding: 0;
+        background-size: cover;
+        font-family: sans-serif;
     }
 
-    input {
-        display: block;
-        font-size: 11px;
-        padding: 4px 2px;
-        border: solid 1px #aacfe4;
-        width: 200px;
-        margin: 2px 0 20px 10px;
+    .box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25rem;
+        padding: 2.5rem;
+        box-sizing: border-box;
+        border: 1px solid #dadce0;
+        -webkit-border-radius: 8px;
+        border-radius: 8px;
+
     }
+
+    .box h2 {
+        margin: 0px 0 -0.125rem;
+        padding: 0;
+        color: #fff;
+        text-align: center;
+        color: #202124;
+        font-family: 'Google Sans', 'Noto Sans Myanmar UI', arial, sans-serif;
+        font-size: 24px;
+        font-weight: 400;
+    }
+
+    .box p {
+        font-size: 16px;
+        font-weight: 400;
+        letter-spacing: .1px;
+        line-height: 1.5;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .box .inputBox {
+        position: relative;
+    }
+
+    .box .inputBox input {
+        width: 93%;
+        padding: 0.625rem 10px;
+        font-size: 1rem;
+        letter-spacing: 0.062rem;
+        margin-bottom: 1.875rem;
+        border: 1px solid #ccc;
+        background: transparent;
+        border-radius: 4px;
+
+    }
+
+    .box .inputBox label {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        padding: 0.625rem 0;
+        font-size: 1rem;
+        color: grey;
+        pointer-events: none;
+        transition: 0.5s;
+    }
+
+    .box .inputBox input:focus ~ label,
+    .box .inputBox input:valid ~ label,
+    .box .inputBox input:not([value=""]) ~ label {
+        top: -1.125rem;
+        left: 10px;
+        color: #1a73e8;
+        font-size: 0.75rem;
+        background-color: white;
+        height: 10px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .box .inputBox input:focus {
+        outline: none;
+        border: 2px solid #1a73e8;
+    }
+
+    .box input[type="button"] {
+        border: none;
+        outline: none;
+        color: #fff;
+        background-color: #F8901F;
+        padding: 0.625rem 1.25rem;
+        cursor: pointer;
+        border-radius: 0.312rem;
+        font-size: 1rem;
+        float: right;
+    }
+
+    .box input[type="button"]:hover {
+        background-color: #F1592A;
+        box-shadow: 0 1px 1px 0 rgba(66, 133, 244, 0.45), 0 1px 3px 1px rgba(66, 133, 244, 0.3);
+    }
+
 </style>
 
 <body>
-<h1>회원 가입</h1>
-<hr>
 
-<form th:action="@{/signup}" method="post">
-    <label> 아이디 </label> <input type="text" id="loginId" name="loginId" placeholder="아이디">
-    <label> 비밀번호 </label> <input type="password" id="password" name="password" placeholder="비밀번호">
-    <label> 이름 </label> <input type="text" id="userName" name="userName" placeholder="이름">
-    <label> 서비스 이용 기관 </label> <input type="text" id="organization" name="organization" placeholder="서비스 이용 기관">
-    <label> 사용자 소속 </label> <input type="text" id="userGroup" name="userGroup" placeholder="사용자 소속">
-    <label> 허가코드 </label> <input type="text" id="allowCode" name="allowCode" placeholder="허가 코드">
-    <input id="signup_button" type="button" value="가입하기">가입하기</button>
-</form>
+<div id="top_nav"></div>
+
+<div class="box">
+    <h2>회원가입</h2>
+    <p>Use your Dcloud account</p>
+    <form th:action="@{/signup}" method="post">
+        <div class="inputBox">
+            <input type="text" id="loginId" name="loginId" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>아이디</label>
+        </div>
+        <div class="inputBox">
+            <input type="password" id="password" name="password" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>비밀번호</label>
+        </div>
+        <div class="inputBox">
+            <input type="text" id="userName" name="userName" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>성명</label>
+        </div>
+        <div class="inputBox">
+            <input type="text" id="organization" name="organization" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>소속</label>
+        </div>
+        <input id="signup_button" type="button" value="가입하기"></button>
+    </form>
+</div>
 </body>
 </html>

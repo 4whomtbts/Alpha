@@ -37,7 +37,7 @@ import java.util.List;
 
 
 @Api(value ="Singup 컨트롤러 v1")
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class RootController {
 
@@ -53,59 +53,8 @@ public class RootController {
     private final UserService userService;
     private final SigninService signinService;
 
-    @GetMapping("/")
-    public String index() {
-        return "/index";
-    }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "OK"),
-        @ApiResponse(code = 400, message = DUPLICATE_LOGIN_ID_EXISTS)
-    })
 
-    @GetMapping("/signup")
-    public String singupGET() {
-        return "/signup";
-    }
-
-    @ResponseBody
-    @PostMapping(value = "/signup", produces = "application/json")
-    public ResponseEntity<String> signupPOST(@RequestBody SignupForm signupForm) {
-        try {
-            signinService.SignUp(signupForm);
-        } catch (DCloudException exception) {
-            return new ResponseEntity<>(exception.getErrorMessage(), exception.getStatusCode());
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/login")
-    public String loginGET() {
-        return "/login";
-    }
-
-    /*
-    @Secured(value = {"ROLE_ADMIN"})
-    @GetMapping("/admin")
-    public String adminGET(Principal principal) {
-        System.out.println(principal.getName());
-        return "/AdminController";
-    }
-    */
-
-    @GetMapping("/init")
-    public String initGET() {
-        List<Server> servers = new ArrayList<>();
-        for (int i=0; i < 6; i++) {
-            Server server = new Server(i+1, "192.168.1.1" + (i+1), 8081 + i, 9000 + (i * 100), new ServerResource());
-            serverRepository.save(server);
-            servers.add(server);
-        }
-        ContainerImage containerImage = new ContainerImage("aitf", "기본 이미지", "ssh, xrdp, jupyter");
-        containerImageRepository.save(containerImage);
-
-        return "/";
-    }
 
 }
 

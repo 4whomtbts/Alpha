@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ResourceAllocatorTest {
 
+    /*
     @Test
     public void allocateGPU() {
         List<Server> serverList = new ArrayList();
@@ -143,4 +144,5 @@ public class ResourceAllocatorTest {
             }
         }
     }
+    */
 }

@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CustomInstanceRepository {
 
-    List<Instance> findByUserLoginInd(String loginId);
+    List<Instance> findByUserLoginId(String loginId);
 }

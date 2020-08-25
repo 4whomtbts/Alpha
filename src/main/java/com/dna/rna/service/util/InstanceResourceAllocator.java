@@ -2,13 +2,19 @@ package com.dna.rna.service.util;
 
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.server.Server;
+import com.dna.rna.exception.DCloudException;
+import com.dna.rna.service.InstanceService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InstanceResourceAllocator {
+
+    private static final Logger logger = LoggerFactory.getLogger(InstanceResourceAllocator.class);
 
     public static final int MAX_GPU_NUM = 8;
 
@@ -42,7 +48,6 @@ public class InstanceResourceAllocator {
                     accGpuNum++;
                 }
                 if (accGpuNum == requestedGPU) {
-                    serverList.get(i).getServerResource().setGpus(result);
                     return new AllocationResult(i, result);
                 }
             }
@@ -64,12 +69,13 @@ public class InstanceResourceAllocator {
                     accGpuNum++;
                 }
                 if (accGpuNum == requestedGPU) {
-                    serverList.get(i).getServerResource().setGpus(result);
                     return new AllocationResult(i, result);
                 }
             }
             accGpuNum = 0;
         }
-        return null;
+
+        logger.error("매우심각 : allocateGPU 에 실패함 => 요청 GPU개수 : {}, 독점여부 : {}", requestedGPU);
+        throw DCloudException.ofInternalServerError("매우심각 : allocateGPU 에 실패함.");
     }
 }

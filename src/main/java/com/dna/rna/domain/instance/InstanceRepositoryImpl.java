@@ -19,7 +19,7 @@ public class InstanceRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<Instance> findByUserLoginInd(String loginId) {
+    public List<Instance> findByUserLoginId(String loginId) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QInstance qInstance = QInstance.instance;
 
