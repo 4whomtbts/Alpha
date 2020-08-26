@@ -15,9 +15,9 @@
         margin: 0px 0px 0px 0px;
     }
     #logo {
-        width: 50px;
+        width: 150px;
         height: 64px;
-        margin-right: 200px;
+        margin-right: 50px;
     }
 
     .navbar {
@@ -73,6 +73,14 @@
         color: #F8901F;
     }
 
+    .menu_container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+    }
+
 </style>
 
 <body>
@@ -80,9 +88,11 @@
     <div id="logo">
         <a th:href="@{/}">
         <img
+                style="margin-right:12px"
                 width="60px" height="50px"
                 src="https://www.iconsdb.com/icons/preview/orange/clouds-xxl.png"/></a>
-</div>
+        <span onclick="location.href='/'" style="font-family:'Noto Sans KR', sans-serif;font-size:28px">Dcloud</span>
+    </div>
     <div><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">관리자</a></div>
     <div><a sec:authorize="hasRole('ROLE_MEMBER')" th:href="@{/group}">그룹</a></div>
     <div><a sec:authorize="hasRole('ROLE_MEMBER')" th:href="@{/instances}">인스턴스</a></div>

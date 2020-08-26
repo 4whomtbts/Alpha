@@ -20,6 +20,7 @@ public class InstanceDto {
     private String instanceName;
     private String containerImageNickName;
     private String status;
+    private boolean normalStatus;
     private String resources;
     private String internalIP;
     private String externalIP;

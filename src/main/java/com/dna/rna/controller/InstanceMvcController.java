@@ -68,8 +68,16 @@ public class InstanceMvcController {
             String status;
             Future<String> fetchedStatus = futureList.get(i);
             InstanceDto instanceDto = instance.toInstanceDto();
+            boolean normalStatus = false;
             try {
                 status = fetchedStatus.get(3000, TimeUnit.MILLISECONDS);
+                if (status.equals("") || status.equals("STATUS\r\n")) {
+                    status = "서버에러 발생";
+                } else if (status.contains("Up")) {
+                    normalStatus = true;
+                } else if (status.contains("Created")) {
+                    status = "컨테이너가 생성되었으나 정상적으로 실행되지 않았습니다.";
+                }
             } catch (ExecutionException e) {
                 status = "서버에러 발생";
             } catch (TimeoutException e) {
@@ -77,6 +85,7 @@ public class InstanceMvcController {
                 fetchedStatus.cancel(true);
             }
             instanceDto.setStatus(status);
+            instanceDto.setNormalStatus(normalStatus);
             instanceDtoList.add(instanceDto);
         }
         instanceRepository.saveAll(instanceList);
@@ -133,7 +142,7 @@ public class InstanceMvcController {
         instanceService.createInstance(
                 instance.getInstanceName(), owner, selectedImage, instance.getNumberOfGpuToUse(),
                 instance.isUseGpuExclusively(), instance.getExternalPorts(), instance.getInternalPorts(), expiredAt);
-        return "/instance/index";
+        return "/instances/index";
     }
 
 

@@ -5,6 +5,9 @@
     <title>인스턴스</title>
 
 </head>
+<meta name="_csrf" data-th-content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 <style>
 
     .table_container {
@@ -179,40 +182,69 @@
 <script>
 
     $(document).ready(function () {
+        var csrfParameter = $('meta[name="_csrf_parameter"]').attr('content')
+        var csrfHeader = $('meta[name="_csrf_header"]').attr('content')
+        var csrfToken = $('meta[name="_csrf"]').attr('content')
 
         $("#top_nav").load("/topNav");
+
+        var selectedList = new Set();
+
+        function onClickCheckBox(self) {
+            var instanceId = self.id;
+            if (selectedList.has(instanceId)) {
+                selectedList.delete(instanceId);
+            } else {
+                selectedList.add(instanceId);
+            }
+        }
+
+        function deleteInstances(self) {
+            var arr = Array.from(selectedList);
+            for (var i=0; i < arr.length; i++) {
+                var result = $.ajax({
+                    url: "/instances/instance/"+arr[i],
+                    dataType: "text",
+                    method: "DELETE"
+                }).done(function (data) {
+                    console.log("인스턴스 삭제 완료");
+                }).fail(function (a, status, error) {
+                    alert("서버 에러 발생" + JSON.stringify(a) + ",  " + status + ", " + error)
+                });
+            }
+            location.reload();
+        }
+
+        $(".restart_instance").on("click", function() {
+            var instanceId = $(this).attr('id');
+            console.log("인스턴스 아이디" + instanceId);
+            $.ajax({
+                url: "/instances/instance/start/" + instanceId,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                cache: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function (res) {
+                    console.log(res);
+                    alert("인스턴스 재시작에 성공했습니다!")
+                    location.reload();
+                },
+                error: function (jqXHR, status, e) {
+                    alert("인스턴스 재시작 중 오류가 발생했습니다! + " + JSON.stringify(jqXHR) + ", " + status + " : " + e);
+                }
+            });
+        });
     });
 
-    var selectedList = new Set();
 
-    function onClickCheckBox(self) {
-        var instanceId = self.id;
-        if (selectedList.has(instanceId)) {
-            selectedList.delete(instanceId);
-        } else {
-            selectedList.add(instanceId);
-        }
-    }
-
-    function deleteInstances(self) {
-        var arr = Array.from(selectedList);
-        for (var i=0; i < arr.length; i++) {
-            var result = $.ajax({
-                url: "/instances/instance/"+arr[i],
-                dataType: "text",
-                method: "DELETE"
-            }).done(function (data) {
-                console.log("인스턴스 삭제 완료");
-            }).fail(function (a, status, error) {
-                alert("서버 에러 발생" + JSON.stringify(a) + ",  " + status + ", " + error)
-            });
-        }
-        location.reload();
-    }
 
 </script>
 
 <body>
+<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 <div id="top_nav"></div>
 <div th:class="table_container">
     <div th:class="table_title_container">
@@ -249,6 +281,12 @@
                 <div th:class="table_odd_row_title">상태</div>
                 <div th:class="table_odd_row_content"
                      th:text="${instance.status}"></div>
+                <th:block th:if="${instance.isNormalStatus()} == false">
+                    <button
+                            style="margin-left:24px"
+                            th:id="${instance.instanceId}"
+                            th:class="restart_instance">재시작</button>
+                </th:block>
             </div>
             <div class="table_even_row">
                 <div th:class="table_even_row_title">자원</div>

@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class InstanceCreationDto {
 
-    private String instanceUUID;
+    private String instanceContainerId;
     private String instanceHash;
 
 }

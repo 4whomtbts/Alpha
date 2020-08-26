@@ -7,6 +7,8 @@ import com.dna.rna.domain.group.Group;
 import com.dna.rna.domain.group.GroupRepository;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.instance.InstanceRepository;
+import com.dna.rna.domain.server.Server;
+import com.dna.rna.domain.server.ServerRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.domain.userRole.UserRole;
@@ -39,6 +41,7 @@ public class AdminService {
     private final UserRoleRepository userRoleRepository;
     private final AllowCodeRepository allowCodeRepository;
     private final InstanceRepository instanceRepository;
+    private final ServerRepository serverRepository;
 
     @Transactional
     public List<User> fetchUserList() {
@@ -53,6 +56,24 @@ public class AdminService {
     @Transactional
     public List<Instance> fetchAllInstance() {
         return instanceRepository.findAll();
+    }
+
+    @Transactional
+    public List<Server> fetchAllServer() {
+        return serverRepository.findAll();
+    }
+
+    @Transactional
+    // 서버를 instance 를 구동시켜줄 머신에서 제외한다(점검, 중요한 컨테이너 가동을 이유로)
+    // 해당 서버의 기존 instance에 영향을 주지 않고, 이 후에 instance 할당 시에
+    // 해당 서버는 후보서버에서 제외하는 것.
+    public void toggleServer(long serverId) {
+        Server targetServer = serverRepository.findById(serverId).orElseThrow(() ->
+                DCloudException.ofIllegalArgumentException(
+                        "["+serverId+"] 의 primary key를 가진 서버가 존재하지 않습니다."));
+        boolean currentExcludeStatus = targetServer.isExcluded();
+        targetServer.setExcluded(!currentExcludeStatus);
+        serverRepository.save(targetServer);
     }
 
     @Transactional

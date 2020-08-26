@@ -1,6 +1,5 @@
 package com.dna.rna.domain;
 
-import com.dna.rna.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
