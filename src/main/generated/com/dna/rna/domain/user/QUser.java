@@ -27,7 +27,7 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final ListPath<com.dna.rna.domain.groupUser.GroupUserType, EnumPath<com.dna.rna.domain.groupUser.GroupUserType>> groupUserTypes = this.<com.dna.rna.domain.groupUser.GroupUserType, EnumPath<com.dna.rna.domain.groupUser.GroupUserType>>createList("groupUserTypes", com.dna.rna.domain.groupUser.GroupUserType.class, EnumPath.class, PathInits.DIRECT2);
+    public final ListPath<com.dna.rna.domain.groupUser.GroupUser, com.dna.rna.domain.groupUser.QGroupUser> groupUserList = this.<com.dna.rna.domain.groupUser.GroupUser, com.dna.rna.domain.groupUser.QGroupUser>createList("groupUserList", com.dna.rna.domain.groupUser.GroupUser.class, com.dna.rna.domain.groupUser.QGroupUser.class, PathInits.DIRECT2);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -41,8 +41,6 @@ public class QUser extends EntityPathBase<User> {
     public final StringPath organization = createString("organization");
 
     public final StringPath password = createString("password");
-
-    public final StringPath userGroup = createString("userGroup");
 
     public final StringPath userName = createString("userName");
 

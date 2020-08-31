@@ -160,6 +160,14 @@
         }
     }
 
+    function instanceCreateStartedAlert() {
+        alert("인스턴스 생성이 시작됐습니다. 정상적으로 생성이 시작되면\n" +
+            "초기화 작업을 위해서 최소 10분이 소요됩니다.\n" +
+            "오류가 발생한 것이 아니니, 현재 창에서 확인을 누르시고\n " +
+            "새로고침 및 창을 떠나지마세요");
+        location.href = "/";
+    }
+
 </script>
 
 <body>
@@ -217,7 +225,16 @@
                                   th:checked="${useGpuExclusively}">독점적GPU사용</label>
                 </div>
             </div>
-
+            <div class="row">
+                <div th:class="row_title">sudoer 아이디</div>
+                <input type="text" th:class="row_content"
+                       th:field="*{sudoerId}" placeholder="sudoer로 쓸 유저 아이디(4글자이상)">
+            </div>
+            <div class="row">
+                <div th:class="row_title">sudoer 패스워드</div>
+                <input type="text" th:class="row_content"
+                       th:field="*{sudoerPwd}" placeholder="sudoer로 쓸 유저 패스워드(8글자이상)">
+            </div>
             <p style="font-size:12px;color:#4285F4;margin:0">포트매핑 예시) 태그 : ssh, 9000:22 일 시</p>
             <p style="font-size:12px;color:#4285F4;margin-top:0">태그는 단순 이름이며, 9000포트로 요청 시 인스턴스 22포트로 매핑</p>
 
@@ -230,7 +247,7 @@
                 <button type="submit" name="addExternalPort">외부포트 추가</button>
             </div>
             <div th:class="row">
-                <button type="submit">생성</button>
+                <button onclick="instanceCreateStartedAlert()" type="submit">생성</button>
             </div>
         </form>
     </div>

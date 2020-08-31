@@ -1,9 +1,12 @@
 package com.dna.rna.service.util;
 
 import com.dna.rna.domain.ServerResource;
+import com.dna.rna.domain.group.Group;
+import com.dna.rna.domain.groupUser.GroupUser;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.serverPort.ServerPort;
+import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.InstanceCreationDto;
 import com.jcraft.jsch.*;
 
@@ -19,13 +22,16 @@ public class SshExecutor {
         StringBuilder result = new StringBuilder();
         result.append("--gpus ");
         result.append("'\"device=");
+        // 쉼표가 잘 못 찍히는 것을 막기 위한 조건
+        int acc = 0;
         for (int i = 0; i < gpus.size(); i++) {
             int curr = gpus.get(i);
             if (curr == -1 || curr == 1) {
-                if (i != 0) {
+                if (i != 0 && acc != 0) {
                     result.append(',');
                 }
-                result.append((i + 1));
+                result.append(i);
+                acc++;
             }
         }
         result.append("\"'");
@@ -134,10 +140,49 @@ public class SshExecutor {
         return result.toString();
     }
 
-    public InstanceCreationDto createNewInstance(int serverHostSshPort, List<ServerPort> selectedPortList, ServerResource serverResource) throws Exception {
+    private String storageOptionBuilder(String storageServerDirectoryPath, String containerDirectoryPath) {
+        return "--mount type=bind,source=\"" + storageServerDirectoryPath +
+                "\",target=" + containerDirectoryPath + " ";
+    }
+
+    private String mappingGlobalStorage(Server server, String sudoerId) {
+        return storageOptionBuilder(server.getSharedDirectoryPath() +
+                                    "/global-share",
+                                    "/home/"+sudoerId+"/dcloud-global-dir");
+    }
+
+    private String mappingGroupStorage(User user, String sudoerId) {
+        StringBuilder result = new StringBuilder();
+        for (int i=0; i < user.getGroupUserList().size(); i++) {
+            GroupUser groupUser = user.getGroupUserList().get(i);
+            Group group = groupUser.getGroup();
+            result.append(storageOptionBuilder(group.getGroupShareDirName(),
+                          "/home/"+sudoerId+"/"+group.getGroupName()+ "-dcloud-dir"));
+        }
+        return result.toString();
+    }
+
+    private String mappingUserStorage(Server server, User user, String sudoerId) {
+        return storageOptionBuilder(server.getSharedDirectoryPath() +
+                                    "/user-share/" +
+                                    user.getLoginId(),
+                                    "/home/"+sudoerId+"/"+user.getLoginId() + "-dcloud-dir");
+    }
+
+    private String mappingStoragesOption(Server selectedServer, User user, String sudoerId) {
+        StringBuilder result = new StringBuilder();
+        result.append(mappingGlobalStorage(selectedServer, sudoerId));
+        result.append(mappingGroupStorage(user, sudoerId));
+        result.append(mappingUserStorage(selectedServer, user, sudoerId));
+        return result.toString();
+    }
+
+    public SshResult<InstanceCreationDto> createNewInstance(Server selectedServer, User user, List<ServerPort> selectedPortList,
+                                                            ServerResource serverResource, String sudoerId) throws Exception {
+
         String generatedInstanceID = UUID.randomUUID().toString();
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
+        Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -148,15 +193,18 @@ public class SshExecutor {
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
         String dcloudImage = "dcloud:1.0";
-        String commad = "sudo docker run -d " +
+        String command =
+                "sudo mkdir " + selectedServer.getSharedDirectoryPath() +"/user-share/"+ user.getLoginId() + ";" +
+                "sudo docker run -d " +
                 buildGpuAllocOptionValue(serverResource) + " " +
                 generatedDockerRunPortOption(selectedPortList) +
                 "-it --runtime=nvidia " +
                 "--cap-add=SYS_ADMIN " +
                 "--shm-size=2g " +
+                mappingStoragesOption(selectedServer, user, sudoerId) +
                 "--name " + generatedInstanceID + " " + dcloudImage;
-        channelExec.setCommand(commad);
-        System.out.println(commad);
+        channelExec.setCommand(command);
+        System.out.println(command);
 
         //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
@@ -180,7 +228,15 @@ public class SshExecutor {
                 String lineSeparator = System.lineSeparator();
                 String containerHash = outputBuffer.toString().replaceAll(lineSeparator, "");
 
-                return new InstanceCreationDto(generatedInstanceID, containerHash);
+                SshResultError error = null;
+                int exitStatus = channel.getExitStatus();
+                if (exitStatus != 0) {
+                    error = new SshResultError(outputBuffer.toString(), exitStatus);
+                }
+
+                return new SshResult<>(
+                        error,
+                        new InstanceCreationDto(generatedInstanceID, containerHash));
             }
         }
     }
@@ -196,7 +252,7 @@ List<String> commands = new ArrayList<>();
         commands.add("sudo docker cp ~/dcloud/images/"+dcloudImage+"/init.sh "+dcloudImage+":/");
         commands.add("sudo docker exec -it "+generatedInstanceID+" bash /init.sh");
  */
-    public String copyInitShellScriptToInstance(int serverHostSshPort, String instanceContainerId) throws JSchException, IOException {
+    public SshResult<String> copyInitShellScriptToInstance(int serverHostSshPort, String instanceContainerId) throws JSchException, IOException {
         JSch jsch = new JSch();
         Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
         session.setPassword("Hndp^(%#9!Q");
@@ -232,12 +288,17 @@ List<String> commands = new ArrayList<>();
                 System.out.println(outputBuffer.toString());
                 System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
-                return outputBuffer.toString();
+
+                int exitStatus = channel.getExitStatus();
+                SshResultError error = null;
+                if (exitStatus != 0) error = new SshResultError(outputBuffer.toString(), exitStatus);
+                return new SshResult<>(error, outputBuffer.toString());
             }
         }
     }
 
-    public String executeInstanceInit(int serverHostSshPort, String instanceContainerId) throws JSchException, IOException {
+    public SshResult<String> executeInstanceInit(int serverHostSshPort, String instanceContainerId, String sudoerId,
+                                                 String sudoerPwd) throws JSchException, IOException {
         String generatedInstanceID = UUID.randomUUID().toString();
         JSch jsch = new JSch();
         Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
@@ -251,9 +312,9 @@ List<String> commands = new ArrayList<>();
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
         String dcloudImage = "dcloud:1.0";
-        String commad = "sudo docker exec -it "+instanceContainerId+" bash /init.sh hello 1234";
-        channelExec.setCommand(commad);
-        System.out.println(commad);
+        String command = "sudo docker exec -it "+instanceContainerId+" bash /init.sh " + sudoerId + " " + sudoerPwd;
+        channelExec.setCommand(command);
+        System.out.println(command);
 
         //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
@@ -274,7 +335,11 @@ List<String> commands = new ArrayList<>();
                 System.out.println(outputBuffer.toString());
                 System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
-                return outputBuffer.toString();
+
+                int exitStatus = channel.getExitStatus();
+                SshResultError error = null;
+                if (exitStatus != 0) error = new SshResultError(outputBuffer.toString(), exitStatus);
+                return new SshResult<>(error, outputBuffer.toString());
             }
         }
     }

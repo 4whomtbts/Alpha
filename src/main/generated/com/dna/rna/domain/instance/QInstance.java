@@ -31,7 +31,11 @@ public class QInstance extends EntityPathBase<Instance> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final BooleanPath error = createBoolean("error");
+
     public final DateTimePath<java.time.LocalDateTime> expiredAt = createDateTime("expiredAt", java.time.LocalDateTime.class);
+
+    public final BooleanPath initialized = createBoolean("initialized");
 
     public final StringPath instanceContainerId = createString("instanceContainerId");
 

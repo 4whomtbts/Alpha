@@ -25,7 +25,7 @@ public class Server {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = SERVER_ID)
-    private Long serverId;
+    private long serverId;
 
     @Column(name = "server_num")
     private int serverNum;
@@ -44,6 +44,9 @@ public class Server {
 
     @Column(name = "excluded")
     private boolean excluded;
+
+    @Column(name = "shared_directory_path")
+    private String sharedDirectoryPath;
 
     @Embedded
     private ServerResource serverResource;

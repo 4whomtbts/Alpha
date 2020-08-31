@@ -28,8 +28,8 @@ public class ServerPortRepositoryImpl extends QuerydslRepositorySupport implemen
         OrderSpecifier orderSpecifier = qServerPort.from.asc();
 
         List<ServerPort> result = queryFactory.selectFrom(qServerPort)
-                            .where(qServerPort.instance.server.eq(server)
-                                   .and(qServerPort.external.eq(true)))
+                            .where(qServerPort.instance.server.serverId.eq(server.getServerId())
+                                    .and(qServerPort.external.eq(true)))
                             .orderBy(orderSpecifier).fetch();
         return result;
     }

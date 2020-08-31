@@ -77,7 +77,7 @@ public class AdminMvcController {
             Future<String> fetchedStatus = futureList.get(i);
             InstanceDto instanceDto = instance.toInstanceDto();
             try {
-                status = fetchedStatus.get(3000, TimeUnit.MILLISECONDS);
+                status = fetchedStatus.get(5000, TimeUnit.MILLISECONDS);
                 if (status.equals("") || status.equals("STATUS\r\n")) {
                     status = "서버에러 발생";
                 }

@@ -1,6 +1,7 @@
 package com.dna.rna.dto;
 
 import com.dna.rna.domain.containerImage.ContainerImage;
+import com.dna.rna.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,12 +28,17 @@ public class InstanceDto {
     private String externalPorts;
     private String internalPorts;
     private String period;
+    private boolean error;
+    private boolean initialized;
 
     @Getter
     @Setter
     @AllArgsConstructor
     public static class Post {
         private String instanceName;
+        private User owner;
+        private String sudoerId;
+        private String sudoerPwd;
         private String purpose;
         private Long containerImageId;
         private int reserveHour;

@@ -22,6 +22,8 @@ public class QServer extends EntityPathBase<Server> {
 
     public static final QServer server = new QServer("server");
 
+    public final BooleanPath excluded = createBoolean("excluded");
+
     public final ListPath<com.dna.rna.domain.instance.Instance, com.dna.rna.domain.instance.QInstance> instanceList = this.<com.dna.rna.domain.instance.Instance, com.dna.rna.domain.instance.QInstance>createList("instanceList", com.dna.rna.domain.instance.Instance.class, com.dna.rna.domain.instance.QInstance.class, PathInits.DIRECT2);
 
     public final StringPath internalIP = createString("internalIP");
@@ -35,6 +37,8 @@ public class QServer extends EntityPathBase<Server> {
     public final NumberPath<Integer> serverNum = createNumber("serverNum", Integer.class);
 
     public final com.dna.rna.domain.QServerResource serverResource;
+
+    public final StringPath sharedDirectoryPath = createString("sharedDirectoryPath");
 
     public final NumberPath<Integer> sshPort = createNumber("sshPort", Integer.class);
 

@@ -29,6 +29,10 @@ public class QGroup extends EntityPathBase<Group> {
 
     public final StringPath groupName = createString("groupName");
 
+    public final StringPath groupShareDirName = createString("groupShareDirName");
+
+    public final NumberPath<Integer> groupStatus = createNumber("groupStatus", Integer.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 

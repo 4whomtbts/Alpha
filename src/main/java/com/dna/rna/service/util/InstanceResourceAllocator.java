@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InstanceResourceAllocator {
@@ -23,6 +24,7 @@ public class InstanceResourceAllocator {
     public class AllocationResult {
         private final int index;
         private final List<Integer> gpus;
+        private final List<Integer> newInstanceGpus;
     }
 
     public AllocationResult allocateGPU(List<Server> serverList, int requestedGPU, boolean useResourceExclusively) {
@@ -32,6 +34,7 @@ public class InstanceResourceAllocator {
 
         int accGpuNum = 0;
         List<Integer> result;
+        List<Integer> newInstanceGpus = new ArrayList<Integer>(Collections.nCopies(MAX_GPU_NUM, 0));
 
         for (int i = 0; i < serverList.size(); i++) {
             Server server = serverList.get(i);
@@ -42,13 +45,15 @@ public class InstanceResourceAllocator {
                 if (gpuStatus == ServerResource.UN_ALLOC) {
                     if (useResourceExclusively) {
                         result.set(j, ServerResource.EXCLUSIVELY_ALLOC);
+                        newInstanceGpus.set(j, ServerResource.EXCLUSIVELY_ALLOC);
                     } else {
                         result.set(j, ServerResource.ALLOC);
+                        newInstanceGpus.set(j, ServerResource.ALLOC);
                     }
                     accGpuNum++;
                 }
                 if (accGpuNum == requestedGPU) {
-                    return new AllocationResult(i, result);
+                    return new AllocationResult(i, result, newInstanceGpus);
                 }
             }
             accGpuNum = 0;
@@ -62,14 +67,16 @@ public class InstanceResourceAllocator {
             Server server = serverList.get(i);
             List<Integer> gpuStatuses = server.getServerResource().getGpus();
             result = new ArrayList<>(gpuStatuses);
+            newInstanceGpus = new ArrayList<Integer>(Collections.nCopies(MAX_GPU_NUM, 0));
             for (int j = 0; j < result.size(); j++) {
                 int gpuStatus = result.get(j);
-                if (gpuStatus != ServerResource.EXCLUSIVELY_ALLOC) {
-                    result.set(j, gpuStatus + 1);
+                    if (gpuStatus != ServerResource.EXCLUSIVELY_ALLOC) {
+                        result.set(j, gpuStatus + 1);
+                    newInstanceGpus.set(j, ServerResource.ALLOC);
                     accGpuNum++;
                 }
                 if (accGpuNum == requestedGPU) {
-                    return new AllocationResult(i, result);
+                    return new AllocationResult(i, result, newInstanceGpus);
                 }
             }
             accGpuNum = 0;

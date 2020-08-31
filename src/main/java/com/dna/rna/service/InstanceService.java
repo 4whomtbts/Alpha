@@ -12,11 +12,13 @@ import com.dna.rna.domain.serverPort.ServerPortRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.dto.InstanceCreationDto;
+import com.dna.rna.dto.InstanceDto;
 import com.dna.rna.dto.ServerPortDto;
 import com.dna.rna.exception.DCloudException;
 import com.dna.rna.service.util.InstanceNetworkAllocator;
 import com.dna.rna.service.util.InstanceResourceAllocator;
 import com.dna.rna.service.util.SshExecutor;
+import com.dna.rna.service.util.SshResult;
 import com.jcraft.jsch.JSchException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -57,44 +59,60 @@ public class InstanceService {
             if ((currInstanceStat == ServerResource.EXCLUSIVELY_ALLOC)
                     && (currGpuStat == ServerResource.EXCLUSIVELY_ALLOC)) {
                 changedServerGpus.add(ServerResource.UN_ALLOC);
-            } else if (currInstanceStat >= ServerResource.ALLOC) {
+            } else if (currInstanceStat == ServerResource.ALLOC) {
                 changedServerGpus.add(currGpuStat-1);
             } else if (currInstanceStat == ServerResource.UN_ALLOC) {
                 changedServerGpus.add(currGpuStat);
             } else {
                 logger.error("매우심각 : 인스턴스 [{}] 를 삭제하려는 도중 " +
-                                "서버 [{}] 의 gpu 상태가 [{}]로 비정상적입니다.",
-                        instance.getInstanceId(), serverOfInstance.getInternalIP(), currGpuStat);
-                throw new IllegalArgumentException("인스턴스 삭제를 시도하려는 도중 오류가 발생하였습니다.");
+                                "서버 [{}] 의 gpu 상태가 [{}] 이고, 인스턴스의 gpu 상태가 [{}]로 비정상적입니다.",
+                        instance.getInstanceId(), serverOfInstance.getInternalIP(), currGpuStat, currInstanceStat);
             }
         }
         serverOfInstance.getServerResource().setGpus(changedServerGpus);
         SshExecutor.deleteInstance(serverOfInstance, instance);
+        //serverOfInstance.getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
+        //instance.getContainerImage().getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
+        //instance.getOwner().getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
+
         serverRepository.save(serverOfInstance);
         instanceRepository.delete(instance);
     }
 
     @Transactional
-    public void createInstance(String instanceName, User owner, ContainerImage containerImage, int requestedGPU,
-                               boolean useResourceExclusively, List<ServerPortDto.Creation> externalPorts,
-                               List<ServerPortDto.Creation> internalPorts, LocalDateTime expiredAt) throws Exception {
+    public void createInstance(final InstanceDto.Post instanceDto, LocalDateTime expiredAt) throws Exception {
+        List<ServerPortDto.Creation> externalPorts = instanceDto.getExternalPorts();
+        List<ServerPortDto.Creation> internalPorts = instanceDto.getInternalPorts();
+        int requestedGPU = instanceDto.getNumberOfGpuToUse();
+        boolean useResourceExclusively = instanceDto.isUseGpuExclusively();
+        String instanceName = instanceDto.getInstanceName();
+        User owner = instanceDto.getOwner();
+        ContainerImage containerImage =
+                containerImageRepository.findById(instanceDto.getContainerImageId())
+                                        .orElseThrow(() ->
+                                            DCloudException.ofInternalServerError("사용자가 선택한 containerImage"
+                                                  + instanceDto.getContainerImageId()+"] 가 존재하지 않습니다"));
+        String sudoerId = instanceDto.getSudoerId();
+
         externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
         internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
-        containerImageRepository.save(containerImage);
+//        containerImageRepository.save(containerImage);
         List<Server> servers = serverRepository.findAll();
-
+        List<Server> notExcludedServers = new ArrayList<>();
         for (int i=0; i < servers.size(); i++) {
             Server currServer = servers.get(i);
-            if (currServer.isExcluded()) {
-                servers.remove(currServer);
+            if (!currServer.isExcluded()) {
+                notExcludedServers.add(currServer);
             }
         }
 
         InstanceResourceAllocator instanceResourceAllocator = new InstanceResourceAllocator();
-        final InstanceResourceAllocator.AllocationResult result = instanceResourceAllocator.allocateGPU(servers, requestedGPU, useResourceExclusively);
-        Server selectedServer = servers.get(result.getIndex());
+        final InstanceResourceAllocator.AllocationResult result =
+                instanceResourceAllocator.allocateGPU(notExcludedServers, requestedGPU, useResourceExclusively);
+
+        Server selectedServer = notExcludedServers.get(result.getIndex());
         selectedServer.getServerResource().setGpus(result.getGpus());
-        serverRepository.saveAll(servers);
+        serverRepository.saveAll(notExcludedServers);
         InstanceNetworkAllocator instanceNetworkAllocator = new InstanceNetworkAllocator();
         List<ServerPort> allocatedExternalPortList = serverPortRepository.fetchFreeExternalPortOfServer(selectedServer);
         List<ServerPort> allocatedInternalPortList = serverPortRepository.fetchFreeInternalPortOfServer(selectedServer);
@@ -147,24 +165,78 @@ public class InstanceService {
         }
 
         SshExecutor sshExecutor = new SshExecutor();
-        InstanceCreationDto instanceCreationResult =
-                sshExecutor.createNewInstance(selectedServer.getSshPort(), selectedPortList, new ServerResource(result.getGpus()));
-        String copyResult =
+        SshResult<InstanceCreationDto> instanceCreationSshResult =
+                sshExecutor.createNewInstance(selectedServer, owner, selectedPortList,
+                                              new ServerResource(result.getNewInstanceGpus()), instanceDto.getSudoerId());
+
+        if (instanceCreationSshResult.getError() != null) {
+            throw DCloudException.ofInternalServerError(
+                    "인스턴스 생성 중 오류가 발생했습니다. 실패 사유는 해당 인스턴스에서 인스턴스 로그 메뉴에서 확인하거나" +
+                            "관리자에게 문의해주세요.",
+                    "인스턴스 생성 실패 = " + instanceCreationSshResult.getError().getCode() + ", "
+                            + instanceCreationSshResult.getError().getError());
+        }
+
+        InstanceCreationDto instanceCreationResult = instanceCreationSshResult.getResult();
+
+        SshResult<String> copyResult =
                 sshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId());
-        String executeInitShellScriptResult =
-                sshExecutor.executeInstanceInit(selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId());
 
-        System.out.println("카피결과 = " + copyResult);
-        System.out.println("초기화 결과 = " + executeInitShellScriptResult);
+        if (copyResult.getError() != null) {
+            throw DCloudException.ofInternalServerError(
+                    "인스턴스 생성 중 오류가 발생했습니다. 실패 사유는 해당 인스턴스에서 인스턴스 로그 메뉴에서 확인하거나" +
+                            "관리자에게 문의해주세요.",
+                    "인스턴스 생성 실패 = " + instanceCreationSshResult.getError().getCode() + ", "
+                            + instanceCreationSshResult.getError().getError());
+        }
 
-        Instance instance =
+        final Instance instance =
                 new Instance(instanceName, instanceCreationResult.getInstanceContainerId(), instanceCreationResult.getInstanceHash(),
                         owner, containerImage, selectedServer, new ServerResource(), null, expiredAt);
-        instance.getAllocatedResources().setGpus(result.getGpus());
+        instance.getAllocatedResources().setGpus(result.getNewInstanceGpus());
         instanceRepository.save(instance);
+
+        for (int i=0; i < selectedPortList.size(); i++) {
+            selectedPortList.get(i).setInstance(instance);
+        }
+
+        // 초기화 프로세스는 일반적으로 시간이 오래 걸리므로
+        // 쓰레드로 돌린 후, 나중에 결과를 확인하도록 함.
+        new Thread(() -> {
+            try {
+                SshResult<String> instanceInitSshResult =
+                sshExecutor.executeInstanceInit(
+                        selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId(),
+                        instanceDto.getSudoerId(), instanceDto.getSudoerPwd());
+                if (instanceInitSshResult.getError() != null) {
+                    instance.setError(true);
+                    throw DCloudException.ofInternalServerError(
+                            "인스턴스 생성 중 오류가 발생했습니다. 실패 사유는 해당 인스턴스에서 인스턴스 로그 메뉴에서 확인하거나" +
+                                    "관리자에게 문의해주세요.",
+                            "인스턴스 생성 실패 = " + instanceCreationSshResult.getError().getCode() + ", "
+                                    + instanceCreationSshResult.getError().getError());
+                }
+                instanceRepository.save(instance);
+            } catch (JSchException | IOException e) {
+                instance.setError(true);
+                throw DCloudException.ofInternalServerError(
+                        "인스턴스 생성 중 오류가 발생했습니다. 실패 사유는 해당 인스턴스에서 인스턴스 로그 메뉴에서 확인하거나" +
+                                "관리자에게 문의해주세요.",
+                        "인스턴스 생성 실패 = " + instanceCreationSshResult.getError().getCode() + ", "
+                                + instanceCreationSshResult.getError().getError(),
+                        e);
+            } finally {
+                // 초기화에 실패, 성공 여부를 DB에 저장해서 사용자가 인스턴스
+                // 목록을 확인했을 때 성공인지 실패인지 확인할 수 있게 하기 위함.
+                instance.setInitialized(true);
+                instanceRepository.save(instance);
+            }
+        }).start();
+
+
         serverPortRepository.saveAll(selectedPortList);
         instance.setInstancePorts(selectedPortList);
-        instanceRepository.save(instance);
+
     }
 
     @Transactional

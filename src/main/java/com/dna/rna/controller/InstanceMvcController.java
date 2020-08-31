@@ -9,6 +9,7 @@ import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.dto.InstanceDto;
 import com.dna.rna.dto.ServerPortDto;
+import com.dna.rna.exception.DCloudException;
 import com.dna.rna.service.InstanceService;
 import com.dna.rna.service.util.SshExecutor;
 import org.slf4j.Logger;
@@ -133,15 +134,28 @@ public class InstanceMvcController {
     public String instanceCreatePOST(@ModelAttribute("instance") InstanceDto.Post instance, Principal principal, Model model) throws Exception {
 
         User owner = userRepository.findUserByLoginId(principal.getName());
-        ContainerImage selectedImage = containerImageRepository.findById(instance.getContainerImageId()).orElseThrow();
+        instance.setOwner(owner);
 
-        LocalDateTime expiredAt = null;
-        if (!instance.isIndefinitelyUse()) {
-            expiredAt = LocalDateTime.now().plusHours(instance.getReserveHour());
+        if (instance.getSudoerId().equals("") || instance.getSudoerId().length() < 4) {
+            return "/instances/create";
         }
-        instanceService.createInstance(
-                instance.getInstanceName(), owner, selectedImage, instance.getNumberOfGpuToUse(),
-                instance.isUseGpuExclusively(), instance.getExternalPorts(), instance.getInternalPorts(), expiredAt);
+        if (instance.getSudoerPwd().equals("") || instance.getSudoerPwd().length() < 8) {
+            return "/instances/create";
+        }
+
+        new Thread(() -> {
+            LocalDateTime expiredAt = null;
+            if (!instance.isIndefinitelyUse()) {
+                expiredAt = LocalDateTime.now().plusHours(instance.getReserveHour());
+            }
+            try {
+                instanceService.createInstance(instance, expiredAt);
+            } catch (Exception e) {
+                logger.error("createInstance 과정 중에 예외가 발생했습니다 [{}]", e.getMessage());
+                throw DCloudException.ofInternalServerError("createInstance 과정 중에 예외가 발생했습니다. ["+e.getMessage()+"]");
+            }
+        }).run();
+
         return "/instances/index";
     }
 

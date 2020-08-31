@@ -91,12 +91,16 @@ public class InstanceResourceAllocatorTest {
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result3 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result3.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result4 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result4.getIndex()).getServerResource().setGpus(result1.getGpus());
         assertThat(result4.getIndex()).isEqualTo(3);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);

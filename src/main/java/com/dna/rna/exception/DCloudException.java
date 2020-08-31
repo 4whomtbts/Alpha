@@ -42,4 +42,10 @@ public class DCloudException extends RuntimeException {
         if (debugMessage == null) debugMessage = "";
         return new DCloudException(errorMessage, debugMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    public static DCloudException ofInternalServerError(String errorMessage, String debugMessage, Exception nativeException) {
+        if (debugMessage == null) debugMessage = "";
+        return new DCloudException(errorMessage, debugMessage + "\n Native Exception : " + nativeException.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

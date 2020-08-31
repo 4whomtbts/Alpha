@@ -33,7 +33,7 @@ public class Instance extends BaseAuditorEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = INSTANCE_ID)
-    private Long instanceId;
+    private long instanceId;
 
     @Column(name = "instance_name")
     private String instanceName;
@@ -45,10 +45,19 @@ public class Instance extends BaseAuditorEntity {
     @Column(name = "instance_container_id")
     private String instanceContainerId;
 
-    @Column(name = "instance_hash")
+    @Column(name = "instance_hash", length = 512)
     private String instanceHash;
 
-    @OneToMany
+    @Column(name = "initialized")
+    private boolean initialized = false;
+
+    @Column(name = "error")
+    private boolean error = false;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JoinColumn(name = INSTANCE_ID)
     private List<ServerPort> instancePorts;
 
@@ -154,6 +163,7 @@ public class Instance extends BaseAuditorEntity {
         return new InstanceDto(
                 this.instanceId, this.instanceContainerId, this.instanceHash.substring(0, 12), this.instanceName, this.containerImage.getContainerImageNickName(),
                 "RUNNING", false, gpuResource.toString(), server.getInternalIP(), "210.94.223.123",
-                 externalPortsBuilder.toString(), internalPortsBuilder.toString(), periodBuilder.toString());
+                 externalPortsBuilder.toString(), internalPortsBuilder.toString(), periodBuilder.toString(),
+                 error, initialized);
     }
 }
