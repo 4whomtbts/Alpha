@@ -58,30 +58,35 @@ public class InstanceResourceAllocatorTest {
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result2.getGpus());
         assertThat(result2.getIndex()).isEqualTo(1);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
             assertThat(result2.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
         }
     }
+
     @Test
     public void allocateGPU_PASS_2_AND_FILL_UP_SERVERS1_2_3() {
         List<Server> list = getFreeGPUList();
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result2.getGpus());
         InstanceResourceAllocator.AllocationResult result3 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result3.getIndex()).getServerResource().setGpus(result3.getGpus());
         assertThat(result3.getIndex()).isEqualTo(2);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
             assertThat(result2.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
             assertThat(result3.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
-
         }
     }
 
@@ -116,14 +121,19 @@ public class InstanceResourceAllocatorTest {
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result2.getGpus());
         InstanceResourceAllocator.AllocationResult result3 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result3.getIndex()).getServerResource().setGpus(result3.getGpus());
         InstanceResourceAllocator.AllocationResult result4 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result4.getIndex()).getServerResource().setGpus(result4.getGpus());
         InstanceResourceAllocator.AllocationResult result5 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result5.getIndex()).getServerResource().setGpus(result5.getGpus());
         assertThat(result5.getIndex()).isEqualTo(4);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
@@ -140,16 +150,22 @@ public class InstanceResourceAllocatorTest {
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result2.getGpus());
         InstanceResourceAllocator.AllocationResult result3 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result3.getIndex()).getServerResource().setGpus(result3.getGpus());
         InstanceResourceAllocator.AllocationResult result4 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result4.getIndex()).getServerResource().setGpus(result4.getGpus());
         InstanceResourceAllocator.AllocationResult result5 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result5.getIndex()).getServerResource().setGpus(result5.getGpus());
         InstanceResourceAllocator.AllocationResult result6 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result6.getIndex()).getServerResource().setGpus(result5.getGpus());
         assertThat(result6.getIndex()).isEqualTo(5);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
@@ -167,16 +183,22 @@ public class InstanceResourceAllocatorTest {
         int requestGpuNum = MAX_GPU_NUM;
         InstanceResourceAllocator.AllocationResult result1 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         InstanceResourceAllocator.AllocationResult result2 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result2.getIndex()).getServerResource().setGpus(result2.getGpus());
         InstanceResourceAllocator.AllocationResult result3 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result3.getIndex()).getServerResource().setGpus(result3.getGpus());
         InstanceResourceAllocator.AllocationResult result4 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result4.getIndex()).getServerResource().setGpus(result4.getGpus());
         InstanceResourceAllocator.AllocationResult result5 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result5.getIndex()).getServerResource().setGpus(result5.getGpus());
         InstanceResourceAllocator.AllocationResult result6 =
                 instanceResourceAllocator.allocateGPU(list, requestGpuNum, true);
+        list.get(result6.getIndex()).getServerResource().setGpus(result5.getGpus());
         assertThat(result6.getIndex()).isEqualTo(5);
         for (int i=0; i < result1.getGpus().size(); i++) {
             assertThat(result1.getGpus().get(i)).isEqualTo(ServerResource.EXCLUSIVELY_ALLOC);
@@ -239,7 +261,7 @@ public class InstanceResourceAllocatorTest {
         List<Server> list = getFreeGPUList();
         int numExclusiveGPU = 3;
         InstanceResourceAllocator.AllocationResult result1 =
-                instanceResourceAllocator.allocateGPU(list, numExclusiveGPU, true);
+                instan ceResourceAllocator.allocateGPU(list, numExclusiveGPU, true);
         assertThat(result1.getIndex()).isEqualTo(0);
         list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         for (int i=0; i < numExclusiveGPU; i++) {
