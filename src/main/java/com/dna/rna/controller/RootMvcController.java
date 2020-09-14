@@ -42,12 +42,12 @@ public class RootMvcController {
 
     @GetMapping("/topNav")
     public String topNav() {
-        return "/topNav";
+        return "topNav";
     }
 
     @GetMapping("/")
     public String index() {
-        return "/index";
+        return "index";
     }
 
     @ApiResponses({
@@ -57,7 +57,7 @@ public class RootMvcController {
 
     @GetMapping("/signup")
     public String singupGET() {
-        return "/signup";
+        return "signup";
     }
 
     @PostMapping(value = "/signup")
@@ -65,14 +65,14 @@ public class RootMvcController {
         try {
             signinService.SignUp(signupForm);
         } catch (DCloudException exception) {
-            return "/signup";
+            return "signup";
         }
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/login")
     public String loginGET() {
-        return "/login";
+        return "login";
     }
 
     @GetMapping("/init")
