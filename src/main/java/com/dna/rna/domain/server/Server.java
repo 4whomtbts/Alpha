@@ -3,6 +3,7 @@ package com.dna.rna.domain.server;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.dto.InstanceCreationDto;
+import com.dna.rna.service.util.SshExecutor;
 import com.jcraft.jsch.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +52,8 @@ public class Server {
     @Embedded
     private ServerResource serverResource;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER,
+               orphanRemoval = true)
     @JoinColumn(name = "server")
     private List<Instance> instanceList;
 
@@ -81,6 +83,51 @@ public class Server {
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
         String commad = "sudo docker start " + containerHash;
+        channelExec.setCommand(commad);
+        System.out.println(commad);
+
+        //콜백을 받을 준비.
+        StringBuilder outputBuffer = new StringBuilder();
+        InputStream in = channel.getInputStream();
+        ((ChannelExec) channel).setErrStream(System.err);
+
+        channel.connect();  //실행
+
+        byte[] tmp = new byte[1024];
+        while (true) {
+            while (in.available() > 0) {
+                int i = in.read(tmp, 0, 1024);
+                outputBuffer.append(new String(tmp, 0, i));
+                if (i < 0) break;
+            }
+            if (channel.isClosed()) {
+                System.out.println("결과");
+                System.out.println(outputBuffer.toString());
+                System.out.println("에러 = " + channel.getExitStatus());
+                channel.disconnect();
+                String lineSeparator = System.lineSeparator();
+                String result = outputBuffer.toString().replaceAll(lineSeparator, "");
+
+                return result;
+            }
+        }
+    }
+
+    // ssh 랑 xrdp 를 재시작 해주는 스크립트
+    public String restartRemoteAccessServices(String containerHash) throws JSchException, IOException {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession("4whomtbts", "210.94.223.123", getSshPort());
+        session.setPassword("Hndp^(%#9!Q");
+        java.util.Properties config = new java.util.Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+        session.connect();  //연결
+
+        Channel channel = session.openChannel("exec");
+        ChannelExec channelExec = (ChannelExec) channel;
+        channelExec.setPty(true);
+        String dcloudImage = "dcloud:1.0";
+        String commad = "sudo docker exec -it " + containerHash + " " + "/remote_access.sh";
         channelExec.setCommand(commad);
         System.out.println(commad);
 

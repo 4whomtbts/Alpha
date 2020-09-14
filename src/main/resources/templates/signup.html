@@ -18,18 +18,47 @@
         var header = $("meta[name='_csrf_header']").attr("content");
 
         $("#signup_button").on('click', function () {
+            var loginId = $("#loginId").val();
+            var password = $("#password").val();
+            var userName = $("#userName").val();
+            var organization = $("#organization").val();
+            var userGroup = $("#userGroup").val();
+            var phone = $("#phone").val();
+            var email = $("#email").val();
+            if (loginId == null || loginId === "") {
+                alert("아이디 필드를 채워주세요");
+                return;
+            }
+            if (password == null || password === "") {
+                alert("패스워드 필드를 채워주세요");
+                return;
+            }
+            if (userName == null || userName === "") {
+                alert("소속 필드를 채워주세요");
+                return;
+            }
+            if (phone == null || phone === "") {
+                alert("비상연락처 필드를 채워주세요");
+                return;
+            }
+            if (email == null || email === "") {
+                alert("이메일 필드를 채워주세요.");
+                return;
+            }
+
             $.ajax({
                 url: "/signup",
                 type: "POST",
                 contentType: 'application/json',
                 cache: false,
                 data: JSON.stringify({
-                    "loginId": $("#loginId").val(),
-                    "password": $("#password").val(),
-                    "userName": $("#userName").val(),
-                    "organization": $("#organization").val(),
-                    "userGroup": $("#userGroup").val(),
-                    "allowCode": $("#allowCode").val()
+                    "loginId": loginId,
+                    "password": password,
+                    "userName": userName,
+                    "organization": organization,
+                    "userGroup": userGroup,
+                    "phone": phone,
+                    "email": email
                 }),
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader(header, token);
@@ -178,6 +207,14 @@
         <div class="inputBox">
             <input type="text" id="organization" name="organization" required onkeyup="this.setAttribute('value', this.value);" value="">
             <label>소속</label>
+        </div>
+        <div class="inputBox">
+            <input type="text" id="phone" name="phone" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>비상연락처(핸드폰)</label>
+        </div>
+        <div class="inputBox">
+            <input type="text" id="email" name="email" required onkeyup="this.setAttribute('value', this.value);" value="">
+            <label>이메일</label>
         </div>
         <input id="signup_button" type="button" value="가입하기"></button>
     </form>

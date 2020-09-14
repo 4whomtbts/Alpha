@@ -261,7 +261,7 @@ public class InstanceResourceAllocatorTest {
         List<Server> list = getFreeGPUList();
         int numExclusiveGPU = 3;
         InstanceResourceAllocator.AllocationResult result1 =
-                instan ceResourceAllocator.allocateGPU(list, numExclusiveGPU, true);
+                instanceResourceAllocator.allocateGPU(list, numExclusiveGPU, true);
         assertThat(result1.getIndex()).isEqualTo(0);
         list.get(result1.getIndex()).getServerResource().setGpus(result1.getGpus());
         for (int i=0; i < numExclusiveGPU; i++) {

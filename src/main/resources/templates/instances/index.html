@@ -424,13 +424,11 @@
                     <div th:class="table_odd_row_title">상태</div>
                     <div th:class="table_odd_row_content"
                          th:text="${instance.status}"></div>
-                    <th:block th:if="${instance.isNormalStatus()} == false">
-                        <button
-                                style="margin-left:24px"
-                                th:id="${instance.instanceId}"
-                                th:class="restart_instance">재시작
-                        </button>
-                    </th:block>
+                    <button
+                            style="margin-left:24px"
+                            th:id="${instance.instanceId}"
+                            th:class="restart_instance">재시작
+                    </button>
                 </div>
                 <div class="table_even_row">
                     <div th:class="table_even_row_title">자원</div>

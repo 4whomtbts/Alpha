@@ -24,20 +24,22 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
 public class InstanceService {
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceService.class);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     private final UserRepository userRepository;
     private final InstanceRepository instanceRepository;
@@ -45,10 +47,14 @@ public class InstanceService {
     private final ServerPortRepository serverPortRepository;
     private final ContainerImageRepository containerImageRepository;
 
-    @Transactional
-    public void deleteInstance(long instanceId) throws Exception {
+    private final ReentrantLock lock = new ReentrantLock();
+    private final Object serverResourceLock = new Object();
+
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void deleteInstance(long instanceId) throws IOException, JSchException {
         Instance instance = instanceRepository.findById(instanceId).orElseThrow();
         Server serverOfInstance = instance.getServer();
+        lock.lock();
         List<Integer> serverGpus = serverOfInstance.getServerResource().getGpus();
         List<Integer> instanceGpus = instance.getAllocatedResources().getGpus();
         List<Integer> changedServerGpus = new ArrayList<>();
@@ -69,12 +75,10 @@ public class InstanceService {
                         instance.getInstanceId(), serverOfInstance.getInternalIP(), currGpuStat, currInstanceStat);
             }
         }
+        System.out.println("현재 쓰레드 = " + Thread.currentThread().getId());
         serverOfInstance.getServerResource().setGpus(changedServerGpus);
         SshExecutor.deleteInstance(serverOfInstance, instance);
-        //serverOfInstance.getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
-        //instance.getContainerImage().getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
-        //instance.getOwner().getInstanceList().removeIf(x -> (x.getInstanceId() == instance.getInstanceId()));
-
+        lock.unlock();
         serverRepository.save(serverOfInstance);
         instanceRepository.delete(instance);
     }
@@ -92,19 +96,18 @@ public class InstanceService {
                                         .orElseThrow(() ->
                                             DCloudException.ofInternalServerError("사용자가 선택한 containerImage"
                                                   + instanceDto.getContainerImageId()+"] 가 존재하지 않습니다"));
-        String sudoerId = instanceDto.getSudoerId();
 
         externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
         internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
-//        containerImageRepository.save(containerImage);
-        List<Server> servers = serverRepository.findAll();
-        List<Server> notExcludedServers = new ArrayList<>();
-        for (int i=0; i < servers.size(); i++) {
-            Server currServer = servers.get(i);
-            if (!currServer.isExcluded()) {
-                notExcludedServers.add(currServer);
+
+            List<Server> servers = serverRepository.findAll();
+            List<Server> notExcludedServers = new ArrayList<>();
+            for (int i=0; i < servers.size(); i++) {
+                Server currServer = servers.get(i);
+                if (!currServer.isExcluded()) {
+                    notExcludedServers.add(currServer);
+                }
             }
-        }
 
         InstanceResourceAllocator instanceResourceAllocator = new InstanceResourceAllocator();
         final InstanceResourceAllocator.AllocationResult result =
@@ -165,11 +168,13 @@ public class InstanceService {
         }
 
         SshExecutor sshExecutor = new SshExecutor();
+        String containerUUID = UUID.randomUUID().toString();
         SshResult<InstanceCreationDto> instanceCreationSshResult =
                 sshExecutor.createNewInstance(selectedServer, owner, selectedPortList,
-                                              new ServerResource(result.getNewInstanceGpus()), instanceDto.getSudoerId());
-
+                                              new ServerResource(result.getNewInstanceGpus()), containerUUID, instanceDto.getSudoerId());
         if (instanceCreationSshResult.getError() != null) {
+            // 인스턴스 생성 후 장애가 발생했다고 가정하고 삭제함.
+            SshExecutor.deleteContainer(selectedServer, containerUUID);
             throw DCloudException.ofInternalServerError(
                     "인스턴스 생성 중 오류가 발생했습니다. 실패 사유는 해당 인스턴스에서 인스턴스 로그 메뉴에서 확인하거나" +
                             "관리자에게 문의해주세요.",
@@ -180,7 +185,7 @@ public class InstanceService {
         InstanceCreationDto instanceCreationResult = instanceCreationSshResult.getResult();
 
         SshResult<String> copyResult =
-                sshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId());
+                SshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceHash());
 
         if (copyResult.getError() != null) {
             throw DCloudException.ofInternalServerError(
@@ -202,7 +207,7 @@ public class InstanceService {
 
         // 초기화 프로세스는 일반적으로 시간이 오래 걸리므로
         // 쓰레드로 돌린 후, 나중에 결과를 확인하도록 함.
-        new Thread(() -> {
+        executor.submit(() -> {
             try {
                 SshResult<String> instanceInitSshResult =
                 sshExecutor.executeInstanceInit(
@@ -231,12 +236,10 @@ public class InstanceService {
                 instance.setInitialized(true);
                 instanceRepository.save(instance);
             }
-        }).start();
-
+        });
 
         serverPortRepository.saveAll(selectedPortList);
         instance.setInstancePorts(selectedPortList);
-
     }
 
     @Transactional
@@ -273,6 +276,8 @@ public class InstanceService {
                     "데이터베이스에 심각한 오류가 발생했습니다. 서버 관리자에게 문의하세요.");
         }
         server.startInstance(instance.getInstanceHash());
+        SshExecutor.copyRemoteAccessScriptToInstance(instance.getServer().getSshPort(), instance.getInstanceHash());
+        server.restartRemoteAccessServices(instance.getInstanceHash());
     }
 
 }

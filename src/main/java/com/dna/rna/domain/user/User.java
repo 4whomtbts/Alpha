@@ -50,6 +50,12 @@ public class User extends BaseAuditorEntity {
     @Column(nullable = false)
     private String organization;
 
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private String email;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Instance> instanceList;
 
@@ -71,7 +77,7 @@ public class User extends BaseAuditorEntity {
     protected User() {}
 
     private User(final String loginId, final String password, final String userName,
-                 final String organization) {
+                 final String organization, final String phone, final String email) {
         this.loginId = loginId;
         this.password = password;
         this.instanceList = new ArrayList<>();
@@ -79,15 +85,18 @@ public class User extends BaseAuditorEntity {
         this.organization = organization;
         this.allowCodeList = new ArrayList<>();
         this.groupUserList = new ArrayList<>();
+        this.phone = phone;
+        this.email = email;
     }
 
     public static User of(final String loginId, final String userName, final String password,
-                          final String organization) {
+                          final String organization, final String phone, final String email) {
         requireNonNull(loginId, "loginId is null");
         requireNonNull(password, "password is null");
         requireNonNull(userName, "userName is null");
         requireNonNull(organization, "organization is null");
-        User user = new User(loginId, password, userName, organization);
-        return user;
+        requireNonNull(phone, "phone is null");
+        requireNonNull(email, "email is null");
+        return new User(loginId, password, userName, organization, phone, email);
     }
 }

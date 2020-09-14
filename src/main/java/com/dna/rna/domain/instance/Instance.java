@@ -84,6 +84,15 @@ public class Instance extends BaseAuditorEntity {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
+    // 최소한의 정보만 가지고 있는 instance entity 만드는 목적
+    // 생성 후 인스턴스 목록으로 갔을 때, 인스턴스가 즉시 생성되지 않아서
+    // 우선 최소한의 entity 를 빠르게 만들어서 진행상황을 보여주는 용도
+    /*
+    public static Instance createFrameInstance() {
+
+    }
+    */
+
     protected Instance() {}
 
     public Instance(String instanceName, String instanceContainerId, String instanceHash, User owner, ContainerImage containerImage,

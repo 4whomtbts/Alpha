@@ -140,15 +140,40 @@
 
     }
 
+    .account_input {
+        width: 220px;
+    }
+
     .reserve_hour_container {
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
+
 </style>
 <script>
     $(document).ready(function () {
         $("#top_nav").load("/topNav");
+
+        $("#instance_create_button").click(function() {
+            console.log("실행이 안 되나?");
+            var form = $("#instance_create_form");
+            var actionURL = form.attr("action");
+            $.ajax({
+                url: actionURL,
+                data: form.serialize(),
+                cache: false,
+                success: function() {
+                    alert("인스턴스 생성이 시작됐습니다. 정상적으로 생성이 시작되면\n" +
+                        "초기화 작업을 위해서 1~5분이 소요됩니다.\n" +
+                        "초기화가 끝나면 인스턴스 목록에서 정상적으로 표시됩니다.");
+                    window.location.href = "/";
+                },
+                error: function() {
+                    alert("인스턴스 생성에 실패했습니다. 다시 시도해주세요.");
+                }
+            })
+        })
     });
 
     function indefinitelyUseOnChange(self) {
@@ -158,14 +183,6 @@
         } else {
             $("#reserveHour").prop('disabled', false);
         }
-    }
-
-    function instanceCreateStartedAlert() {
-        alert("인스턴스 생성이 시작됐습니다. 정상적으로 생성이 시작되면\n" +
-            "초기화 작업을 위해서 최소 10분이 소요됩니다.\n" +
-            "오류가 발생한 것이 아니니, 현재 창에서 확인을 누르시고\n " +
-            "새로고침 및 창을 떠나지마세요");
-        location.href = "/";
     }
 
 </script>
@@ -178,7 +195,7 @@
         <span th:class="table_title">새로운 인스턴스 생성</span>
     </div>
     <div th:class="table_container">
-        <form th:action="@{/instance/create}" th:object="${instance}" th:method="POST">
+        <form id="instance_create_form" th:action="@{/instance/create}" th:object="${instance}" th:method="POST">
             <div class="row">
                 <div th:class="row_title">인스턴스 이름</div>
                 <input type="text" th:class="row_content"
@@ -227,12 +244,12 @@
             </div>
             <div class="row">
                 <div th:class="row_title">sudoer 아이디</div>
-                <input type="text" th:class="row_content"
+                <input type="text" th:class="account_input"
                        th:field="*{sudoerId}" placeholder="sudoer로 쓸 유저 아이디(4글자이상)">
             </div>
             <div class="row">
                 <div th:class="row_title">sudoer 패스워드</div>
-                <input type="text" th:class="row_content"
+                <input type="password" th:class="account_input"
                        th:field="*{sudoerPwd}" placeholder="sudoer로 쓸 유저 패스워드(8글자이상)">
             </div>
             <p style="font-size:12px;color:#4285F4;margin:0">포트매핑 예시) 태그 : ssh, 9000:22 일 시</p>
@@ -247,7 +264,7 @@
                 <button type="submit" name="addExternalPort">외부포트 추가</button>
             </div>
             <div th:class="row">
-                <button onclick="instanceCreateStartedAlert()" type="submit">생성</button>
+                <input id="instance_create_button" type="submit" value="생성">
             </div>
         </form>
     </div>

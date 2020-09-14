@@ -16,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +25,7 @@ public class InstanceController {
     private static final Logger logger = LoggerFactory.getLogger(InstanceController.class);
 
     private final InstanceService instanceService;
+    private ReentrantLock lock = new ReentrantLock();
 
     @Secured(value = {"ROLE_MEMBER"})
     @DeleteMapping("/instances/instance/{instanceId}")
@@ -35,12 +37,23 @@ public class InstanceController {
             logger.warn("심각: 로그인하지 않은 사용자가 인스턴스 [{}] 를 삭제하려 시도함", instanceId);
             return new ResponseEntity<ApiResponse>(ApiResponse.UNAUTHORIZED(), HttpStatus.UNAUTHORIZED);
         }
-        instanceService.deleteInstance(instanceId);
+
+        try {
+            lock.lock();
+            instanceService.deleteInstance(instanceId);
+        } catch (IOException | JSchException exception) {
+            logger.error("심각: exception [{}] 이 발생하여 instance [{}] 삭제 실패",
+                          exception.getMessage(), instanceId);
+            return new ResponseEntity<ApiResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } finally {
+            lock.unlock();
+        }
+
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Secured(value = {"ROLE_MEMBER"})
-    @RequestMapping(value = "/instances/instance/{instance_hash}", method= RequestMethod.GET)
+    @RequestMapping(value = "/instances/instance/{instance_hash}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity food(@PathVariable("instance_hash") String instanceHash) throws Exception {
         //instanceService.deleteInstance(instanceHash);
@@ -50,7 +63,7 @@ public class InstanceController {
     @PostMapping("/instances/instance/start/{instanceId}")
     // instanceId 를 받아서 인스턴스를 시작시켜준다.
     // 여기서 instanceId 는 database row의 pk 이다.
-    public ResponseEntity startInstance(@PathVariable("instanceId") long instanceId,
+    public ResponseEntity<ApiResponse> startInstance(@PathVariable("instanceId") long instanceId,
                                         Authentication authentication) throws Exception {
         MainUserDetails details = (MainUserDetails) authentication.getPrincipal();
         User user = details.getUser();
@@ -61,9 +74,10 @@ public class InstanceController {
 
         try {
             instanceService.startInstance(instanceId, user.getLoginId());
+
         } catch (IOException ioException) {
             logger.warn("startInstance 과정에서 IOException 이 발생했습니다. [{}]",
-                        ioException.getMessage());
+                    ioException.getMessage());
             throw DCloudException.ofInternalServerError("startInstance IOException" + ioException.getMessage());
         } catch (JSchException sshException) {
             logger.warn("startInstance 과정에서 sshException 이 발생했습니다. [{}]",
@@ -71,7 +85,7 @@ public class InstanceController {
             throw DCloudException.ofInternalServerError("sshException" + sshException.getMessage());
         }
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<ApiResponse>(ApiResponse.OK(), HttpStatus.OK);
     }
 
 }

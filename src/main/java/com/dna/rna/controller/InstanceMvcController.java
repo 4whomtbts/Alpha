@@ -137,10 +137,10 @@ public class InstanceMvcController {
         instance.setOwner(owner);
 
         if (instance.getSudoerId().equals("") || instance.getSudoerId().length() < 4) {
-            return "/instances/create";
+            return "/instances/instance/create";
         }
         if (instance.getSudoerPwd().equals("") || instance.getSudoerPwd().length() < 8) {
-            return "/instances/create";
+            return "/instances/instance/create";
         }
 
         new Thread(() -> {
