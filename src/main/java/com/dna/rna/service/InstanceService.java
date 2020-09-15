@@ -185,7 +185,7 @@ public class InstanceService {
         InstanceCreationDto instanceCreationResult = instanceCreationSshResult.getResult();
 
         SshResult<String> copyResult =
-                SshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceHash());
+                SshExecutor.copyInitShellScriptToInstance(selectedServer, instanceCreationResult.getInstanceHash());
 
         if (copyResult.getError() != null) {
             throw DCloudException.ofInternalServerError(
@@ -276,7 +276,7 @@ public class InstanceService {
                     "데이터베이스에 심각한 오류가 발생했습니다. 서버 관리자에게 문의하세요.");
         }
         server.startInstance(instance.getInstanceHash());
-        SshExecutor.copyRemoteAccessScriptToInstance(instance.getServer().getSshPort(), instance.getInstanceHash());
+        SshExecutor.copyRemoteAccessScriptToInstance(server, instance.getInstanceHash());
         server.restartRemoteAccessServices(instance.getInstanceHash());
     }
 
