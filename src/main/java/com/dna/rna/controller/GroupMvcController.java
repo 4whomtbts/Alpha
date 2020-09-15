@@ -56,6 +56,6 @@ public class GroupMvcController {
         model.addAttribute("notAcceptedMemberLists", notAcceptedMemberLists);
         model.addAttribute("memberLists", memberLists);
         model.addAttribute("isAdminLists", isAdminLists);
-        return "/group/index";
+        return "group/index";
     }
 }

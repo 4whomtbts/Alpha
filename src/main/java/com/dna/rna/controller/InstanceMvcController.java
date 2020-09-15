@@ -91,7 +91,7 @@ public class InstanceMvcController {
         }
         instanceRepository.saveAll(instanceList);
         model.addAttribute("instanceList", instanceDtoList);
-        return "/instances/index";
+        return "instances/index";
     }
 
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
@@ -100,7 +100,7 @@ public class InstanceMvcController {
         List<ContainerImage> containerImageList = containerImageRepository.findAll();
         model.addAttribute("instance", instance);
         model.addAttribute("containerImageList", containerImageList);
-        return "/instances/instance/create";
+        return "instances/instance/create";
     }
 
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
@@ -117,7 +117,7 @@ public class InstanceMvcController {
                                                     final HttpServletRequest req) {
         final Integer rowId = Integer.valueOf(req.getParameter("removeExternalPort"));
         instance.getExternalPorts().remove(rowId.intValue());
-        return "/instances/instance/create";
+        return "instances/instance/create";
     }
 
     @RequestMapping(value = "/instance/create", params={"addInternalPorts"})
@@ -125,7 +125,7 @@ public class InstanceMvcController {
                                                  final HttpServletRequest req) {
         final Integer rowId = Integer.valueOf(req.getParameter("addInternalPorts"));
         instance.getExternalPorts().add(new ServerPortDto.Creation());
-        return "/instances/instance/create";
+        return "instances/instance/create";
 
     }
 
@@ -137,10 +137,10 @@ public class InstanceMvcController {
         instance.setOwner(owner);
 
         if (instance.getSudoerId().equals("") || instance.getSudoerId().length() < 4) {
-            return "/instances/instance/create";
+            return "instances/instance/create";
         }
         if (instance.getSudoerPwd().equals("") || instance.getSudoerPwd().length() < 8) {
-            return "/instances/instance/create";
+            return "instances/instance/create";
         }
 
         new Thread(() -> {
@@ -156,7 +156,7 @@ public class InstanceMvcController {
             }
         }).run();
 
-        return "/instances/index";
+        return "instances/index";
     }
 
 
