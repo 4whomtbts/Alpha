@@ -126,7 +126,7 @@ public class Server {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         String commad = "sudo docker exec -it " + containerHash + " " + "/remote_access.sh";
         channelExec.setCommand(commad);
         System.out.println(commad);

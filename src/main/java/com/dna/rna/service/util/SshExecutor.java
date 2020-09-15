@@ -277,7 +277,7 @@ public class SshExecutor {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
 
         SshResult<String> createShareDirResult = createNewUserShareDir(selectedServer, user);
         if (createShareDirResult.getError() != null) {
@@ -354,7 +354,7 @@ List<String> commands = new ArrayList<>();
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         String commad = "sudo docker cp "+ filePath +" "+ instanceContainerId +":/";
         channelExec.setCommand(commad);
         System.out.println(commad);
@@ -388,12 +388,12 @@ List<String> commands = new ArrayList<>();
     }
 
     public static SshResult<String> copyInitShellScriptToInstance(Server server, String instanceContainerHash) throws JSchException, IOException {
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         return copyFileToInstance(server, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/init.sh");
     }
 
     public static SshResult<String> copyRemoteAccessScriptToInstance(Server server, String instanceContainerHash) throws JSchException, IOException {
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         return copyFileToInstance(server, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/remote_access.sh");
     }
 
@@ -411,7 +411,7 @@ List<String> commands = new ArrayList<>();
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         String command = "sudo docker exec -it "+instanceContainerId+" bash /remote-access.sh " + sudoerId + " " + sudoerPwd;
         channelExec.setCommand(command);
         System.out.println(command);
@@ -458,7 +458,7 @@ List<String> commands = new ArrayList<>();
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        String dcloudImage = "dcloud1.0";
         String command = "sudo docker exec -it "+instanceContainerId+" bash /init.sh " + sudoerId + " " + sudoerPwd;
         channelExec.setCommand(command);
         System.out.println(command);
