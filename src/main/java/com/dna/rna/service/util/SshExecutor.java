@@ -40,7 +40,7 @@ public class SshExecutor {
 
     public static String deleteInstance(Server server, Instance instance) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", server.getSshPort());
+        Session session = jsch.getSession("4whomtbts", server.getInternalIP(), server.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -83,7 +83,7 @@ public class SshExecutor {
 
     public static String deleteContainer(Server server, String containerId) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", server.getSshPort());
+        Session session = jsch.getSession("4whomtbts", server.getInternalIP(), server.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -126,7 +126,7 @@ public class SshExecutor {
 
     public static String fetchStatusOfInstance(Server server, String instanceContainerID) throws Exception {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", server.getSshPort());
+        Session session = jsch.getSession("4whomtbts", server.getInternalIP(), server.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -218,7 +218,7 @@ public class SshExecutor {
 
     public SshResult<String> createNewUserShareDir(Server selectedServer, User user) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
+        Session session = jsch.getSession("4whomtbts", selectedServer.getInternalIP(), selectedServer.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -267,7 +267,7 @@ public class SshExecutor {
     public SshResult<InstanceCreationDto> createNewInstance(Server selectedServer, User user, List<ServerPort> selectedPortList,
                                                             ServerResource serverResource, String containerId, String sudoerId) throws Exception {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
+        Session session = jsch.getSession("4whomtbts", selectedServer.getInternalIP(), selectedServer.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -342,9 +342,9 @@ List<String> commands = new ArrayList<>();
         commands.add("sudo docker cp ~/dcloud/images/"+dcloudImage+"/init.sh "+dcloudImage+":/");
         commands.add("sudo docker exec -it "+generatedInstanceID+" bash /init.sh");
  */
-    public static SshResult<String> copyFileToInstance(int serverHostSshPort, String instanceContainerId, String filePath) throws JSchException, IOException {
+    public static SshResult<String> copyFileToInstance(Server server, String instanceContainerId, String filePath) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
+        Session session = jsch.getSession("4whomtbts", server.getInternalIP(), server.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -387,14 +387,14 @@ List<String> commands = new ArrayList<>();
         }
     }
 
-    public static SshResult<String> copyInitShellScriptToInstance(int serverHostSshPort, String instanceContainerHash) throws JSchException, IOException {
+    public static SshResult<String> copyInitShellScriptToInstance(Server server, String instanceContainerHash) throws JSchException, IOException {
         String dcloudImage = "dcloud:1.0";
-        return copyFileToInstance(serverHostSshPort, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/init.sh");
+        return copyFileToInstance(server, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/init.sh");
     }
 
-    public static SshResult<String> copyRemoteAccessScriptToInstance(int serverHostSshPort, String instanceContainerHash) throws JSchException, IOException {
+    public static SshResult<String> copyRemoteAccessScriptToInstance(Server server, String instanceContainerHash) throws JSchException, IOException {
         String dcloudImage = "dcloud:1.0";
-        return copyFileToInstance(serverHostSshPort, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/remote_access.sh");
+        return copyFileToInstance(server, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/remote_access.sh");
     }
 
     public SshResult<String> executeRemoteAccessScript(int serverHostSshPort, String instanceContainerId, String sudoerId,
@@ -444,11 +444,11 @@ List<String> commands = new ArrayList<>();
         }
     }
 
-    public SshResult<String> executeInstanceInit(int serverHostSshPort, String instanceContainerId, String sudoerId,
+    public SshResult<String> executeInstanceInit(Server server, String instanceContainerId, String sudoerId,
                                                  String sudoerPwd) throws JSchException, IOException {
         String generatedInstanceID = UUID.randomUUID().toString();
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
+        Session session = jsch.getSession("4whomtbts", server.getInternalIP(), server.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");

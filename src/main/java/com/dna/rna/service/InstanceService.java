@@ -211,7 +211,7 @@ public class InstanceService {
             try {
                 SshResult<String> instanceInitSshResult =
                 sshExecutor.executeInstanceInit(
-                        selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId(),
+                        selectedServer, instanceCreationResult.getInstanceContainerId(),
                         instanceDto.getSudoerId(), instanceDto.getSudoerPwd());
                 if (instanceInitSshResult.getError() != null) {
                     instance.setError(true);

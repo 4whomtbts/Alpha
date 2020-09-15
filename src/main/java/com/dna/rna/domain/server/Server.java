@@ -72,7 +72,7 @@ public class Server {
 
     public String startInstance(String containerHash) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", getSshPort());
+        Session session = jsch.getSession("4whomtbts", getInternalIP(), getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
@@ -116,7 +116,7 @@ public class Server {
     // ssh 랑 xrdp 를 재시작 해주는 스크립트
     public String restartRemoteAccessServices(String containerHash) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", getSshPort());
+        Session session = jsch.getSession("4whomtbts", getInternalIP(), getSshPort());
         session.setPassword("Hndp^(%#9!Q");
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");

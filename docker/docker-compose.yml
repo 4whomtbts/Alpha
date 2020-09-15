@@ -10,7 +10,6 @@ services:
       MYSQL_USER: root
       MYSQL_DATABASE: dcloud_db
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_secret
-      MYSQL_ROOT_HOST: '%'
     secrets:
       - mysql_secret
     volumes:
