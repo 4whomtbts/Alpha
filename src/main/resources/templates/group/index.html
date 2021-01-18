@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" xmlns:layout="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>그룹</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div layout:fragment="content"/>
+<form th:action="${'/login'}"></form>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<meta name="_csrf" data-th-content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+<style>
+
+    h1 {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 300;
+        font-size: 22px;
+    }
+
+    h2 {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 300;
+        font-size: 18px;
+        line-height: 20px;
+        margin: -8px 0 16px;
+        bottom: -5px;
+    }
+
+    h4 {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 300;
+        color: rgb(0, 0, 0);
+        font-size: 12px;
+        line-height: 12px;
+        margin: -8px 0 12px;
+        bottom: -5px;
+    }
+
+    span p {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 14px;
+
+    }
+
+    .content_span {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 14px;
+    }
+
+
+    .body_container {
+
+    }
+
+    input {
+        display: block;
+        font-size: 11px;
+        padding: 4px 2px;
+        border: solid 1px #aacfe4;
+        width: 200px;
+        margin: 2px 0 20px 10px;
+    }
+
+    .waiting_confirm_container {
+        position: relative;
+        left: 50%;
+        margin-left: -206px;
+        margin-top: 60px;
+        border: 1px solid #e7e7e7;
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        width: 412px;
+    }
+
+    .waiting_confirm_header {
+        background-color: #fff;
+        border-bottom: 1px solid #d3d3d3;
+        position: relative;
+        top: 0;
+        min-height: 64px;
+        padding-right: 74px;
+    }
+
+    .waiting_confirm_header_title {
+        position: relative;
+        left: 0;
+        top: 0;
+        padding: 18px 0;
+        padding-left: 24px;
+    }
+
+    .confirm_group_product_title {
+        color: rgba(0, 0, 0, .987);
+        opacity: .7;
+    }
+
+    .confirm_group_page_title {
+        color: rgba(0, 0, 0, .987);
+        margin-bottom: 0;
+    }
+
+    .confirm_group_content {
+        padding: 24px 24px;
+    }
+
+    #ok_wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    #ok {
+        border: none;
+        outline: none;
+        color: #fff;
+        background-color: #F8901F;
+        padding: 0.625rem 1.25rem;
+        cursor: pointer;
+        border-radius: 0.312rem;
+        font-size: 1rem;
+        float: right;
+    }
+
+    #ok:hover {
+        background-color: #F1592A;
+        box-shadow: 0 1px 1px 0 rgba(66, 133, 244, 0.45), 0 1px 3px 1px rgba(66, 133, 244, 0.3);
+    }
+
+
+    .box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25rem;
+        padding: 2.5rem;
+        box-sizing: border-box;
+        border: 1px solid #dadce0;
+        -webkit-border-radius: 8px;
+        border-radius: 8px;
+
+    }
+
+    .box h2 {
+        margin: 0px 0 -0.125rem;
+        padding: 0;
+        color: #fff;
+        text-align: center;
+        color: #202124;
+        font-family: 'Google Sans', 'Noto Sans Myanmar UI', arial, sans-serif;
+        font-size: 24px;
+        font-weight: 400;
+    }
+
+    .box p {
+        font-size: 12px;
+        font-weight: 400;
+        text-align: center;
+    }
+
+    .box .gap {
+        margin-bottom: 25px;
+    }
+
+    .box .inputBox {
+        position: relative;
+    }
+
+    .box .inputBox input {
+        width: 93%;
+        padding: 0.625rem 10px;
+        font-size: 1rem;
+        letter-spacing: 0.062rem;
+        margin-bottom: 1.875rem;
+        border: 1px solid #ccc;
+        background: transparent;
+        border-radius: 4px;
+
+    }
+
+    .box .inputBox label {
+        position: absolute;
+        top: 0;
+        left: 10px;
+        padding: 0.625rem 0;
+        font-size: 1rem;
+        color: grey;
+        pointer-events: none;
+        transition: 0.5s;
+    }
+
+    .box .inputBox input:focus ~ label,
+    .box .inputBox input:valid ~ label,
+    .box .inputBox input:not([value=""]) ~ label {
+        top: -1.125rem;
+        left: 10px;
+        color: #1a73e8;
+        font-size: 0.75rem;
+        background-color: white;
+        height: 10px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .box .inputBox input:focus {
+        outline: none;
+        border: 2px solid #1a73e8;
+    }
+
+    .box input[type="button"] {
+        border: none;
+        outline: none;
+        color: #fff;
+        background-color: #F8901F;
+        padding: 0.625rem 1.25rem;
+        cursor: pointer;
+        border-radius: 0.312rem;
+        font-size: 1rem;
+        float: right;
+    }
+
+    .box input[type="button"]:hover {
+        background-color: #F1592A;
+        box-shadow: 0 1px 1px 0 rgba(66, 133, 244, 0.45), 0 1px 3px 1px rgba(66, 133, 244, 0.3);
+    }
+
+    .table_container {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 35px;
+    }
+
+    .table_title_container {
+        height: 35px;
+        padding-top: 5px;
+        background-color: #F4572F;
+        margin-bottom: 16px;
+    }
+
+    .table_title {
+        font-weight: 700;
+        margin: 0;
+        color: white;
+        font-size: 20px;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .table_head_container {
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+        height: 40px;
+        border-bottom: 2px solid #d3d3d3;
+    }
+
+    .table_head_container div {
+        font-size: 16px;
+        padding-top: 5px;
+        font-weight: 400;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .table_head {
+        flex: 1 1 0;
+    }
+
+    .table_odd_item_container {
+        display: flex;
+        text-align: center;
+        flex-direction: row;
+    }
+
+    .table_even_item_container {
+        display: flex;
+        text-align: center;
+        flex-direction: row;
+        background-color: #F9F7F9;
+    }
+
+    .table_odd_item {
+        flex: 1 1 0;
+        font-size: 12px;
+        height: 25px;
+        padding-top: 5px;
+        font-weight: 300;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .table_even_item {
+        flex: 1 1 0;
+        font-size: 12px;
+        height: 25px;
+        padding-top: 5px;
+        font-weight: 300;
+        font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    #invite_container {
+        display: flex;
+        flex-direction: row;
+    }
+
+
+</style>
+
+<script>
+    var csrf;
+    $(document).ready(function () {
+        //csrf = JSON.parse('[[${_csrf}]]');
+        var csrfParameter = $('meta[name="_csrf_parameter"]').attr('content')
+        var csrfHeader = $('meta[name="_csrf_header"]').attr('content')
+        var csrfToken = $('meta[name="_csrf"]').attr('content')
+
+        $.ajaxSetup({
+            beforeSend: function (xhr) {
+            }
+        });
+        $("#create_group_button").on('click', function () {
+            var groupName = $("#groupName").val();
+            var representative = $("#representative").val();
+            $.ajax({
+                url: "/groups/group/",
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                cache: false,
+                data: JSON.stringify({
+                    "groupName": groupName,
+                    "representative": representative
+                }),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function (res) {
+                    alert("신청이 완료되었습니다!\n 시스템 관리자에게 그룹생성 승인을 요청하세요!");
+                },
+                error: function (jqXHR, status, e) {
+                    alert("실패하였습니다. 재시도 혹은 문의해주세요." + JSON.stringify(jqXHR) + ", " + status + " : " + e);
+                }
+            });
+        })
+
+        $("#invite_user_to_group").on('click', function () {
+            var groupId = $(this).attr('data-source');
+            var loginId = $("#invite_user_to_group_input").val();
+            console.log("groupId = " + groupId);
+            console.log("loginId = " + loginId);
+            $.ajax({
+                url: "/groups/group/" + groupId + "/invite/" + loginId,
+                type: "POST",
+                contentType: 'application/json',
+                dataType: "json",
+                cache: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function (res) {
+                    alert("초대가 완료되었습니다!");
+                },
+                error: function (jqXHR, status, e) {
+                    alert("실패하였습니다. 재시도 혹은 문의해주세요." + JSON.stringify(jqXHR) + ", " + status + " : " + e);
+                }
+            });
+        })
+    })
+
+</script>
+<h1>그룹</h1>
+<hr>
+<div th:class="body_container">
+    <th:block th:if="${groups.size()==0}">
+        <div class="box">
+            <h2>그룹 만들기</h2>
+            <p>소속된 그룹이 존재하지 않습니다. </p>
+            <p>소속 조직(학교, 연구실)의 대표 사용자라면 </p>
+            <p>그룹 생성을 신청해주세요.</p>
+            <p>이미 소속 조직의 Dcloud 그룹이 있다면</p>
+            <p>그룹 대표자에게 초대를 요청하세요.</p>
+            <div class="gap"></div>
+            <form th:action="@{/groups/group}" method="post">
+                <div class="inputBox">
+                    <input type="text" id="groupName" placeholder="동국대학교 인공지능연구원">
+                    <label> 그룹이름 </label>
+                </div>
+                <div class="inputBox">
+                    <input type="text" id="representative" placeholder="김동국">
+                    <label> 대표자 이름 </label>
+                </div>
+                <input id="create_group_button" type="button" value="생성요청">
+            </form>
+        </div>
+    </th:block>
+    <th:block th:if="${groups!=null}">
+        <div th:each="elem, out: ${groups}">
+            <th:block th:if="${elem.getGroup().getGroupStatus() == 1}">
+                <div th:class="table_container">
+                    <div th:class="table_title_container">
+                        <span th:text="|${elem.group.groupName} > |" th:class="table_title"></span>
+                        <span th:class="table_title">그룹원 리스트</span>
+                    </div>
+                    <div th:class="table_container">
+                        <div th:class="table_head_container">
+                            <div th:class="table_head"> 아이디</div>
+                            <div th:class="table_head"> 성명</div>
+                            <div th:class="table_head"> 그룹원타입</div>
+                        </div>
+                        <div th:each="curr, stat : ${memberLists[__${out.index}__]}"
+                             th:class="${stat.odd} ?  'table_odd_item_container' : 'table_even_item_container'">
+                            <div th:class="${stat.odd} ?  'table_odd_item' : 'table_even_item'"
+                                 th:text="${curr.getUser().getLoginId()}"></div>
+                            <div th:class="${stat.odd} ?  'table_odd_item' : 'table_even_item'"
+                                 th:text="${curr.getUser().getUserName()}"></div>
+                            <div th:class="${stat.odd} ?  'table_odd_item' : 'table_even_item'"
+                                 th:text="${curr.getGroupUserType()}"></div>
+                        </div>
+                    </div>
+                </div>
+                <th:block th:if="${isAdminLists[__${out.index}__]}">
+                    <div th:class="table_title_container">
+                        <span th:class="table_title">새로운 그룹원 초대</span>
+                    </div>
+                    <div id="invite_container">
+                        <input id="invite_user_to_group_input" type="text">
+                        <input style="width:50px" id="invite_user_to_group" th:data-source="${elem.getGroup().getGroupId()}" type="button" value="그룹초대">
+                    </div>
+
+                </th:block>
+            </th:block>
+            <th:block th:if="${elem.getGroup().getGroupStatus() == 0}">
+                <div th:class="waiting_confirm_container">
+                    <div th:class="waiting_confirm_header">
+                        <div th:class="waiting_confirm_header_title">
+                            <h4>
+                                <span th:class="confirm_group_product_title">
+                                    waiting for confirmation
+                                </span>
+                            </h4>
+                            <h2 th:class="confirm_group_page_title">
+                                그룹이 생성허가 대기중 입니다.
+                            </h2>
+                        </div>
+                    </div>
+                    <div th:class="confirm_group_content">
+                        <span th:class="content_span">생성을 신청한 그룹 </span>
+                        <span style="font-weight:400;font-size:20px;color: #1338BE;"
+                              th:text="|${elem.getGroup().getGroupName()} 이(가)|"/><br>
+                        <span th:class="content_span">생성 대기중 입니다. 관리자의 승인 후, 생성이 완료됩니다.</span>
+                    </div>
+                    <div id="ok_wrapper">
+                        <form th:action="@{/}" method="get">
+                            <input type="submit" id="ok" value="확인">
+                        </form>
+                    </div>
+                </div>
+
+            </th:block>
+        </div>
+    </th:block>
+
+    <table>
+        <thead>
+
+        </thead>
+    </table>
+</div>
+
+
+</body>
+</html>

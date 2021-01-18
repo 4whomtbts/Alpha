@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout1}">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400&display=swap" rel="stylesheet"></head>
+    <title>메인</title>
+</head>
+<style>
+
+    body {
+        margin: 0px 0px 0px 0px;
+    }
+    #logo {
+        width: 150px;
+        height: 64px;
+        margin-right: 50px;
+    }
+
+    .navbar {
+        overflow: hidden;
+        background-color: white;
+        position: fixed;
+        height: 64px;
+        top: 0;
+        width: 100%;
+        padding-left: 30px;
+        border-bottom: 2px solid #d3d3d3;
+        box-shadow: 0 4px 5px rgba(0,0,0,0.12);
+    }
+
+    #sign {
+        float: right;
+        margin-right: 60px;
+    }
+
+    #logout {
+        float: right;
+        margin-right: 60px;
+    }
+
+    .navbar div {
+        float: left;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 64px;
+        margin-right: 16px;
+        font-size: 17px;
+        background-color: white;
+    }
+
+    .main {
+        padding: 16px;
+        margin-top: 30px;
+        height: 1500px; /* Used in this example to enable scrolling */
+    }
+
+    .navbar a {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        color: #707070;
+    }
+
+    .navbar a:hover {
+        font-family: 'Noto Sans KR', sans-serif;
+        font-weight: 400;
+        font-size: 16px;
+        color: #F8901F;
+    }
+
+    .menu_container {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+</style>
+
+<body>
+<div class="navbar">
+    <div id="logo">
+        <!--
+        <a th:href="@{/}">
+        <img
+                style="margin-right:12px"
+                width="60px" height="50px"
+                src="https://www.iconsdb.com/icons/preview/orange/clouds-xxl.png"/></a>
+                -->
+        <span onclick="location.href='/'" style="font-family:'Noto Sans KR', sans-serif;font-size:28px">Dcloud</span>
+    </div>
+    <div><a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admin}">관리자</a></div>
+    <div><a sec:authorize="hasRole('ROLE_MEMBER')" th:href="@{/group}">그룹</a></div>
+    <div><a sec:authorize="hasRole('ROLE_MEMBER')" th:href="@{/instances}">인스턴스</a></div>
+    <div sec:authorize="isAnonymous()" id="sign"><a th:href="@{/login}">로그인</a></div>
+    <div sec:authorize="isAuthenticated()" id="logout"><a th:href="@{/logout}">로그아웃</a></div>
+</div>
+
+</body>
+</html>
