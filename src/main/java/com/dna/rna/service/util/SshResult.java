@@ -11,4 +11,9 @@ public class SshResult<T> {
 
     private SshResultError error;
     private T result;
+
+    @Override
+    public String toString() {
+        return String.format("[SshResult] result = [%s], error = [%s]", result, error);
+    }
 }

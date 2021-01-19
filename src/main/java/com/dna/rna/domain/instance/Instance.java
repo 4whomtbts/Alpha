@@ -9,6 +9,7 @@ import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.InstanceDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,12 +189,23 @@ public class Instance extends BaseAuditorEntity {
         String logFileName = this.getInstanceContainerId();
         StringBuilder logLinesBuilder = new StringBuilder();
         File logFile = new File("./" + logFileName);
-        try(Scanner reader = new Scanner(logFile)) {
-            while (reader.hasNextLine()) {
-                logLinesBuilder.append(reader.nextLine()).append("\n");
+        if (logFile.exists()) {
+            try(Scanner reader = new Scanner(logFile)) {
+                while (reader.hasNextLine()) {
+                    logLinesBuilder.append(reader.nextLine()).append("\n");
+                }
+            } catch (FileNotFoundException e) {
+                logger.error("인스턴스 [{}] 의 로그파일 [{}] 이 존재하지 않습니다",
+                        this.getInstanceContainerId(), logFileName);
+                logLinesBuilder.append(
+                        String.format("인스턴스 로그를 불러오는 중 오류가 발생했습니다. 관리자에게 문의해주세요\n" +
+                                        "오류정보 : [%s]\n stacktrace : [%s]",
+                                ExceptionUtils.getMessage(e), ExceptionUtils.getStackTrace(e)));
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+
+        } else {
+            logger.error("인스턴스 [{}] 의 로그파일 [{}] 이 존재하지 않습니다",
+                    this.getInstanceContainerId(), logFileName);
         }
 
         /* 생성실패한 인스턴스를 위한 임시데이터 만들어 주는 로직 */

@@ -196,7 +196,7 @@ public class SshExecutor {
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.connect();  //연결
+        session.connect();
 
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
@@ -220,16 +220,16 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
-                System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
+                logger.info("[{}] 서버에 커맨드 실행 : cmd = [{}], output = [{}]",
+                        selectedServer.getInternalIP(), command, outputBuffer.toString());
                 channel.disconnect();
-                String lineSeparator = System.lineSeparator();
-                String containerHash = outputBuffer.toString().replaceAll(lineSeparator, "");
 
                 SshResultError error = null;
                 int exitStatus = channel.getExitStatus();
-                if (exitStatus != 0) {
+                logger.info("[{}] 서버에 인스턴스가 사용할 유저 전용 디렉터리 생성 결과 : exitStatus = [{}], result = [{}]",
+                        selectedServer.getInternalIP(), exitStatus, outputBuffer.toString());
+                // exitStatus 1은 디렉터리가 이미 있을 경우인데, 에러가 아닌것으로 봐도 무방
+                if (exitStatus != 0 && exitStatus != 1) {
                     error = new SshResultError(outputBuffer.toString(), exitStatus);
                 }
 
@@ -239,6 +239,7 @@ public class SshExecutor {
     }
     public SshResult<InstanceCreationDto> createNewInstance(Server selectedServer, User user, List<ServerPort> selectedPortList,
                                                             ServerResource serverResource, String containerId, String sudoerId) throws Exception {
+        logger.info("[{}] 인스턴스용 컨테이너 생성 시작...", containerId);
         JSch jsch = new JSch();
         Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
         session.setPassword("Hndp^(%#9!Q");
@@ -253,7 +254,6 @@ public class SshExecutor {
         String dcloudImage = "dcloud:1.0";
         SshResult<String> createShareDirResult = createNewUserShareDir(selectedServer, user);
         if (createShareDirResult.getError() != null) {
-
             return new SshResult<>(createShareDirResult.getError(), null);
         }
 
@@ -267,9 +267,8 @@ public class SshExecutor {
                 mappingStoragesOption(selectedServer, user, sudoerId) +
                 "--name " + containerId + " " + dcloudImage;
         channelExec.setCommand(command);
-        System.out.println(command);
+        logger.info("[{}] 컨테이너 생성 명령어 실행 : cmd = [{}]", containerId, command);
 
-        //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
@@ -284,17 +283,20 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
                 String lineSeparator = System.lineSeparator();
                 String containerHash = outputBuffer.toString().replaceAll(lineSeparator, "");
-
                 SshResultError error = null;
                 int exitStatus = channel.getExitStatus();
+                logger.info("[{}] Docker container 생성결과 :\n cmd = [{}], exitStatus = [{}], result = [{}]",
+                        containerId, command, exitStatus, outputBuffer.toString());
                 if (exitStatus != 0) {
-                    error = new SshResultError(outputBuffer.toString(), exitStatus);
+                    logger.error("[{}] Docker container 생성실패 :\n cmd = [{}], exitStatus = [{}], result = [{}]",
+                            containerId, command, exitStatus, outputBuffer.toString());
+                    error = new SshResultError(
+                            String.format("[%s] 실행한 명령어 :\n [%s], output = [%S]", containerId, command, outputBuffer.toString()),
+                            exitStatus);
                 }
 
                 return new SshResult<>(
@@ -327,7 +329,8 @@ List<String> commands = new ArrayList<>();
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
+        // 콜론 주의
+        String dcloudImage = "dcloud1.0";
         String commad = "sudo docker cp "+ filePath +" "+ instanceContainerId +":/";
         channelExec.setCommand(commad);
         System.out.println(commad);
@@ -361,12 +364,14 @@ List<String> commands = new ArrayList<>();
     }
 
     public SshResult<String> copyInitShellScriptToInstance(int serverHostSshPort, String instanceContainerHash) throws JSchException, IOException {
-        String dcloudImage = "dcloud:1.0";
+        // 콜론주의(명령어 입력때 파일명에 콜론 들어가면 제대로 인식이 안 되어서 뺌
+        String dcloudImage = "dcloud1.0";
         return copyFileToInstance(serverHostSshPort, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/init.sh");
     }
 
     public SshResult<String> copyRemoteAccessScriptToInstance(int serverHostSshPort, String instanceContainerHash) throws JSchException, IOException {
-        String dcloudImage = "dcloud:1.0";
+        // 콜론주의(명령어 입력때 파일명에 콜론 들어가면 제대로 인식이 안 되어서 뺌
+        String dcloudImage = "dcloud1.0";
         return copyFileToInstance(serverHostSshPort, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/remote_access.sh");
     }
 

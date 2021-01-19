@@ -331,6 +331,29 @@
         location.reload();
     }
 
+    function showInstanceLog(self) {
+        var instance = $(self).attr('data-source');
+        var log = $(self).attr('data-log');
+        var win = window.open("Dcloud 인스턴스 로그", "PopupWin", "width=800,height=1600,scrollbars=yes");
+
+        win.document.write("<pre>"+`
+██████╗  ██████╗██╗      ██████╗ ██╗   ██╗██████╗     ██╗      ██████╗  ██████╗
+██╔══██╗██╔════╝██║     ██╔═══██╗██║   ██║██╔══██╗    ██║     ██╔═══██╗██╔════╝
+██║  ██║██║     ██║     ██║   ██║██║   ██║██║  ██║    ██║     ██║   ██║██║  ███╗
+██║  ██║██║     ██║     ██║   ██║██║   ██║██║  ██║    ██║     ██║   ██║██║   ██║
+██████╔╝╚██████╗███████╗╚██████╔╝╚██████╔╝██████╔╝    ███████╗╚██████╔╝╚██████╔╝
+╚═════╝  ╚═════╝╚══════╝ ╚═════╝  ╚═════╝ ╚═════╝     ╚══════╝ ╚═════╝  ╚═════╝
+
+`+"</pre>" +
+            "" +
+            "<pre>***************************************************************************************************** </pre>"+
+            "<pre>    d                            인스턴스 생성 및 실행로그 출력.. </pre>"+
+            "<pre> 관리자 [김현준] \n 관리자 연락처 [ailabsysmanager.dgu@gmail.com]  </pre>" +
+            "<pre>*****************************************************************************************************</pre><br>" +
+            "<pre></pre>"+
+            "<pre>" + log + " </pre>");
+    }
+
     $(document).ready(function () {
 
         $("#top_nav").load("/topNav");
@@ -396,7 +419,7 @@
                     <div th:class="option_button_element"></div>
                     <div th:class="option_button_element"></div>
                     <div th:class="option_content_container">
-                        <div th:data-source="${instance.instanceId}" th:class="option_content_item">
+                        <div th:data-source="${instance.instanceId}" th:data-log="${instance.instanceLog}" onclick="showInstanceLog(this)" th:class="option_content_item">
                             인스턴스 로그확인
                         </div>
                         <div th:data-source="${instance.instanceId}" th:class="option_content_item">

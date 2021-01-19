@@ -29,6 +29,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -58,6 +59,7 @@ public class InstanceService {
         Instance instance = instanceRepository.findById(instanceId).orElseThrow();
         Server serverOfInstance = instance.getServer();
         lock.lock();
+
         if (serverOfInstance != null) {
             if (serverOfInstance.getServerResource() != null) {
                 List<Integer> serverGpus = serverOfInstance.getServerResource().getGpus();
@@ -96,11 +98,10 @@ public class InstanceService {
         DCloudError error = null;
         User owner = instanceDto.getOwner();
         Instance newInstance = Instance.skeletonInstance(newInstanceUUID, owner);
-        // 중간에 에러로 리턴되는 경우 계속 초기화 작업이 진행중이라고 뜨는 것을 먹기 위함
+        // 중간에 에러로 리턴되는 경우 계속 초기화 작업이 진행중이라고 뜨는 것을 막기 위함
         newInstance.setInitialized(true);
         final Instance savedNewInstance = instanceRepository.save(newInstance);
-        List<ServerPortDto.Creation> externalPorts = instanceDto.getExternalPorts();
-        List<ServerPortDto.Creation> internalPorts = instanceDto.getInternalPorts();
+
         int requestedGPU = instanceDto.getNumberOfGpuToUse();
         boolean useResourceExclusively = instanceDto.isUseGpuExclusively();
         ContainerImage containerImage =
@@ -113,10 +114,6 @@ public class InstanceService {
             savedNewInstance.writeInstanceLog(errorMessage);
             return error;
         }
-
-        logger.info(String.format("[%s] 사용할 컨테이너 이미지 : [%s]", newInstanceUUID, containerImage));
-        externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
-        internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
 
         List<Server> servers = serverRepository.findAll();
         List<Server> notExcludedServers = new ArrayList<>();
@@ -132,7 +129,7 @@ public class InstanceService {
         }
 
         InstanceResourceAllocator instanceResourceAllocator = new InstanceResourceAllocator();
-        InstanceResourceAllocator.AllocationResult allocationResult = null;
+        InstanceResourceAllocator.AllocationResult allocationResult;
 
         try {
             allocationResult= instanceResourceAllocator.allocateGPU(notExcludedServers, requestedGPU, useResourceExclusively);
@@ -145,6 +142,14 @@ public class InstanceService {
             savedNewInstance.writeInstanceLog(errorMessage);
             return error;
         }
+
+        List<ServerPortDto.Creation> externalPorts = instanceDto.getExternalPorts();
+        List<ServerPortDto.Creation> internalPorts = instanceDto.getInternalPorts();
+
+        logger.info(String.format("[%s] 사용할 컨테이너 이미지 : [%s]", newInstanceUUID, containerImage));
+        externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
+        internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
+
 
         Server selectedServer = notExcludedServers.get(allocationResult.getIndex());
         selectedServer.getServerResource().setGpus(allocationResult.getGpus());
@@ -195,13 +200,27 @@ public class InstanceService {
             }
         }
 
-        SshResult<InstanceCreationDto> instanceCreationSshResult = null;
+        SshResult<InstanceCreationDto> instanceCreationSshResult;
+
         try {
             instanceCreationSshResult = sshExecutor.createNewInstance(selectedServer, owner, selectedPortList,
                     new ServerResource(allocationResult.getNewInstanceGpus()), newInstanceUUID, instanceDto.getSudoerId());
         } catch (Exception e) {
-            String errorMessage = String.format("[%s] 심각 : 원격 서버에 인스턴스 생성 시도에 실패했습니다 : 서버 = [%s], exception = [%s], stackTrace = [%s]",
+            String errorMessage =
+                    String.format("[%s] 심각 : 원격 서버에 인스턴스 생성 시도중 예외가 발생했습니다 : \n " +
+                                    "서버 = [%s], exception = [%s], stackTrace = [%s]",
                     newInstanceUUID, selectedServer.getInternalIP(), ExceptionUtils.getMessage(e), ExceptionUtils.getStackTrace(e));            savedNewInstance.setError(true);
+            error = new DCloudError(errorMessage, 0);
+            logger.error(errorMessage);
+            savedNewInstance.writeInstanceLog(errorMessage);
+            return error;
+        }
+
+        if (instanceCreationSshResult.getError() != null) {
+            String errorMessage = String.format(
+                    "[%s] 심각 : 원격 서버 인스턴스 생성에 실패했습니다 :\n 서버 = [%s], error = [%s]",
+                    newInstanceUUID, selectedServer.getInternalIP(), instanceCreationSshResult.getError());
+            savedNewInstance.setError(true);
             error = new DCloudError(errorMessage, 0);
             logger.error(errorMessage);
             savedNewInstance.writeInstanceLog(errorMessage);
@@ -216,7 +235,7 @@ public class InstanceService {
                     sshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceHash());
         } catch (Exception e) {
             String errorMessage = String.format(
-                    "[%s] 심각 : 원격 서버에 인스턴스에 초기화 스크립트 복사에 실패했습니다 : 서버 = [%s], exception = [%s], stackTrace = [%s]",
+                    "[%s] 심각 : 원격 서버 인스턴스에 초기화 스크립트 복사에 실패했습니다 : 서버 = [%s], exception = [%s], stackTrace = [%s]",
                     newInstanceUUID, selectedServer.getInternalIP(), ExceptionUtils.getMessage(e), ExceptionUtils.getStackTrace(e));
             savedNewInstance.setError(true);
             error = new DCloudError(errorMessage, 0);
@@ -226,7 +245,7 @@ public class InstanceService {
         }
 
         if (copyResult.getError() != null) {
-            String errorMessage = String.format("[%s] 초기화 쉘 스크립트 copy에 실패했습니다 : [%s]",
+            String errorMessage = String.format("[%s] 초기화 쉘 스크립트 복사에 실패했습니다 : [%s]",
                     newInstanceUUID, copyResult.getError());
             savedNewInstance.setError(true);
             error = new DCloudError(errorMessage, 0);
@@ -266,28 +285,37 @@ public class InstanceService {
                     String instanceInitErrorMessage =
                             String.format("[%s] 인스턴스 초기화 중 오류 발생 [%s]",
                                     newInstanceUUID, constInstanceCreationSshResult.getError());
-                   initError = new DCloudError(instanceInitErrorMessage, 0);
+                    initError = new DCloudError(instanceInitErrorMessage, 0);
+                    savedNewInstance.writeInstanceLog(initError.toString());
                     logger.error(instanceInitErrorMessage);
-                    return;
+                } else {
+                    String finalMessage = instanceInitSshResult.getResult() + "\n\n\n" +
+                            "*******************************************************\n\n" +
+                                String.format("Dcloud 인스턴스 생성이 완료 되었습니다!\n " +
+                                        "관리코드 [%s]\n " +
+                                        "생성일자 [%s]",
+                                        newInstanceUUID, new Timestamp(new Date().getTime()))
+                            + "\n\n********************************************************\n\n";
+                    logger.info("[{}] 인스턴스가 성공적으로 생성 및 초기화 되었습니다", newInstanceUUID);
+                    savedNewInstance.writeInstanceLog(finalMessage);
+                    instanceRepository.save(savedNewInstance);
                 }
-                instanceRepository.save(savedNewInstance);
-                logger.info("[%s] 인스턴스가 성공적으로 생성 및 초기화 되었습니다");
-                savedNewInstance.writeInstanceLog(instanceInitSshResult.getResult());
-
             } catch (JSchException | IOException e) {
                 savedNewInstance.setError(true);
                 String instanceInitErrorMessage =
                         String.format("[%s] 인스턴스 초기화 중 오류 발생 [%s]",
                                 newInstanceUUID, constInstanceCreationSshResult.getError());
                 initError = new DCloudError(instanceInitErrorMessage, 0);
+                savedNewInstance.writeInstanceLog(initError.toString());
                 logger.error(instanceInitErrorMessage);
 
             } finally {
                 // 초기화에 실패, 성공 여부를 DB에 저장해서 사용자가 인스턴스
                 // 목록을 확인했을 때 성공인지 실패인지 확인할 수 있게 하기 위함.
                 savedNewInstance.setInitialized(true);
+                savedNewInstance.writeInstanceLog(
+                        String.format("인스턴스 [%s]의 초기화가 종료 되었습니다", newInstanceUUID));
                 instanceRepository.save(savedNewInstance);
-                savedNewInstance.writeInstanceLog(initError.toString());
             }
         });
 
