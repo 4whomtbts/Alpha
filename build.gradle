@@ -25,7 +25,8 @@ apply plugin: "com.ewerk.gradle.plugins.querydsl"
 
 group = 'com.dna'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '12'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
