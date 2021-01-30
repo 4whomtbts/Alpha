@@ -56,7 +56,9 @@ public class InstanceService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteInstance(long instanceId) throws IOException, JSchException {
         System.out.println("현재 쓰레드 = " + Thread.currentThread().getId());
-        Instance instance = instanceRepository.findById(instanceId).orElseThrow();
+        Instance instance = instanceRepository.findById(instanceId)
+                .orElseThrow(() ->
+                        new NullPointerException(String.format("인스턴스 %s 가 존재하지 않습니다", instanceId)));
         Server serverOfInstance = instance.getServer();
         lock.lock();
 
