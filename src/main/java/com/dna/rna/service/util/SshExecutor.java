@@ -1,6 +1,5 @@
 package com.dna.rna.service.util;
 
-import com.dna.rna.controller.InstanceMvcController;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.group.Group;
 import com.dna.rna.domain.groupUser.GroupUser;
@@ -13,7 +12,6 @@ import com.jcraft.jsch.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -31,6 +29,11 @@ public class SshExecutor {
 
     @Value("${ssh.pwd}")
     private String sshPwd;
+
+    @Value("${wan.ip}")
+    private String wanIP;
+
+    private String dcloudImage = "dguailab/ailab_base:2.1";
 
     private String buildGpuAllocOptionValue(ServerResource serverResource) {
         List<Integer> gpus = serverResource.getGpus();
@@ -55,8 +58,8 @@ public class SshExecutor {
 
     public String deleteInstance(Server server, Instance instance) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", server.getSshPort());
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, server.getSshPort());
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -99,8 +102,8 @@ public class SshExecutor {
 
     public String fetchStatusOfInstance(Server server, String instanceContainerID) throws Exception {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", server.getSshPort());
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, server.getSshPort());
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -191,8 +194,8 @@ public class SshExecutor {
 
     public SshResult<String> createNewUserShareDir(Server selectedServer, User user) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, selectedServer.getSshPort());
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -241,8 +244,8 @@ public class SshExecutor {
                                                             ServerResource serverResource, String containerId, String sudoerId) throws Exception {
         logger.info("[{}] 인스턴스용 컨테이너 생성 시작...", containerId);
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", selectedServer.getSshPort());
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, selectedServer.getSshPort());
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -251,7 +254,6 @@ public class SshExecutor {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
         SshResult<String> createShareDirResult = createNewUserShareDir(selectedServer, user);
         if (createShareDirResult.getError() != null) {
             return new SshResult<>(createShareDirResult.getError(), null);
@@ -305,22 +307,11 @@ public class SshExecutor {
             }
         }
     }
-    /*
-List<String> commands = new ArrayList<>();
-        commands.add("sudo docker run -d " +
-                buildGpuAllocOptionValue(serverResource) + " " +
-                generatedDockerRunPortOption(selectedPortList) +
-                "-it --runtime=nvidia " +
-                "--cap-add=SYS_ADMIN " +
-                "--shm-size=2g " +
-                "--name " + generatedInstanceID + " " + dcloudImage);
-        commands.add("sudo docker cp ~/dcloud/images/"+dcloudImage+"/init.sh "+dcloudImage+":/");
-        commands.add("sudo docker exec -it "+generatedInstanceID+" bash /init.sh");
- */
+
     public SshResult<String> copyFileToInstance(int serverHostSshPort, String instanceContainerId, String filePath) throws JSchException, IOException {
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, serverHostSshPort);
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -330,10 +321,9 @@ List<String> commands = new ArrayList<>();
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
         // 콜론 주의
-        String dcloudImage = "dcloud1.0";
-        String commad = "sudo docker cp "+ filePath +" "+ instanceContainerId +":/";
-        channelExec.setCommand(commad);
-        System.out.println(commad);
+        String command = "sudo docker cp "+ filePath +" "+ instanceContainerId +":/";
+        channelExec.setCommand(command);
+        System.out.println(command);
 
         //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
@@ -365,7 +355,6 @@ List<String> commands = new ArrayList<>();
 
     public SshResult<String> copyInitShellScriptToInstance(int serverHostSshPort, String instanceContainerHash) throws JSchException, IOException {
         // 콜론주의(명령어 입력때 파일명에 콜론 들어가면 제대로 인식이 안 되어서 뺌
-        String dcloudImage = "dcloud1.0";
         return copyFileToInstance(serverHostSshPort, instanceContainerHash, "~/dcloud/images/"+dcloudImage+"/init.sh");
     }
 
@@ -379,8 +368,8 @@ List<String> commands = new ArrayList<>();
                                                  String sudoerPwd) throws JSchException, IOException {
         String generatedInstanceID = UUID.randomUUID().toString();
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, serverHostSshPort);
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -426,8 +415,8 @@ List<String> commands = new ArrayList<>();
                                                  String sudoerPwd) throws JSchException, IOException {
         String generatedInstanceID = UUID.randomUUID().toString();
         JSch jsch = new JSch();
-        Session session = jsch.getSession("4whomtbts", "210.94.223.123", serverHostSshPort);
-        session.setPassword("Hndp^(%#9!Q");
+        Session session = jsch.getSession(sshId, wanIP, serverHostSshPort);
+        session.setPassword(sshPwd);
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -465,6 +454,91 @@ List<String> commands = new ArrayList<>();
                 SshResultError error = null;
                 if (exitStatus != 0) error = new SshResultError(outputBuffer.toString(), exitStatus);
                 return new SshResult<>(error, outputBuffer.toString());
+            }
+        }
+    }
+
+    public SshResult<String> startInstance(String containerHash, int sshPort) throws JSchException, IOException {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(sshId, wanIP, sshPort);
+        session.setPassword(sshPwd);
+        java.util.Properties config = new java.util.Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+        session.connect();
+
+        Channel channel = session.openChannel("exec");
+        ChannelExec channelExec = (ChannelExec) channel;
+        channelExec.setPty(true);
+        String command = "sudo docker start " + containerHash;
+        channelExec.setCommand(command);
+        System.out.println(command);
+
+        StringBuilder outputBuffer = new StringBuilder();
+        InputStream in = channel.getInputStream();
+        ((ChannelExec) channel).setErrStream(System.err);
+
+        channel.connect();
+
+        byte[] tmp = new byte[1024];
+        while (true) {
+            while (in.available() > 0) {
+                int i = in.read(tmp, 0, 1024);
+                outputBuffer.append(new String(tmp, 0, i));
+                if (i < 0) break;
+            }
+            if (channel.isClosed()) {
+                System.out.println(outputBuffer.toString());
+                logger.info("startInstance exit status:" + channel.getExitStatus());
+                channel.disconnect();
+                String lineSeparator = System.lineSeparator();
+                String result = outputBuffer.toString().replaceAll(lineSeparator, "");
+                return new SshResult<>(null, result);
+            }
+        }
+    }
+
+    // ssh 랑 xrdp 를 재시작 해주는 스크립트
+    public String restartRemoteAccessServices(String containerHash, int sshPort) throws JSchException, IOException {
+        JSch jsch = new JSch();
+        Session session = jsch.getSession(sshId, wanIP, sshPort);
+        session.setPassword(sshPwd);
+        java.util.Properties config = new java.util.Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config);
+        session.connect();
+
+        Channel channel = session.openChannel("exec");
+        ChannelExec channelExec = (ChannelExec) channel;
+        channelExec.setPty(true);
+        String dcloudImage = "dcloud:1.0";
+        String command = "sudo docker exec -it " + containerHash + " " + "/remote_access.sh";
+        channelExec.setCommand(command);
+        System.out.println(command);
+
+        //콜백을 받을 준비.
+        StringBuilder outputBuffer = new StringBuilder();
+        InputStream in = channel.getInputStream();
+        ((ChannelExec) channel).setErrStream(System.err);
+
+        channel.connect();  //실행
+
+        byte[] tmp = new byte[1024];
+        while (true) {
+            while (in.available() > 0) {
+                int i = in.read(tmp, 0, 1024);
+                outputBuffer.append(new String(tmp, 0, i));
+                if (i < 0) break;
+            }
+            if (channel.isClosed()) {
+                System.out.println("결과");
+                System.out.println(outputBuffer.toString());
+                System.out.println("에러 = " + channel.getExitStatus());
+                channel.disconnect();
+                String lineSeparator = System.lineSeparator();
+                String result = outputBuffer.toString().replaceAll(lineSeparator, "");
+
+                return result;
             }
         }
     }

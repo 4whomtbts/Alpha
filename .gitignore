@@ -29,3 +29,6 @@ spring-boot-log*
 
 ### secrets ###
 docker/mysql/mysql_secret
+
+backup
+!logs/**/

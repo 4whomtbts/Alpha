@@ -238,7 +238,7 @@ public class Instance extends BaseAuditorEntity {
     }
 
     public void writeInstanceLog(String log) {
-        File logFile = new File("./" + this.getInstanceContainerId());
+        File logFile = new File("./logs/" + this.getInstanceContainerId());
         try(BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))) {
             writer.write(log + "\n");
         }  catch (IOException e) {

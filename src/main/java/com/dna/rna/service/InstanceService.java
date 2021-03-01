@@ -231,31 +231,6 @@ public class InstanceService {
 
         InstanceCreationDto instanceCreationResult = instanceCreationSshResult.getResult();
 
-        SshResult<String> copyResult;
-        try {
-            copyResult =
-                    sshExecutor.copyInitShellScriptToInstance(selectedServer.getSshPort(), instanceCreationResult.getInstanceHash());
-        } catch (Exception e) {
-            String errorMessage = String.format(
-                    "[%s] 심각 : 원격 서버 인스턴스에 초기화 스크립트 복사에 실패했습니다 : 서버 = [%s], exception = [%s], stackTrace = [%s]",
-                    newInstanceUUID, selectedServer.getInternalIP(), ExceptionUtils.getMessage(e), ExceptionUtils.getStackTrace(e));
-            savedNewInstance.setError(true);
-            error = new DCloudError(errorMessage, 0);
-            logger.error(errorMessage);
-            savedNewInstance.writeInstanceLog(errorMessage);
-            return error;
-        }
-
-        if (copyResult.getError() != null) {
-            String errorMessage = String.format("[%s] 초기화 쉘 스크립트 복사에 실패했습니다 : [%s]",
-                    newInstanceUUID, copyResult.getError());
-            savedNewInstance.setError(true);
-            error = new DCloudError(errorMessage, 0);
-            logger.error(errorMessage);
-            savedNewInstance.writeInstanceLog(errorMessage);
-            return error;
-        }
-
         savedNewInstance.setInstanceContainerId(instanceCreationResult.getInstanceContainerId());
         savedNewInstance.setInstanceHash(instanceCreationResult.getInstanceHash());
         savedNewInstance.setOwner(owner);
@@ -269,57 +244,9 @@ public class InstanceService {
         selectedPortList.forEach(x -> x.setInstance(savedNewInstance));
 
         // 더 이상 에러로 리턴이 없으며 쓰레드 시작전에 초기화 진행중으로 토글
-        newInstance.setInitialized(false);
+        newInstance.setInitialized(true);
         // 초기화 프로세스는 일반적으로 시간이 오래 걸리므로
         // 쓰레드로 돌린 후, 나중에 결과를 확인하도록 함.
-        final SshResult constInstanceCreationSshResult = instanceCreationSshResult;
-        executor.submit(() -> {
-            DCloudError initError = null;
-            File logFile = new File("./" + newInstanceUUID);
-            try {
-                SshResult<String> instanceInitSshResult =
-                sshExecutor.executeInstanceInit(
-                        selectedServer.getSshPort(), instanceCreationResult.getInstanceContainerId(),
-                        instanceDto.getSudoerId(), instanceDto.getSudoerPwd());
-
-                if (instanceInitSshResult.getError() != null) {
-                    savedNewInstance.setError(true);
-                    String instanceInitErrorMessage =
-                            String.format("[%s] 인스턴스 초기화 중 오류 발생 [%s]",
-                                    newInstanceUUID, constInstanceCreationSshResult.getError());
-                    initError = new DCloudError(instanceInitErrorMessage, 0);
-                    savedNewInstance.writeInstanceLog(initError.toString());
-                    logger.error(instanceInitErrorMessage);
-                } else {
-                    String finalMessage = instanceInitSshResult.getResult() + "\n\n\n" +
-                            "*******************************************************\n\n" +
-                                String.format("Dcloud 인스턴스 생성이 완료 되었습니다!\n " +
-                                        "관리코드 [%s]\n " +
-                                        "생성일자 [%s]",
-                                        newInstanceUUID, new Timestamp(new Date().getTime()))
-                            + "\n\n********************************************************\n\n";
-                    logger.info("[{}] 인스턴스가 성공적으로 생성 및 초기화 되었습니다", newInstanceUUID);
-                    savedNewInstance.writeInstanceLog(finalMessage);
-                    instanceRepository.save(savedNewInstance);
-                }
-            } catch (JSchException | IOException e) {
-                savedNewInstance.setError(true);
-                String instanceInitErrorMessage =
-                        String.format("[%s] 인스턴스 초기화 중 오류 발생 [%s]",
-                                newInstanceUUID, constInstanceCreationSshResult.getError());
-                initError = new DCloudError(instanceInitErrorMessage, 0);
-                savedNewInstance.writeInstanceLog(initError.toString());
-                logger.error(instanceInitErrorMessage);
-
-            } finally {
-                // 초기화에 실패, 성공 여부를 DB에 저장해서 사용자가 인스턴스
-                // 목록을 확인했을 때 성공인지 실패인지 확인할 수 있게 하기 위함.
-                savedNewInstance.setInitialized(true);
-                savedNewInstance.writeInstanceLog(
-                        String.format("인스턴스 [%s]의 초기화가 종료 되었습니다", newInstanceUUID));
-                instanceRepository.save(savedNewInstance);
-            }
-        });
 
         serverPortRepository.saveAll(selectedPortList);
         savedNewInstance.setInstancePorts(selectedPortList);
@@ -365,9 +292,9 @@ public class InstanceService {
             throw DCloudException.ofIllegalArgumentException(
                     "데이터베이스에 심각한 오류가 발생했습니다. 서버 관리자에게 문의하세요.");
         }
-        server.startInstance(instance.getInstanceHash());
-        sshExecutor.copyRemoteAccessScriptToInstance(instance.getServer().getSshPort(), instance.getInstanceHash());
-        server.restartRemoteAccessServices(instance.getInstanceHash());
+        sshExecutor.startInstance(instance.getInstanceHash(), instance.getServer().getSshPort());
+        //sshExecutor.copyRemoteAccessScriptToInstance(instance.getServer().getSshPort(), instance.getInstanceHash());
+        //server.restartRemoteAccessServices(instance.getInstanceHash());
     }
 
 }
