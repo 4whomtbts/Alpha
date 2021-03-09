@@ -94,7 +94,7 @@ public class HealthCheckService {
                         message.setText(mailContent);
                         Transport.send(message);
                     } catch (MessagingException emailException) {
-                        logger.error("Healthcheck failure email 전송에 실패하였습니다 : %s", ExceptionUtils.getMessage(emailException));
+                        logger.error("Healthcheck failure email 전송에 실패하였습니다 : {}", ExceptionUtils.getMessage(emailException));
                     }
                 });
 
