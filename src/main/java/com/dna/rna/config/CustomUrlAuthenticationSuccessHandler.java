@@ -1,7 +1,6 @@
 package com.dna.rna.config;
 
 import com.dna.rna.security.MainUserDetails;
-import com.fasterxml.jackson.annotation.JsonRawValue;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

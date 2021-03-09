@@ -3,7 +3,6 @@ package com.dna.rna.domain.user;
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.allowCode.AllowCode;
 import com.dna.rna.domain.groupUser.GroupUser;
-import com.dna.rna.domain.groupUser.GroupUserType;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.userRole.UserRole;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package com.dna.rna.dto;
 
-import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -3,7 +3,6 @@ package com.dna.rna.service.util;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.exception.DCloudException;
-import com.dna.rna.service.InstanceService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.slf4j.Logger;

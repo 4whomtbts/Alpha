@@ -1,8 +1,6 @@
 package com.dna.rna.domain.serverPort;
 
-import com.dna.rna.domain.server.QServer;
 import com.dna.rna.domain.server.Server;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;

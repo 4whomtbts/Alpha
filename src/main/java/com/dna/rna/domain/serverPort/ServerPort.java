@@ -1,9 +1,7 @@
 package com.dna.rna.domain.serverPort;
 
 import com.dna.rna.domain.instance.Instance;
-import com.dna.rna.domain.server.Server;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;

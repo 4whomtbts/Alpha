@@ -15,7 +15,10 @@ import com.dna.rna.dto.InstanceCreationDto;
 import com.dna.rna.dto.InstanceDto;
 import com.dna.rna.dto.ServerPortDto;
 import com.dna.rna.exception.DCloudException;
-import com.dna.rna.service.util.*;
+import com.dna.rna.service.util.DCloudError;
+import com.dna.rna.service.util.InstanceResourceAllocator;
+import com.dna.rna.service.util.SshExecutor;
+import com.dna.rna.service.util.SshResult;
 import com.jcraft.jsch.JSchException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,13 +28,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
@@ -41,7 +43,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class InstanceService {
 
     private static final Logger logger = LoggerFactory.getLogger(InstanceService.class);
-    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     private final UserRepository userRepository;
     private final InstanceRepository instanceRepository;
@@ -51,7 +52,6 @@ public class InstanceService {
     private final SshExecutor sshExecutor;
 
     private final ReentrantLock lock = new ReentrantLock();
-    private final Object serverResourceLock = new Object();
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteInstance(long instanceId) throws IOException, JSchException {

@@ -1,7 +1,5 @@
 package com.dna.rna.domain.groupUser;
 
-import com.dna.rna.domain.allowCode.AllowCodeType;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 

@@ -39,7 +39,7 @@ public class GroupController {
         User user = details.getUser();
 
         groupService.inviteUserToGroup(groupId, loginId);
-        return new ResponseEntity<ApiResponse>(ApiResponse.OK(), HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.OK(), HttpStatus.OK);
     }
 
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
@@ -48,10 +48,10 @@ public class GroupController {
         MainUserDetails details = (MainUserDetails) authentication.getPrincipal();
         User user = details.getUser();
         if (user == null || groupService.getUser(user) == null) {
-            return new ResponseEntity<ApiResponse>(ApiResponse.UNAUTHORIZED(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(ApiResponse.UNAUTHORIZED(), HttpStatus.UNAUTHORIZED);
         }
         groupService.confirmGroupCreation(groupId);
-        return new ResponseEntity<ApiResponse>(ApiResponse.OK(), HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.OK(), HttpStatus.OK);
     }
 
 }

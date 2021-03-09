@@ -65,8 +65,8 @@ public class SshExecutor {
         session.setConfig(config);
         session.connect();  //연결
 
-        Channel channel = session.openChannel("exec");  //채널접속
-        ChannelExec channelExec = (ChannelExec) channel; //명령 전송 채널사용
+        Channel channel = session.openChannel("exec");
+        ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
         String command = "sudo docker rm -f " + instance.getInstanceHash();
         channelExec.setCommand(command);
@@ -192,7 +192,7 @@ public class SshExecutor {
 
     }
 
-    public SshResult<String> createNewUserShareDir(Server selectedServer, User user) throws JSchException, IOException {
+    private SshResult<String> createNewUserShareDir(Server selectedServer, User user) throws JSchException, IOException {
         JSch jsch = new JSch();
         Session session = jsch.getSession(sshId, wanIP, selectedServer.getSshPort());
         session.setPassword(sshPwd);
@@ -240,6 +240,7 @@ public class SshExecutor {
             }
         }
     }
+
     public SshResult<InstanceCreationDto> createNewInstance(Server selectedServer, User user, List<ServerPort> selectedPortList,
                                                             ServerResource serverResource, String containerId, String sudoerId) throws Exception {
         logger.info("[{}] 인스턴스용 컨테이너 생성 시작...", containerId);
@@ -249,7 +250,7 @@ public class SshExecutor {
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.connect();  //연결
+        session.connect();
 
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
@@ -265,7 +266,7 @@ public class SshExecutor {
                 generatedDockerRunPortOption(selectedPortList) +
                 "-it --runtime=nvidia " +
                 "--cap-add=SYS_ADMIN " +
-                "--shm-size=2g " +
+                "--ipc=host " +
                 mappingStoragesOption(selectedServer, user, sudoerId) +
                 "--name " + containerId + " " + dcloudImage;
         channelExec.setCommand(command);
@@ -275,7 +276,7 @@ public class SshExecutor {
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
 
-        channel.connect();  //실행
+        channel.connect();
 
         byte[] tmp = new byte[1024];
         while (true) {
@@ -325,12 +326,11 @@ public class SshExecutor {
         channelExec.setCommand(command);
         System.out.println(command);
 
-        //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
 
-        channel.connect();  //실행
+        channel.connect();
 
         byte[] tmp = new byte[1024];
         while (true) {
@@ -383,12 +383,11 @@ public class SshExecutor {
         channelExec.setCommand(command);
         System.out.println(command);
 
-        //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
 
-        channel.connect();  //실행
+        channel.connect();
 
         byte[] tmp = new byte[1024];
         while (true) {
@@ -420,7 +419,7 @@ public class SshExecutor {
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.connect();  //연결
+        session.connect();
 
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
@@ -430,12 +429,11 @@ public class SshExecutor {
         channelExec.setCommand(command);
         System.out.println(command);
 
-        //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
 
-        channel.connect();  //실행
+        channel.connect();
 
         byte[] tmp = new byte[65536];
         while (true) {
@@ -511,17 +509,15 @@ public class SshExecutor {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
         String command = "sudo docker exec -it " + containerHash + " " + "/remote_access.sh";
         channelExec.setCommand(command);
         System.out.println(command);
 
-        //콜백을 받을 준비.
         StringBuilder outputBuffer = new StringBuilder();
         InputStream in = channel.getInputStream();
         ((ChannelExec) channel).setErrStream(System.err);
 
-        channel.connect();  //실행
+        channel.connect();
 
         byte[] tmp = new byte[1024];
         while (true) {

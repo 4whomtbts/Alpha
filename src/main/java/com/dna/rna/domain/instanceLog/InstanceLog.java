@@ -1,6 +1,5 @@
 package com.dna.rna.domain.instanceLog;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

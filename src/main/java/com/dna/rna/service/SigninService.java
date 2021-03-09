@@ -1,10 +1,8 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.allowCode.AllowCodeRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
 import com.dna.rna.domain.userRole.UserRole;
-import com.dna.rna.domain.userRole.UserRoleRepository;
 import com.dna.rna.dto.SignupForm;
 import com.dna.rna.exception.DCloudException;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,6 @@ public class SigninService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AllowCodeRepository allowCodeRepository;
-    private final UserRoleRepository userRoleRepository;
 
     @Transactional
     public List<GrantedAuthority> getAuthorities(final String loginId) {
@@ -56,12 +52,6 @@ public class SigninService {
             throw DCloudException.ofIllegalArgumentException("중복되는 아이디명입니다.");
         }
 
-        /*
-        if(allowCodeRepository.findByAllowCode(signupForm.getAllowCode()) == null) {
-            throw DCloudException.ofIllegalArgumentException("유효하지 않은 허가 코드입니다.");
-        }
-        */
-
         User user = signupForm.toUserEntity();
         User newUser = userRepository.save(user);
         List<UserRole> userRoleList = new ArrayList<>();
@@ -70,7 +60,7 @@ public class SigninService {
         newUser.setUserRoles(userRoleList);
         userRepository.save(newUser);
 
-        logger.info("New user '{}' has been created.", user.getLoginId());
+        logger.info("새로운 유저 '{}' 가 생성되었습니다", user.getLoginId());
     }
 
 }

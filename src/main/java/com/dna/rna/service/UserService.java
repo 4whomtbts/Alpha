@@ -1,6 +1,5 @@
 package com.dna.rna.service;
 
-import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.UserDto;
 
 import javax.transaction.Transactional;

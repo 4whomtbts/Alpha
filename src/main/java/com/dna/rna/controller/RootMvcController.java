@@ -31,13 +31,7 @@ public class RootMvcController {
     private static final Logger logger= LoggerFactory.getLogger(UserController.class);
 
     private static final String DUPLICATE_LOGIN_ID_EXISTS= "중복되는 아이디입니다.";
-    private static final String PASSWORD_POLICY_VIOLATION= "패스워드는 규정에 맞춰 정해주세요";
 
-    private final UserRepository userRepository;
-    private final ContainerImageRepository containerImageRepository;
-    private final InstanceRepository instanceRepository;
-    private final ServerRepository serverRepository;
-    private final UserService userService;
     private final SigninService signinService;
 
     @GetMapping("/topNav")
@@ -75,17 +69,4 @@ public class RootMvcController {
         return "login";
     }
 
-    @GetMapping("/init")
-    public String initGET() {
-        List<Server> servers = new ArrayList<>();
-        for (int i=0; i < 6; i++) {
-            Server server = new Server(i+1, "192.168.1.1" + (i+1), 8081 + i, 9000 + (i * 100), new ServerResource());
-            serverRepository.save(server);
-            servers.add(server);
-        }
-        ContainerImage containerImage = new ContainerImage("aitf", "기본 이미지", "ssh, xrdp, jupyter");
-        containerImageRepository.save(containerImage);
-
-        return "/";
-    }
 }

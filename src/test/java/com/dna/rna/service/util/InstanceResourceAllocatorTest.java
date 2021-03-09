@@ -1,14 +1,11 @@
 package com.dna.rna.service.util;
 
 import com.dna.rna.domain.ServerResource;
-import com.dna.rna.domain.instance.InstanceRepository;
 import com.dna.rna.domain.server.Server;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.dna.rna.service.util.InstanceResourceAllocator.MAX_GPU_NUM;

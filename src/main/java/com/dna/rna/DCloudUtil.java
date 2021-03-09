@@ -39,7 +39,6 @@ public class DCloudUtil {
         }catch(NoSuchAlgorithmException e){
             logger.error("매우심각 : generateRandomMD5DirName이 알 수 없는 이유로 실패했습니다.",
                          randomString, MD5);
-            e.printStackTrace();
             MD5 = null;
         }
         return MD5;

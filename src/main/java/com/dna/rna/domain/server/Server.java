@@ -2,15 +2,10 @@ package com.dna.rna.domain.server;
 
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.instance.Instance;
-import com.dna.rna.dto.InstanceCreationDto;
-import com.dna.rna.service.util.SshExecutor;
-import com.jcraft.jsch.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
