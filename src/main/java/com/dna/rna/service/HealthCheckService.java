@@ -53,10 +53,18 @@ public class HealthCheckService {
     public void healthCheck() {
 
         Properties props = new Properties();
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", 587);
+        props.put("mail.smtp.user", mailUser);
+        props.put("mail.smtp.password", mailPwd);
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "25");
+        props.put("mail.debug", "true");
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable","true");
+        props.put("mail.smtp.EnableSSL.enable","true");
+        props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.setProperty("mail.smtp.socketFactory.fallback", "false");
+        props.setProperty("mail.smtp.port", "465");
+        props.setProperty("mail.smtp.socketFactory.port", "465");
 
         List<Server> servers = serverRepository.findAll();
         servers.parallelStream().forEach(server -> {
