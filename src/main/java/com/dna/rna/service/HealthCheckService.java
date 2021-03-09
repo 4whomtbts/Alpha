@@ -28,8 +28,6 @@ public class HealthCheckService {
 
     private static final Logger logger = LoggerFactory.getLogger(HealthCheckService.class);
 
-    private static final int TEN_MINUTE = 10 * 60 * 1000;
-
     @Value("${ssh.id}")
     private String sshId;
 
@@ -51,7 +49,7 @@ public class HealthCheckService {
 
     private final ServerRepository serverRepository;
 
-    @Scheduled(fixedDelay = TEN_MINUTE)
+    @Scheduled(fixedDelayString = "${healthcheck.interval.ms}")
     public void healthCheck() {
 
         Properties props = new Properties();
