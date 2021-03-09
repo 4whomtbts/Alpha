@@ -45,7 +45,7 @@ public class HealthCheckService {
 
     private final String host = "smtp.gmail.com";
 
-    private final List<String> receivers = Arrays.asList("4whomtbts@gmail.com");
+    private final List<String> receivers = Arrays.asList("4whomtbts@gmail.com", "ailabsysmanager.dgu@gmail.com", "5656jieun@dgu.ac.kr");
 
     private final ServerRepository serverRepository;
 
@@ -57,7 +57,6 @@ public class HealthCheckService {
         props.put("mail.smtp.password", mailPwd);
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "25");
-        props.put("mail.debug", "true");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable","true");
         props.put("mail.smtp.EnableSSL.enable","true");
@@ -93,7 +92,7 @@ public class HealthCheckService {
                         message.setFrom(new InternetAddress(mailUser));
                         message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
 
-                        message.setSubject(String.format("[%s] 서버 장애발생 알림", server.getInternalIP()));
+                        message.setSubject(String.format("[동국대 인공지능연구원] %s 서버 장애발생 알림", server.getInternalIP()));
                         String mailContent = String.format("[%s] 서버의 SSH 기반 Healthcheck에 실패하였습니다 : \n" +
                                 "서버 자체의 장애 혹은 SSH의 장애입니다. \n" +
                                 "exception : %s", server.getInternalIP(), ExceptionUtils.getMessage(e));
