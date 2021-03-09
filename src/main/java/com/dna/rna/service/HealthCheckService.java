@@ -43,7 +43,7 @@ public class HealthCheckService {
     @Value("${mail.pwd}")
     private String mailPwd;
 
-    private final String host = "imap.gmail.com";
+    private final String host = "smtp.gmail.com";
 
     private final List<String> receivers = Arrays.asList("4whomtbts@gmail.com");
 
@@ -55,7 +55,7 @@ public class HealthCheckService {
         Properties props = new Properties();
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
-        props.put("mail.smtp.port", 993);
+        props.put("mail.smtp.port", 587);
         props.put("mail.smtp.auth", "true");
 
         List<Server> servers = serverRepository.findAll();
