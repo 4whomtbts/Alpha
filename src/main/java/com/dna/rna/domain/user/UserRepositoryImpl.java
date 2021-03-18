@@ -27,12 +27,11 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Cus
     }
 
     @Transactional
-    public void save(final User user) throws DataIntegrityViolationException {
+    public void save2(final User user) throws DataIntegrityViolationException {
         requireNonNull(user, "user 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QUser qUser = new QUser("qUser");
-        List<User> exist = queryFactory.selectFrom(qUser).where(qUser.loginId.eq(user.getUserName())).fetch();
-
+        List<User> exist = queryFactory.selectFrom(qUser).where(qUser.loginId.eq(user.getLoginId())).fetch();
         if (exist.size() != 0) {
             if (exist.size() > 1) logger.error(String.format("심각 : loginId = [%s] 인 유저가 2개 이상 이미 존재합니다.", user.getLoginId()));
             throw new DataIntegrityViolationException(String.format("유저 loginId = [%s] 에 해당하는 유저가 이미 존재합니다.", user.getLoginId()));
