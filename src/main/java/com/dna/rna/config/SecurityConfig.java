@@ -63,6 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 // 페이지 권한 설정
                 .antMatchers("/groups/**").hasRole("MEMBER")
+                // 이 아래 h2 콘솔을 위한 코드
+                .antMatchers("/h2-console/**").permitAll().and().csrf().ignoringAntMatchers("/h2-console/**").and().headers().frameOptions().disable()
                 .and() // 로그인 설정
                 .formLogin()
                 .loginPage("/login")
