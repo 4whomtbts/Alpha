@@ -1,14 +1,12 @@
 package com.dna.rna.domain.instance;
 
-import com.querydsl.core.types.Path;
+import static com.querydsl.core.types.PathMetadataFactory.*;
+
+import com.querydsl.core.types.dsl.*;
+
 import com.querydsl.core.types.PathMetadata;
-import com.querydsl.core.types.dsl.BeanPath;
-import com.querydsl.core.types.dsl.MapPath;
-import com.querydsl.core.types.dsl.NumberPath;
-
 import javax.annotation.Generated;
-
-import static com.querydsl.core.types.PathMetadataFactory.forVariable;
+import com.querydsl.core.types.Path;
 
 
 /**
