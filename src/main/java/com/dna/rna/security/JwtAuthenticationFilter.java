@@ -23,7 +23,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private static final Logger logger= LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final AuthenticationManager authenticationManager;
 
@@ -36,7 +36,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             logger.error("failed to mapping credential object");
             e.printStackTrace();
+            return null;
         }
+
+        if (credentials == null) return null;
 
         UsernamePasswordAuthenticationToken token
                 = new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
@@ -47,14 +50,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
 
         MainUserDetails principal = (MainUserDetails) authResult.getPrincipal();
         String token =
                 JWT.create()
-                   .withSubject(principal.getUsername())
-                   .withExpiresAt(new Date(System.currentTimeMillis() + JWtProperties.EXPIRATION_TIME))
-                   .sign(Algorithm.HMAC512(JWtProperties.SECRET.getBytes()));
+                        .withSubject(principal.getUsername())
+                        .withExpiresAt(new Date(System.currentTimeMillis() + JWtProperties.EXPIRATION_TIME))
+                        .sign(Algorithm.HMAC512(JWtProperties.SECRET.getBytes()));
         response.addHeader(JWtProperties.HEADER_STRING, JWtProperties.TOKEN_PREFIX + token);
     }
 }

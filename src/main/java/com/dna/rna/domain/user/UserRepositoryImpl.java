@@ -27,7 +27,7 @@ public class UserRepositoryImpl extends QuerydslRepositorySupport implements Cus
     }
 
     @Transactional
-    public void save2(final User user) throws DataIntegrityViolationException {
+    public void saveUser(final User user) throws DataIntegrityViolationException {
         requireNonNull(user, "user 은 null일 수 없습니다.");
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QUser qUser = new QUser("qUser");

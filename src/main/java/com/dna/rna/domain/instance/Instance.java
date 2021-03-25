@@ -4,6 +4,7 @@ import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.server.Server;
+import com.dna.rna.domain.instanceGpu.InstanceGpu;
 import com.dna.rna.domain.serverPort.ServerPort;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.dto.InstanceDto;
@@ -65,6 +66,10 @@ public class Instance extends BaseAuditorEntity {
     )
     @JoinColumn(name = INSTANCE_ID)
     private List<ServerPort> instancePorts;
+
+    @OneToMany
+    @JoinColumn(name = INSTANCE_ID)
+    private List<InstanceGpu> gpuList;
 
     @ManyToOne
     @JoinColumn(name = CONTAINER_IMAGE_ID)

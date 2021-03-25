@@ -1,6 +1,7 @@
 package com.dna.rna.domain.server;
 
 import com.dna.rna.domain.ServerResource;
+import com.dna.rna.domain.gpu.Gpu;
 import com.dna.rna.domain.instance.Instance;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,18 +44,25 @@ public class Server {
 
     @Column(name = "shared_directory_path")
     private String sharedDirectoryPath;
-
+    
     @Embedded
     private ServerResource serverResource;
 
     @OneToMany(fetch = FetchType.EAGER,
                orphanRemoval = true)
     @JoinColumn(name = "server")
-    private List<Instance> instanceList;
+    private List<Instance> instanceList = new ArrayList<>();
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "server")
+    private List<Gpu> gpuList = new ArrayList<>();
+
+    private long lastInstanceAllocationTime;
 
     private Server() {}
 
-    public Server(int serverNum, String internalIP, int sshPort, int minExternalPort, ServerResource serverResource) {
+    public Server(int serverNum, String internalIP, int sshPort,
+                  int minExternalPort, ServerResource serverResource) {
         this.serverNum = serverNum;
         this.internalIP = internalIP;
         this.sshPort = sshPort;

@@ -28,10 +28,10 @@ public class UserRepositoryTest {
 
     @Test
     @DisplayName("save 성공")
-    void save_O() {
+    void TEST_saveUser_WHEN_올바른_유저정보가제공되었을때_THEN_성공한다() {
         User save_want_user = User.of("GoodGoodGirl", "Jane Doe", "1234", "Soviet", "010-1234-5678", "good@a.com");
 
-        userRepository.save2(save_want_user);
+        userRepository.saveUser(save_want_user);
         User found_user = userRepository.findUserByLoginId("GoodGoodGirl");
         assertThat(found_user.getLoginId()).isEqualTo(save_want_user.getLoginId());
         assertThat(found_user.getUserName()).isEqualTo(save_want_user.getUserName());
@@ -43,18 +43,18 @@ public class UserRepositoryTest {
     }
     @Test
     @DisplayName("save 실패 - user가 null")
-    void save_X_1() {
-        User null_user = null;
-        Exception e = assertThrows(NullPointerException.class, () -> userRepository.save2(null_user));
+    void TEST_saveUser_WHEN_NULL이_제공되었을때_THEN_NPE를_발생시킨다() {
+        final User NULL_USER = null;
+        Exception e = assertThrows(NullPointerException.class, () -> userRepository.saveUser(NULL_USER));
         assertThat(e.getMessage()).isEqualTo("user 은 null일 수 없습니다.");
     }
     @Test
     @DisplayName("save 실패 - loginId에 해당하는 유저가 이미")
-    void save_X_2() {
+    void TEST_saveUser_WHEN_이미_존재하는유저가_제공되었을때_THEN_DataIntegrityViolationException을_발생시킨다() {
         User save_want_user = User.of("GoodGoodGirl", "Jane Doe", "1234", "Soviet", "010-1234-5678", "good@a.com");
-        userRepository.save2(save_want_user);
+        userRepository.save(save_want_user);
         User user2 = User.of("GoodGoodGirl", "Jame Doe", "1234", "Soviet", "010-1234-5678", "good@a.com");
-        Exception e = assertThrows(DataIntegrityViolationException.class, () -> userRepository.save2(user2));
+        Exception e = assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveUser(user2));
         assertThat(e.getMessage()).isEqualTo(String.format("유저 loginId = [%s] 에 해당하는 유저가 이미 존재합니다.", user2.getLoginId()));
     }
 }

@@ -211,7 +211,7 @@ public class InstanceResourceAllocatorTest {
     }
 
     @Test
-    // 서버내에 독점적으로 사용하는 GPU 를 피해서 할당한다.
+    // 서버내에 독점적으로 사용하는 Gpu 를 피해서 할당한다.
     public void allocateGPU_PASS_AND_OCCUPY_UN_ALLOCED_GPU() {
         List<Server> list = getFreeGPUList();
         int numExclusiveGPU = 3;
@@ -232,7 +232,7 @@ public class InstanceResourceAllocatorTest {
     }
 
     @Test
-    // 서버내에 독점적으로 사용하는 GPU 를 피해서 할당한다.
+    // 서버내에 독점적으로 사용하는 Gpu 를 피해서 할당한다.
     public void allocateGPU_PASS_AND_OCCUPY_UN_ALLOCED_GPU_1() {
         List<Server> list = getFreeGPUList();
         int numExclusiveGPU = 3;
@@ -253,7 +253,7 @@ public class InstanceResourceAllocatorTest {
     }
 
     @Test
-    // 서버내의 GPU 를 한 번 씩 다 사용한 후에는, 다른 서버에서 탐색을 시작한다.
+    // 서버내의 Gpu 를 한 번 씩 다 사용한 후에는, 다른 서버에서 탐색을 시작한다.
     public void allocateGPU_PASS_AND_OCCUPY_OTHER_SERVERS_GPU_TWICE_WHEN_NO_UN_ALLOC_GPU() {
         List<Server> list = getFreeGPUList();
         int numExclusiveGPU = 3;
@@ -275,7 +275,7 @@ public class InstanceResourceAllocatorTest {
 
     @Test
     // 모든 서버가 독점적이 아니면서, 한 번 씩은 할당된 상태라도 비 독점적 자원을 할당받을 수 있다
-    // 단 할당하려는 갯수만큼의 GPU 가 최소 하나의 서버에서는 사용되지 않거나, 독점적이 아닌 상태로
+    // 단 할당하려는 갯수만큼의 Gpu 가 최소 하나의 서버에서는 사용되지 않거나, 독점적이 아닌 상태로
     // 존재해야한다.
     public void allocateGPU_PASS_EVEN_EVERY_SERVER_IS_AT_LEAST_ONCE_OCCUPIED() {
         List<Server> list = getFreeGPUList();
