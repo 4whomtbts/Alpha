@@ -52,7 +52,7 @@ public class UserRepositoryTest {
     @DisplayName("save 실패 - loginId에 해당하는 유저가 이미")
     void TEST_saveUser_WHEN_이미_존재하는유저가_제공되었을때_THEN_DataIntegrityViolationException을_발생시킨다() {
         User save_want_user = User.of("GoodGoodGirl", "Jane Doe", "1234", "Soviet", "010-1234-5678", "good@a.com");
-        userRepository.save(save_want_user);
+        userRepository.saveUser(save_want_user);
         User user2 = User.of("GoodGoodGirl", "Jame Doe", "1234", "Soviet", "010-1234-5678", "good@a.com");
         Exception e = assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveUser(user2));
         assertThat(e.getMessage()).isEqualTo(String.format("유저 loginId = [%s] 에 해당하는 유저가 이미 존재합니다.", user2.getLoginId()));

@@ -35,6 +35,8 @@ public class QInstance extends EntityPathBase<Instance> {
 
     public final DateTimePath<java.time.LocalDateTime> expiredAt = createDateTime("expiredAt", java.time.LocalDateTime.class);
 
+    public final ListPath<com.dna.rna.domain.instanceGpu.InstanceGpu, com.dna.rna.domain.instanceGpu.QInstanceGpu> gpuList = this.<com.dna.rna.domain.instanceGpu.InstanceGpu, com.dna.rna.domain.instanceGpu.QInstanceGpu>createList("gpuList", com.dna.rna.domain.instanceGpu.InstanceGpu.class, com.dna.rna.domain.instanceGpu.QInstanceGpu.class, PathInits.DIRECT2);
+
     public final BooleanPath initialized = createBoolean("initialized");
 
     public final StringPath instanceContainerId = createString("instanceContainerId");
