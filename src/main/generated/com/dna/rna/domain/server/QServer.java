@@ -24,9 +24,13 @@ public class QServer extends EntityPathBase<Server> {
 
     public final BooleanPath excluded = createBoolean("excluded");
 
+    public final ListPath<com.dna.rna.domain.gpu.Gpu, com.dna.rna.domain.gpu.QGpu> gpuList = this.<com.dna.rna.domain.gpu.Gpu, com.dna.rna.domain.gpu.QGpu>createList("gpuList", com.dna.rna.domain.gpu.Gpu.class, com.dna.rna.domain.gpu.QGpu.class, PathInits.DIRECT2);
+
     public final ListPath<com.dna.rna.domain.instance.Instance, com.dna.rna.domain.instance.QInstance> instanceList = this.<com.dna.rna.domain.instance.Instance, com.dna.rna.domain.instance.QInstance>createList("instanceList", com.dna.rna.domain.instance.Instance.class, com.dna.rna.domain.instance.QInstance.class, PathInits.DIRECT2);
 
     public final StringPath internalIP = createString("internalIP");
+
+    public final NumberPath<Long> lastInstanceAllocationTime = createNumber("lastInstanceAllocationTime", Long.class);
 
     public final NumberPath<Integer> minExternalPort = createNumber("minExternalPort", Integer.class);
 
