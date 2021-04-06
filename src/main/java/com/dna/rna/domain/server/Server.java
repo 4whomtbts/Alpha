@@ -53,11 +53,11 @@ public class Server {
     @JoinColumn(name = "server")
     private List<Instance> instanceList = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "server")
+    @OneToMany(orphanRemoval = true, mappedBy = "server")
     private List<Gpu> gpuList = new ArrayList<>();
 
-    private long lastInstanceAllocationTime;
+    @Column(nullable = false)
+    private long lastInstanceAllocationTime = 0;
 
     private Server() {}
 

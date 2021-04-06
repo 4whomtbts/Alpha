@@ -35,7 +35,7 @@ public class Instance extends BaseAuditorEntity {
 
     private static final Logger logger= LoggerFactory.getLogger(Instance.class);
 
-    static final String INSTANCE_ID = "instance_id";
+    public static final String INSTANCE_ID = "instance_id";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = INSTANCE_ID)
@@ -94,21 +94,15 @@ public class Instance extends BaseAuditorEntity {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
-
-    // 최소한의 정보만 가지고 있는 instance entity 만드는 목적
-    // 생성 후 인스턴스 목록으로 갔을 때, 인스턴스가 즉시 생성되지 않아서
-    // 우선 최소한의 entity 를 빠르게 만들어서 진행상황을 보여주는 용도
-    /*
-    public static Instance createFrameInstance() {
-
-    }
-    */
-
     protected Instance() {}
 
     private Instance(String instanceContainerId, User owner) {
         this.instanceContainerId = instanceContainerId;
         this.owner = owner;
+    }
+
+    public Instance(Server server) {
+        this.server = server;
     }
 
     public Instance(String instanceName, String instanceContainerId, String instanceHash, User owner, ContainerImage containerImage,

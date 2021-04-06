@@ -33,9 +33,10 @@ public class InstanceResourceAllocator {
     @AllArgsConstructor
     public class AllocResult {
         private final Server server;
-        private final List<InstanceGpu> instanceGpuList;
+        private final List<Gpu> gpuList;
     }
 
+    @Deprecated
     public AllocationResult allocateGPU(List<Server> serverList, int requestedGPU, boolean useResourceExclusively) {
         if (requestedGPU > MAX_GPU_NUM) {
             throw new IllegalArgumentException("한 인스턴스의 최대 사용 가능 Gpu 개수는 " + MAX_GPU_NUM + "개 입니다.");
@@ -107,31 +108,30 @@ public class InstanceResourceAllocator {
             long o2Time = s2.getLastInstanceAllocationTime();
             return Long.compare(o1Time, o2Time);
         });
+        List<Gpu> selectedGpus = new ArrayList<>();
         if (occupyExclusively) {
             for (Server server : serverList) {
                 boolean enoughGpuFound = false;
-                List<InstanceGpu> createdInstanceGpuList = new ArrayList<>();
                 for (Gpu gpu : server.getGpuList()) {
                     List<InstanceGpu> instanceGpuList = gpu.getInstanceGpuList();
                     if (instanceGpuList.size() == 0) {
-                        createdInstanceGpuList.add(new InstanceGpu(server, gpu, true));
+                        selectedGpus.add(gpu);
                     }
-                    if (createdInstanceGpuList.size() == requestedGpu) {
+                    if (selectedGpus.size() == requestedGpu) {
                         enoughGpuFound = true;
                         break;
                     }
                 }
                 if (enoughGpuFound) {
                     server.setLastInstanceAllocationTime(System.currentTimeMillis());
-                    return new AllocResult(server, createdInstanceGpuList);
+                    return new AllocResult(server, selectedGpus);
                 }
             }
-            throw new IllegalArgumentException("배타적으로 사용할 수 있는 여분 GPU를 가진 서버가 없습니다.");
+            throw DCloudException.ofInternalServerError("배타적으로 사용할 수 있는 여분 GPU를 가진 서버가 없습니다.");
         }
 
         for (Server server : serverList) {
             boolean enoughGpuFound = false;
-            List<InstanceGpu> createdInstanceGpuList = new ArrayList<>();
             List<Gpu> gpuList = server.getGpuList();
             gpuList.sort(Comparator.comparingInt(g -> g.getInstanceGpuList().size()));
             for (Gpu gpu : gpuList) {
@@ -144,17 +144,17 @@ public class InstanceResourceAllocator {
                     }
                 }
                 if (exclusivelyOccupiedGpu) continue;
-                createdInstanceGpuList.add(new InstanceGpu(server, gpu, false));
-                if (createdInstanceGpuList.size() == requestedGpu) {
+                selectedGpus.add(gpu);
+                if (selectedGpus.size() == requestedGpu) {
                     server.setLastInstanceAllocationTime(System.currentTimeMillis());
                     enoughGpuFound = true;
                     break;
                 }
             }
             if (enoughGpuFound) {
-                return new AllocResult(server, createdInstanceGpuList);
+                return new AllocResult(server, selectedGpus);
             } else {
-                throw new IllegalArgumentException("배타적으로 사용할 수 있는 여분 GPU를 가진 서버가 없습니다.");
+                throw DCloudException.ofInternalServerError("배타적으로 사용할 수 있는 여분 GPU를 가진 서버가 없습니다.");
             }
         }
         logger.error("매우심각 : allocateGPU 에 실패함 => 요청 GPU개수 : {}, 독점여부 : {}", requestedGpu);

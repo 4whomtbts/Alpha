@@ -5,6 +5,8 @@ import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.containerImage.ContainerImageRepository;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.instance.InstanceRepository;
+import com.dna.rna.domain.instanceGpu.InstanceGpu;
+import com.dna.rna.domain.instanceGpu.InstanceGpuRepository;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.server.ServerRepository;
 import com.dna.rna.domain.serverPort.ServerPort;
@@ -34,8 +36,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
@@ -49,6 +49,7 @@ public class InstanceService {
     private final ServerRepository serverRepository;
     private final ServerPortRepository serverPortRepository;
     private final ContainerImageRepository containerImageRepository;
+    private final InstanceGpuRepository instanceGpuRepository;
     private final SshExecutor sshExecutor;
 
     private final ReentrantLock lock = new ReentrantLock();
@@ -131,10 +132,15 @@ public class InstanceService {
         }
 
         InstanceResourceAllocator instanceResourceAllocator = new InstanceResourceAllocator();
-        InstanceResourceAllocator.AllocationResult allocationResult;
+        InstanceResourceAllocator.AllocResult allocationResult;
 
+        List<InstanceGpu> createdInstanceGpus = new ArrayList<>();
         try {
-            allocationResult= instanceResourceAllocator.allocateGPU(notExcludedServers, requestedGPU, useResourceExclusively);
+            allocationResult = instanceResourceAllocator.allocGpu(notExcludedServers, requestedGPU, useResourceExclusively);
+            allocationResult.getGpuList().forEach(gpu -> {
+                createdInstanceGpus.add(new InstanceGpu(newInstance, gpu, useResourceExclusively));
+            });
+            instanceGpuRepository.saveAll(createdInstanceGpus);
         } catch (Exception e) {
             savedNewInstance.setError(true);
             String errorMessage =
@@ -153,8 +159,7 @@ public class InstanceService {
         internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
 
 
-        Server selectedServer = notExcludedServers.get(allocationResult.getIndex());
-        selectedServer.getServerResource().setGpus(allocationResult.getGpus());
+        Server selectedServer = allocationResult.getServer();
         serverRepository.saveAll(notExcludedServers);
         List<ServerPort> allocatedExternalPortList = serverPortRepository.fetchFreeExternalPortOfServer(selectedServer);
         List<ServerPort> allocatedInternalPortList = serverPortRepository.fetchFreeInternalPortOfServer(selectedServer);
@@ -203,10 +208,14 @@ public class InstanceService {
         }
 
         SshResult<InstanceCreationDto> instanceCreationSshResult;
+        List<Integer> allocatedGpuIndices = new ArrayList<>();
+        for (InstanceGpu instanceGpu : createdInstanceGpus) {
+            allocatedGpuIndices.add(instanceGpu.getGpu().getSlotIndex());
+        }
 
         try {
             instanceCreationSshResult = sshExecutor.createNewInstance(selectedServer, owner, selectedPortList,
-                    new ServerResource(allocationResult.getNewInstanceGpus()), newInstanceUUID, instanceDto.getSudoerId());
+                    new ServerResource(allocatedGpuIndices), newInstanceUUID, instanceDto.getSudoerId());
         } catch (Exception e) {
             String errorMessage =
                     String.format("[%s] 심각 : 원격 서버에 인스턴스 생성 시도중 예외가 발생했습니다 : \n " +
@@ -238,7 +247,7 @@ public class InstanceService {
         savedNewInstance.setServer(selectedServer);
         savedNewInstance.setAllocatedResources(new ServerResource());
         savedNewInstance.setExpiredAt(expiredAt);
-        savedNewInstance.getAllocatedResources().setGpus(allocationResult.getNewInstanceGpus());
+        savedNewInstance.getAllocatedResources().setGpus(allocatedGpuIndices);
         instanceRepository.save(savedNewInstance);
 
         selectedPortList.forEach(x -> x.setInstance(savedNewInstance));
