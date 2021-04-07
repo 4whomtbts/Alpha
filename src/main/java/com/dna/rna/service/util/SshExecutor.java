@@ -181,7 +181,7 @@ public class SshExecutor {
         return storageOptionBuilder(server.getSharedDirectoryPath() +
                                     "/user-share/" +
                                     user.getLoginId(),
-                                    "/home/"+sudoerId+"/"+user.getLoginId() + "-dcloud-dir");
+                                    "/home/irteam/"+user.getLoginId() + "-dcloud-dir");
     }
 
     private String mappingStoragesOption(Server selectedServer, User user, String sudoerId) {
