@@ -163,7 +163,7 @@ public class SshExecutor {
     private String mappingGlobalStorage(Server server, String sudoerId) {
         return storageOptionBuilder(server.getSharedDirectoryPath() +
                                     "/global-share",
-                                    "/home/"+sudoerId+"/dcloud-global-dir");
+                                    "/home/irteam/dcloud-global-dir");
     }
 
     private String mappingGroupStorage(User user, String sudoerId) {
@@ -172,7 +172,7 @@ public class SshExecutor {
             GroupUser groupUser = user.getGroupUserList().get(i);
             Group group = groupUser.getGroup();
             result.append(storageOptionBuilder(group.getGroupShareDirName(),
-                          "/home/"+sudoerId+"/"+group.getGroupName()+ "-dcloud-dir"));
+                          "/home/irteam/"+group.getGroupName()+ "-dcloud-dir"));
         }
         return result.toString();
     }
