@@ -35,23 +35,19 @@ public class SshExecutor {
 
     private String dcloudImage = "dguailab/ailab_base:2.1";
 
-    private String buildGpuAllocOptionValue(ServerResource serverResource) {
-        List<Integer> gpus = serverResource.getGpus();
+    private String buildGpuAllocOptionValue(List<Integer> gpus) {
         StringBuilder result = new StringBuilder();
         result.append("--gpus ");
         result.append("'\"device=");
         // 쉼표가 잘 못 찍히는 것을 막기 위한 조건
-        int acc = 0;
         for (int i = 0; i < gpus.size(); i++) {
             int curr = gpus.get(i);
-            if (curr == -1 || curr == 1) {
-                if (i != 0 && acc != 0) {
-                    result.append(',');
-                }
-                result.append(i);
-                acc++;
+            if (i != 0) {
+              result.append(',');
             }
+            result.append(curr);
         }
+
         result.append("\"'");
         return result.toString();
     }
@@ -95,6 +91,7 @@ public class SshExecutor {
                             channel.getExitStatus(), outputBuffer.toString());
                 }
                 channel.disconnect();
+                session.disconnect();
                 return status;
             }
         }
@@ -138,6 +135,8 @@ public class SshExecutor {
                 String status = outputBuffer.toString();
                 System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
+                session.disconnect();
+
                 return status;
             }
         }
@@ -226,6 +225,7 @@ public class SshExecutor {
                 logger.info("[{}] 서버에 커맨드 실행 : cmd = [{}], output = [{}]",
                         selectedServer.getInternalIP(), command, outputBuffer.toString());
                 channel.disconnect();
+                session.disconnect();
 
                 SshResultError error = null;
                 int exitStatus = channel.getExitStatus();
@@ -242,7 +242,7 @@ public class SshExecutor {
     }
 
     public SshResult<InstanceCreationDto> createNewInstance(Server selectedServer, User user, List<ServerPort> selectedPortList,
-                                                            ServerResource serverResource, String containerId, String sudoerId) throws Exception {
+                                                            List<Integer> gpus, String containerId, String sudoerId) throws Exception {
         logger.info("[{}] 인스턴스용 컨테이너 생성 시작...", containerId);
         JSch jsch = new JSch();
         Session session = jsch.getSession(sshId, wanIP, selectedServer.getSshPort());
@@ -262,7 +262,7 @@ public class SshExecutor {
 
         String command =
                 "sudo docker run -d " +
-                buildGpuAllocOptionValue(serverResource) + " " +
+                buildGpuAllocOptionValue(gpus) + " " +
                 generatedDockerRunPortOption(selectedPortList) +
                 "-it --runtime=nvidia " +
                 "--cap-add=SYS_ADMIN " +
@@ -278,10 +278,10 @@ public class SshExecutor {
 
         channel.connect();
 
-        byte[] tmp = new byte[1024];
+        byte[] tmp = new byte[65536];
         while (true) {
             while (in.available() > 0) {
-                int i = in.read(tmp, 0, 1024);
+                int i = in.read(tmp, 0, 65536);
                 outputBuffer.append(new String(tmp, 0, i));
                 if (i < 0) break;
             }
@@ -301,7 +301,8 @@ public class SshExecutor {
                             String.format("[%s] 실행한 명령어 :\n [%s], output = [%S]", containerId, command, outputBuffer.toString()),
                             exitStatus);
                 }
-
+                channel.disconnect();
+                session.disconnect();
                 return new SshResult<>(
                         error,
                         new InstanceCreationDto(containerId, containerHash));
@@ -344,6 +345,7 @@ public class SshExecutor {
                 System.out.println(outputBuffer.toString());
                 System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
+                session.disconnect();
 
                 int exitStatus = channel.getExitStatus();
                 SshResultError error = null;
@@ -447,7 +449,7 @@ public class SshExecutor {
                 System.out.println(outputBuffer.toString());
                 System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
-
+                session.disconnect();
                 int exitStatus = channel.getExitStatus();
                 SshResultError error = null;
                 if (exitStatus != 0) error = new SshResultError(outputBuffer.toString(), exitStatus);
@@ -489,6 +491,7 @@ public class SshExecutor {
                 System.out.println(outputBuffer.toString());
                 logger.info("startInstance exit status:" + channel.getExitStatus());
                 channel.disconnect();
+                session.disconnect();
                 String lineSeparator = System.lineSeparator();
                 String result = outputBuffer.toString().replaceAll(lineSeparator, "");
                 return new SshResult<>(null, result);

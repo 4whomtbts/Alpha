@@ -215,7 +215,7 @@ public class InstanceService {
 
         try {
             instanceCreationSshResult = sshExecutor.createNewInstance(selectedServer, owner, selectedPortList,
-                    new ServerResource(allocatedGpuIndices), newInstanceUUID, instanceDto.getSudoerId());
+                    allocatedGpuIndices, newInstanceUUID, instanceDto.getSudoerId());
         } catch (Exception e) {
             String errorMessage =
                     String.format("[%s] 심각 : 원격 서버에 인스턴스 생성 시도중 예외가 발생했습니다 : \n " +

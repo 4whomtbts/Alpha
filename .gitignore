@@ -26,6 +26,7 @@ nbdist/
 out/
 
 spring-boot-log*
+dcloud-log*
 
 ### secrets ###
 docker/mysql/mysql_secret

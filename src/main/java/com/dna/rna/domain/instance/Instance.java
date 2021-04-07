@@ -67,7 +67,7 @@ public class Instance extends BaseAuditorEntity {
     @JoinColumn(name = INSTANCE_ID)
     private List<ServerPort> instancePorts;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JoinColumn(name = INSTANCE_ID)
     private List<InstanceGpu> gpuList;
 
