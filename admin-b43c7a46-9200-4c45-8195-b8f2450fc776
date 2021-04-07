@@ -1,5 +1,0 @@
-[DcloudError] => error : [[admin-b43c7a46-9200-4c45-8195-b8f2450fc776] 심각 : 원격 서버 인스턴스 생성에 실패했습니다 :
- 서버 = [192.168.1.11], error = [[SshResultError] error : [admin-b43c7a46-9200-4c45-8195-b8f2450fc776] 실행한 명령어 :
- [sudo docker run -d --gpus '"device="' -p 9000:22 -p 10000:3389 -it --runtime=nvidia --cap-add=SYS_ADMIN --ipc=host --mount type=bind,source="/home/tako1/global-share",target=/home/test2142142141/dcloud-global-dir --mount type=bind,source="/home/tako1/user-share/admin",target=/home/test2142142141/admin-dcloud-dir --name admin-b43c7a46-9200-4c45-8195-b8f2450fc776 dguailab/ailab_base:2.1], output = [DOCKER: ERROR RESPONSE FROM DAEMON: INVALID MOUNT CONFIG FOR TYPE "BIND": BIND SOURCE PATH DOES NOT EXIST: /HOME/TAKO1/GLOBAL-SHARE.
-SEE 'DOCKER RUN --HELP'.
-], code : 125]], code : [0]

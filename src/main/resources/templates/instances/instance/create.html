@@ -206,8 +206,11 @@
                 <div th:class="reserve_hour_container">
                     <input type="text" id="reserveHour" th:class="row_content"
                            th:field="*{reserveHour}" placeholder="(예시)15">
-                    <label><input onchange="indefinitelyUseOnChange(this)" type="checkbox" name="indefinitelyUse"
-                                  th:field="*{indefinitelyUse}" th:checked="${indefinitelyUse}">무기한사용(허가필요)</label>
+                    <!--
+                    <label><input th:disabled="true" th:checked=true onchange="indefinitelyUseOnChange(this)" type="checkbox" name="indefinitelyUse"
+                                  th:field="*{indefinitelyUse}">무기한사용(허가필요)</label>
+                                  -->
+
                 </div>
             </div>
             <div class="row">
@@ -218,39 +221,26 @@
             <div class="row">
                 <div th:class="row_title">이미지 선택</div>
                 <select id="testOrder" th:field="*{containerImageId}">
-                    <option value=""> Docker 이미지를 선택하세요.</option>
+                    <option value=""> Docker 이미지 선택하세요.</option>
                     <option th:each="image : ${containerImageList}" th:value="${image.containerImageId}"
                             th:text="|${image.containerImageNickName} / ${image.containerImageDescription}|">\
                     </option>
                 </select>
             </div>
+
             <div class="row">
                 <div th:class="row_title">사용 GPU 선택</div>
                 <div th:class="reserve_hour_container">
                     <select id="gpuSelection" th:field="*{numberOfGpuToUse}">
                         <option value=""> 사용할 GPU의 개수</option>
-                        <option th:value="1" th:text="1"></option>
-                        <option th:value="2" th:text="2"></option>
-                        <option th:value="3" th:text="3"></option>
-                        <option th:value="4" th:text="4"></option>
-                        <option th:value="5" th:text="5"></option>
-                        <option th:value="6" th:text="6"></option>
-                        <option th:value="7" th:text="7"></option>
-                        <option th:value="8" th:text="8"></option>
+                        <th:block th:each="i: ${#numbers.sequence(1, maxGpu)}">
+                            <option th:value="${i}" th:text="${i}"></option>
+                        </th:block>
                     </select>
                     <label><input type="checkbox" name="useGpuExclusively" th:field="*{useGpuExclusively}"
+                                  th:disabled=true
                                   th:checked="${useGpuExclusively}">독점적GPU사용</label>
                 </div>
-            </div>
-            <div class="row">
-                <div th:class="row_title">sudoer 아이디</div>
-                <input type="text" th:class="account_input"
-                       th:field="*{sudoerId}" placeholder="sudoer로 쓸 유저 아이디(4글자이상)">
-            </div>
-            <div class="row">
-                <div th:class="row_title">sudoer 패스워드</div>
-                <input type="password" th:class="account_input"
-                       th:field="*{sudoerPwd}" placeholder="sudoer로 쓸 유저 패스워드(8글자이상)">
             </div>
             <p style="font-size:12px;color:#4285F4;margin:0">포트매핑 예시) 태그 : ssh, 9000:22 일 시</p>
             <p style="font-size:12px;color:#4285F4;margin-top:0">태그는 단순 이름이며, 9000포트로 요청 시 인스턴스 22포트로 매핑</p>

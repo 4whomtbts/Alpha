@@ -4,6 +4,7 @@ import com.dna.rna.domain.containerImage.ContainerImage;
 import com.dna.rna.domain.containerImage.ContainerImageRepository;
 import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.instance.InstanceRepository;
+import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.server.ServerRepository;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserRepository;
@@ -107,12 +108,19 @@ public class InstanceMvcController {
         return "instances/index";
     }
 
+    @Transactional
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     @GetMapping("/instance/create")
     public String instanceCreateGET(Principal principal, Model model) {
         List<ContainerImage> containerImageList = containerImageRepository.findAll();
+        List<Server> servers = serverRepository.findAll();
+        int maxGpu = -1;
+        for (Server server : servers) {
+            maxGpu = Math.max(maxGpu, server.getGpuList().size());
+        }
         model.addAttribute("instance", instance);
         model.addAttribute("containerImageList", containerImageList);
+        model.addAttribute("maxGpu", maxGpu);
         return "instances/instance/create";
     }
 
@@ -149,6 +157,7 @@ public class InstanceMvcController {
         User owner = userRepository.findUserByLoginId(principal.getName());
         instance.setOwner(owner);
 
+        /*
         if (instance.getSudoerId() == null || instance.getSudoerId().length() < 4) {
             logger.warn("유저 [{}, {}] 가 입력한 sudoerId 가 [{}] 로 4자 보다 짧습니다 ",
                     owner.getLoginId(), owner.getUserName(), instance.getSudoerId());
@@ -159,7 +168,8 @@ public class InstanceMvcController {
                     owner.getLoginId(), owner.getUserName(), instance.getSudoerPwd());
             return "instances/instance/create";
         }
-
+        */
+        instance.setIndefinitelyUse(true);
         new Thread(() -> {
             LocalDateTime expiredAt = null;
             if (!instance.isIndefinitelyUse()) {

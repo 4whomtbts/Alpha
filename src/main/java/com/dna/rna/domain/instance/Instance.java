@@ -229,7 +229,7 @@ public class Instance extends BaseAuditorEntity {
 
         return new InstanceDto(
                 this.instanceId, this.instanceContainerId, instanceHash, this.instanceName, containerImageName,
-                "RUNNING", false, gpuResource.toString(), serverIP, "210.94.223.123",
+                "RUNNING", false, gpuResource.toString(), serverIP, "210.94.223.124",
                  externalPortsBuilder.toString(), internalPortsBuilder.toString(), periodBuilder.toString(),
                  error, initialized, logLinesBuilder.toString());
     }
