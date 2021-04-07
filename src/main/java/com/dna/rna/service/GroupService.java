@@ -52,7 +52,6 @@ public class GroupService {
         groupUserRepository.save(newGroupUser);
     }
 
-    // 귀찮아서 일단 초대하면 바로 가입되도록 함..
     public void inviteUserToGroup(long groupId, String loginId) {
         User user = userRepository.findUserByLoginId(loginId);
         Group group = groupRepository.findById(groupId).orElseThrow(() ->

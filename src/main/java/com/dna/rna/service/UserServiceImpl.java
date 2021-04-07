@@ -18,29 +18,6 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger= LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
-/*
-    @Transactional
-    @Override
-    public User createUser(final String loginId, final String userName, final String encodedPassword) {
-        User newUser = User.of(loginId, userName, encodedPassword);
-        UserRole newUserRole = new UserRole();
-        List<CRUDPermissions> permissionsList = new ArrayList<>();
-        permissionsList.add(CRUDPermissions.CREATE);
-        newUserRole.setPermissions(permissionsList);
-        newUserRole.setUser(newUser);
-        newUserRole.setRoleName(UserType.USER.toString());
-        List<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(newUserRole);
-        newUser.setUserRoles(userRoles);
-        userRepository.save(newUser);
-
-        User user = userRepository.findUserByLoginId(loginId);
-        for (UserRole role : user.getUserRoles()) {
-            System.out.println(role.getRoleName());
-        }
-        return newUser;
-    }
-*/
 
     @Transactional
     @Override
