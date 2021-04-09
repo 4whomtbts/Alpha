@@ -380,7 +380,6 @@ public class SshExecutor {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String dcloudImage = "dcloud:1.0";
         String command = "sudo docker exec -it "+instanceContainerId+" bash /remote-access.sh " + sudoerId + " " + sudoerPwd;
         channelExec.setCommand(command);
         System.out.println(command);
