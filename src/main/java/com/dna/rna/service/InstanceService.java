@@ -156,8 +156,8 @@ public class InstanceService {
 
         logger.info(String.format("[%s] 사용할 컨테이너 이미지 : [%s]", newInstanceUUID, containerImage));
         externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
+        externalPorts.add(new ServerPortDto.Creation("jupyter", true, 8888));
         internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
-
 
         Server selectedServer = allocationResult.getServer();
         serverRepository.saveAll(notExcludedServers);
