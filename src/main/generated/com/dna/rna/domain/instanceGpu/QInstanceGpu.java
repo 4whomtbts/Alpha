@@ -24,9 +24,9 @@ public class QInstanceGpu extends EntityPathBase<InstanceGpu> {
 
     public final com.dna.rna.domain.gpu.QGpu gpu;
 
-    public final BooleanPath isExclusivelyOccupied = createBoolean("isExclusivelyOccupied");
+    public final com.dna.rna.domain.instance.QInstance instance;
 
-    public final com.dna.rna.domain.server.QServer server;
+    public final BooleanPath isExclusivelyOccupied = createBoolean("isExclusivelyOccupied");
 
     public final NumberPath<Long> serverGpuId = createNumber("serverGpuId", Long.class);
 
@@ -49,7 +49,7 @@ public class QInstanceGpu extends EntityPathBase<InstanceGpu> {
     public QInstanceGpu(Class<? extends InstanceGpu> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.gpu = inits.isInitialized("gpu") ? new com.dna.rna.domain.gpu.QGpu(forProperty("gpu"), inits.get("gpu")) : null;
-        this.server = inits.isInitialized("server") ? new com.dna.rna.domain.server.QServer(forProperty("server"), inits.get("server")) : null;
+        this.instance = inits.isInitialized("instance") ? new com.dna.rna.domain.instance.QInstance(forProperty("instance"), inits.get("instance")) : null;
     }
 
 }
