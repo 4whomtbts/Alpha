@@ -33,3 +33,6 @@ docker/mysql/mysql_secret
 
 backup
 !logs/**/
+
+### compile time generated files ###
+src/main/generated/
