@@ -1,7 +1,9 @@
 package com.dna.rna.domain.serverPort;
 
+import com.dna.rna.domain.instance.Instance;
 import com.dna.rna.domain.server.Server;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPADeleteClause;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class ServerPortRepositoryImpl extends QuerydslRepositorySupport implements CustomServerPortRepository {
@@ -42,6 +45,13 @@ public class ServerPortRepositoryImpl extends QuerydslRepositorySupport implemen
                         .and(qServerPort.external.eq(false)))
                 .orderBy(orderSpecifier).fetch();
         return result;
+    }
+
+    @Override
+    public void removeServerPortByInstance(Instance instance) {
+        QServerPort qServerPort = QServerPort.serverPort;
+        JPADeleteClause jpaDeleteClause = new JPADeleteClause(Objects.requireNonNull(getEntityManager()), qServerPort);
+        jpaDeleteClause.where(qServerPort.instance.instanceId.eq(instance.getInstanceId())).execute();
     }
 
 

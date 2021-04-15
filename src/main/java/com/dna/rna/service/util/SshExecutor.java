@@ -64,7 +64,7 @@ public class SshExecutor {
         Channel channel = session.openChannel("exec");
         ChannelExec channelExec = (ChannelExec) channel;
         channelExec.setPty(true);
-        String command = "sudo docker rm -f " + instance.getInstanceHash();
+        String command = "sudo docker rm -f " + instance.getInstanceContainerId();
         channelExec.setCommand(command);
         System.out.println(command);
         logger.info("[{}] 서버에서 인스턴스 [{}] 삭제 명령 발행", server.getInternalIP(), instance.getInstanceHash());

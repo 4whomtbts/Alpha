@@ -64,33 +64,9 @@ public class InstanceService {
         lock.lock();
 
         if (serverOfInstance != null) {
-            if (serverOfInstance.getServerResource() != null) {
-                List<Integer> serverGpus = serverOfInstance.getServerResource().getGpus();
-                List<Integer> instanceGpus = instance.getAllocatedResources().getGpus();
-                List<Integer> changedServerGpus = new ArrayList<>();
-                for (int i=0; i < serverGpus.size(); i++) {
-                    int currGpuStat = serverGpus.get(i);
-                    int currInstanceStat = instanceGpus.get(i);
-
-                    if ((currInstanceStat == ServerResource.EXCLUSIVELY_ALLOC)
-                            && (currGpuStat == ServerResource.EXCLUSIVELY_ALLOC)) {
-                        changedServerGpus.add(ServerResource.UN_ALLOC);
-                    } else if (currInstanceStat == ServerResource.ALLOC) {
-                        changedServerGpus.add(currGpuStat-1);
-                    } else if (currInstanceStat == ServerResource.UN_ALLOC) {
-                        changedServerGpus.add(currGpuStat);
-                    } else {
-                        logger.error("매우심각 : 인스턴스 [{}] 를 삭제하려는 도중 " +
-                                        "서버 [{}] 의 gpu 상태가 [{}] 이고, 인스턴스의 gpu 상태가 [{}]로 비정상적입니다.",
-                                instance.getInstanceId(), serverOfInstance.getInternalIP(), currGpuStat, currInstanceStat);
-                    }
-                }
-                serverOfInstance.getServerResource().setGpus(changedServerGpus);
-            }
-            serverRepository.save(serverOfInstance);
+            instanceGpuRepository.deleteAll(instance.getGpuList());
+            serverPortRepository.removeServerPortByInstance(instance);
             sshExecutor.deleteInstance(serverOfInstance, instance);
-        } else {
-            instanceRepository.delete(instance);
         }
         lock.unlock();
         instanceRepository.delete(instance);
@@ -157,7 +133,7 @@ public class InstanceService {
         logger.info(String.format("[%s] 사용할 컨테이너 이미지 : [%s]", newInstanceUUID, containerImage));
         externalPorts.add(new ServerPortDto.Creation("ssh", true, 22));
         externalPorts.add(new ServerPortDto.Creation("jupyter", true, 8888));
-        internalPorts.add(new ServerPortDto.Creation("xrdp", false, 3389));
+        internalPorts.add(new ServerPortDto.Creation("xrdp", true, 3389));
 
         Server selectedServer = allocationResult.getServer();
         serverRepository.saveAll(notExcludedServers);

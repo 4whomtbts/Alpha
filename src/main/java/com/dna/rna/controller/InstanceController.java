@@ -27,7 +27,7 @@ public class InstanceController {
     private final InstanceService instanceService;
     private ReentrantLock lock = new ReentrantLock();
 
-    @Secured(value = {"ROLE_MEMBER"})
+    @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     @DeleteMapping("/instances/instance/{instanceId}")
     public ResponseEntity deleteInstanceById(@PathVariable("instanceId") long instanceId,
                                              Authentication authentication) throws Exception {
@@ -52,7 +52,7 @@ public class InstanceController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @Secured(value = {"ROLE_MEMBER"})
+    @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     @RequestMapping(value = "/instances/instance/{instance_hash}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity food(@PathVariable("instance_hash") String instanceHash) throws Exception {
