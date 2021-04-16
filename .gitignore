@@ -36,3 +36,6 @@ backup
 
 ### compile time generated files ###
 src/main/generated/
+
+### elk ###
+esdata1/
