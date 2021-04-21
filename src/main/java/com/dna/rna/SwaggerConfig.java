@@ -71,13 +71,13 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Spring Boot REST Sample with Swagger")
-                .description("스웨거 테스트")
+                .title("DCloud Swagger")
+                .description("")
                 .termsOfServiceUrl("http://www-03.ibm.com/software/sla/sladb.nsf/sla/bm?Open")
-                .contact("user@gmail.com")
+                .contact("4whomtbts@gmail.com")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://github.com/IBM-Bluemix/news-aggregator/blob/master/LICENSE")
-                .version("2.0")
+                .version("1.0")
                 .build();
     }
 

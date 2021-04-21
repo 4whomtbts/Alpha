@@ -158,10 +158,12 @@ public class Instance extends BaseAuditorEntity {
                 externalPortsBuilder.append(serverPort.getTag());
                 externalPortsBuilder.append(" : ");
                 externalPortsBuilder.append(serverPort.getFrom());
+                externalPortsBuilder.append(" ");
             } else {
                 internalPortsBuilder.append(serverPort.getTag());
                 internalPortsBuilder.append(" : ");
                 internalPortsBuilder.append(serverPort.getFrom());
+                internalPortsBuilder.append(" ");
             }
         }
         /*
