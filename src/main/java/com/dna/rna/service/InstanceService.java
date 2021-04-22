@@ -76,7 +76,7 @@ public class InstanceService {
     public DCloudError createInstance(String newInstanceUUID, final InstanceDto.Post instanceDto, LocalDateTime expiredAt) throws Exception {
         DCloudError error = null;
         User owner = instanceDto.getOwner();
-        Instance newInstance = Instance.skeletonInstance(newInstanceUUID, owner);
+        Instance newInstance = Instance.skeletonInstance(newInstanceUUID, owner, instanceDto.getInstanceName());
         // 중간에 에러로 리턴되는 경우 계속 초기화 작업이 진행중이라고 뜨는 것을 막기 위함
         newInstance.setInitialized(true);
         final Instance savedNewInstance = instanceRepository.save(newInstance);
