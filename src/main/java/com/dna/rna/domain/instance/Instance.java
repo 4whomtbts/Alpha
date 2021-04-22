@@ -3,6 +3,7 @@ package com.dna.rna.domain.instance;
 import com.dna.rna.domain.BaseAuditorEntity;
 import com.dna.rna.domain.ServerResource;
 import com.dna.rna.domain.containerImage.ContainerImage;
+import com.dna.rna.domain.gpu.Gpu;
 import com.dna.rna.domain.server.Server;
 import com.dna.rna.domain.instanceGpu.InstanceGpu;
 import com.dna.rna.domain.serverPort.ServerPort;
@@ -11,6 +12,7 @@ import com.dna.rna.dto.InstanceDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.annotations.Fetch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +73,7 @@ public class Instance extends BaseAuditorEntity {
     @JoinColumn(name = INSTANCE_ID)
     private List<InstanceGpu> gpuList;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = CONTAINER_IMAGE_ID)
     private ContainerImage containerImage;
 
@@ -79,7 +81,7 @@ public class Instance extends BaseAuditorEntity {
     @JoinColumn(name = USER_ID)
     private User owner;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = SERVER_ID)
     private Server server;
 
@@ -126,17 +128,18 @@ public class Instance extends BaseAuditorEntity {
 
     public InstanceDto toInstanceDto() {
         StringBuilder gpuResource = new StringBuilder();
-        List<Integer> gpus = this.allocatedResources.getGpus();
+        List<InstanceGpu> gpus = this.getGpuList();
         for (int i=0; i < gpus.size(); i++) {
-            int gpu = gpus.get(i);
-            if (gpu == ServerResource.EXCLUSIVELY_ALLOC) {
+            InstanceGpu instanceGpu = gpus.get(i);
+            Gpu gpu = instanceGpu.getGpu();
+            if (instanceGpu.isExclusivelyOccupied()) {
                 gpuResource.append("/Xgpu:");
-                gpuResource.append(i);
-                gpuResource.append(", ");
-            } else if (gpu == ServerResource.ALLOC) {
+                gpuResource.append(gpu.getSlotIndex());
+                gpuResource.append("[").append(gpu.getModelName()).append(", ").append(gpu.getUuid()).append("]\n");
+            } else {
                 gpuResource.append("/gpu:");
-                gpuResource.append(i);
-                gpuResource.append(", ");
+                gpuResource.append(gpu.getSlotIndex());
+                gpuResource.append("[").append(gpu.getModelName()).append(", ").append(gpu.getUuid()).append("]\n");
             }
         }
         StringBuilder periodBuilder = new StringBuilder();

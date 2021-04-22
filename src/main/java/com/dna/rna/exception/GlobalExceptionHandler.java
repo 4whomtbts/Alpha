@@ -22,10 +22,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(DCloudException.class)
-    public ResponseEntity<ApiErrorResponse> handleRnaException(DCloudException ex, WebRequest req) {
-
-        ApiErrorResponse error = new ApiErrorResponse(ex.getErrorMessage(), ex.getDebugMessage());
-        return new ResponseEntity<>(error, ex.getStatusCode());
+    @ExceptionHandler(value = {DCloudException.class})
+    public ResponseEntity<String>  exception(DCloudException ex, WebRequest req) {
+        ApiErrorResponse err = new ApiErrorResponse(ex.getErrorMessage(), ex.getDebugMessage());
+        return new ResponseEntity<>("error : " + err.getError() + "\n message : " + err.getMessage(), ex.getStatusCode());
     }
+
 }

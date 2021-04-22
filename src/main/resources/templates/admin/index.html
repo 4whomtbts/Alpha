@@ -175,12 +175,12 @@
 </style>
 <script>
     var csrf;
+    var csrfParameter = $('meta[name="_csrf_parameter"]').attr('content')
+    var csrfHeader = $('meta[name="_csrf_header"]').attr('content')
+    var csrfToken = $('meta[name="_csrf"]').attr('content')
+
     $(document).ready(function () {
         //csrf = JSON.parse('[[${_csrf}]]');
-        var csrfParameter = $('meta[name="_csrf_parameter"]').attr('content');
-        var csrfHeader = $('meta[name="_csrf_header"]').attr('content');
-        var csrfToken = $('meta[name="_csrf"]').attr('content');
-
         $.ajaxSetup({
             beforeSend: function (xhr) {
             }
@@ -303,6 +303,7 @@
 
     var selectedList = new Set();
 
+
     function onClickCheckBox(self) {
         var instanceId = self.id;
         if (selectedList.has(instanceId)) {
@@ -328,8 +329,24 @@
         location.reload();
     }
 
-    function toggleServer() {
-
+    function deleteUsers(self) {
+        var loginId = $(self).attr('data-source');
+        var result = $.ajax({
+            url: "/users/user/" + loginId,
+            method: "DELETE",
+            cache: false,
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            success: function (res) {
+                alert("유저 삭제가 완료되었습니다!")
+                location.reload()
+            },
+            error: function (jqXHR, status, e) {
+                alert("유저 삭제에 실패했습니다.\n" + jqXHR.responseText)
+            }
+        });
     }
 
 </script>
@@ -345,10 +362,6 @@
 <div th:class="table_container">
     <div th:class="table_title_container">
         <span th:class="table_title">유저 현황</span>
-        <div th:class="instance_option_container">
-            <input type="button" class="instance_checkbox" onclick="location.href='/instance/create'" value="인스턴스 생성">
-            <input type="button" class="instance_checkbox" onclick="deleteInstances(this)" value="선택삭제">
-        </div>
     </div>
     <div th:class="table_container">
         <div th:class="instance_table" th:each="user, stat : ${userList}">
@@ -364,32 +377,53 @@
                      th:text="${user.getId()}"></div>
             </div>
             <div class="table_odd_row">
-                <div th:class="table_odd_row_title">이름</div>
+                <div th:class="table_odd_row_title">로그인 아이디</div>
                 <div th:class="table_odd_row_content"
-                     th:text="${user.getUserName()}"></div>
+                     th:text="${user.getLoginId()}"></div>
             </div>
             <div class="table_even_row">
-                <div th:class="table_even_row_title">소속</div>
+                <div th:class="table_even_row_title">이름</div>
                 <div th:class="table_even_row_content"
-                     th:text="${user.getOrganization()}"></div>
+                     th:text="${user.getUserName()}"></div>
             </div>
             <div class="table_odd_row">
-                <div th:class="table_odd_row_title">소속그룹</div>
-                <div th:class="table_odd_row_content">
+                <div th:class="table_odd_row_title">소속</div>
+                <div th:class="table_odd_row_content"
+                     th:text="${user.getOrganization()}"></div>
+            </div>
+            <div class="table_even_row">
+                <div th:class="table_even_row_title">소속그룹</div>
+                <div th:class="table_even_row_content">
                     <p th:class="content_p_tag"
                        th:each="groupUser: ${user.getGroupUserList()}"
                        th:text="${groupUser.getGroup().getGroupName()}"></p>
                 </div>
             </div>
+            <div class="table_odd_row">
+                <div th:class="table_odd_row_title">핸드폰</div>
+                <div th:class="table_odd_row_content"
+                     th:text="${user.getPhone()}"></div>
+            </div>
             <div class="table_even_row">
-                <div th:class="table_even_row_title">가입승인여부</div>
-                <div th:class="table_even_row_content">
+                <div th:class="table_even_row_title">핸드폰</div>
+                <div th:class="table_even_row_content"
+                     th:text="${user.getEmail()}"></div>
+            </div>
+            <div class="table_odd_row">
+                <div th:class="table_odd_row_title">가입승인여부</div>
+                <div th:class="table_odd_row_content">
                     <th:block th:if="${isMemberList.get(stat.index)}">
                         <p th:class="content_p_tag"> 가입됨 </p>
                     </th:block>
                     <th:block th:if="${isMemberList.get(stat.index) == false}">
                         <button th:id="${userList.get(stat.index).getLoginId()}" class="confirm_signup">가입승인</button>
                     </th:block>
+                </div>
+            </div>
+            <div class="table_even_row">
+                <div th:class="table_even_row_title">옵션</div>
+                <div th:class="table_even_row_content">
+                    <input type="button" th:data-source="${userList.get(stat.index).getId()}" onclick="deleteUsers(this)" th:value="회원삭제"/>
                 </div>
             </div>
         </div>

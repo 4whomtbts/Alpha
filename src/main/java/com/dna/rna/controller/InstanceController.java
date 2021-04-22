@@ -25,12 +25,12 @@ public class InstanceController {
     private static final Logger logger = LoggerFactory.getLogger(InstanceController.class);
 
     private final InstanceService instanceService;
-    private ReentrantLock lock = new ReentrantLock();
 
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     @DeleteMapping("/instances/instance/{instanceId}")
     public ResponseEntity deleteInstanceById(@PathVariable("instanceId") long instanceId,
                                              Authentication authentication) throws Exception {
+        final ReentrantLock lock = new ReentrantLock();
         MainUserDetails details = (MainUserDetails) authentication.getPrincipal();
         User user = details.getUser();
         if (user == null) {

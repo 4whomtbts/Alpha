@@ -7,6 +7,7 @@ import com.dna.rna.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,5 +36,10 @@ public class UserServiceImpl implements UserService {
     public UserDto fetchUserMyPage(final String loginId) {
         User user = userRepository.findUserByLoginId(loginId);
         return null;
+    }
+
+    @Override
+    public void deleteUser(final long userId) {
+        System.out.println("userID!!!" + userId);
     }
 }

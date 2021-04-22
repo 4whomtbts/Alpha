@@ -14,4 +14,5 @@ public interface UserService {
     
     UserDto fetchUserMyPage(final String loginId);
 
+    void deleteUser(final long userId);
 }
