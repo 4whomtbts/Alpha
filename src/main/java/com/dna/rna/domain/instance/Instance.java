@@ -121,7 +121,7 @@ public class Instance extends BaseAuditorEntity {
         this.expiredAt = expiredAt;
     }
 
-    public static Instance skeletonInstance(String instanceContainerName, User owner,String instanceName) {
+    public static Instance skeletonInstance(String instanceContainerName, User owner, String instanceName) {
         return new Instance(instanceContainerName, owner, instanceName);
     }
 
