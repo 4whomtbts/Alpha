@@ -98,9 +98,10 @@ public class Instance extends BaseAuditorEntity {
 
     protected Instance() {}
 
-    private Instance(String instanceContainerId, User owner) {
+    private Instance(String instanceContainerId, User owner,String instanceName) {
         this.instanceContainerId = instanceContainerId;
         this.owner = owner;
+        this.instanceName = instanceName;
     }
 
     public Instance(Server server) {
@@ -122,8 +123,8 @@ public class Instance extends BaseAuditorEntity {
         this.expiredAt = expiredAt;
     }
 
-    public static Instance skeletonInstance(String instanceContainerName, User owner) {
-        return new Instance(instanceContainerName, owner);
+    public static Instance skeletonInstance(String instanceContainerName, User owner, String instanceName) {
+        return new Instance(instanceContainerName, owner, instanceName);
     }
 
     public InstanceDto toInstanceDto() {
