@@ -19,6 +19,7 @@ import java.util.List;
 public class UserRole implements GrantedAuthority {
 
     public static final String USER_ROLE_MEMBER = "MEMBER";
+    public static final String USER_ROLE_ADMIN = "ADMIN";
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

@@ -19,7 +19,6 @@ public class DCloudException extends RuntimeException {
     private HttpStatus statusCode;
 
     private DCloudException(String errorMessage, String debugMessage, HttpStatus statusCode) {
-        super("상태코드 [" + statusCode + "] | " + "에러 = " + errorMessage + "\n 디버깅메시지 = " + debugMessage);
         this.errorMessage = errorMessage;
         this.debugMessage = debugMessage;
         this.statusCode = statusCode;

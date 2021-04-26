@@ -97,4 +97,10 @@ public class User extends BaseAuditorEntity {
         requireNonNull(email, "email is null");
         return new User(loginId, password, userName, organization, phone, email);
     }
+
+    @Override
+    public String toString() {
+        return String.format("id - [%s], loginId - [%s], userName - [%s], org - [%s]",
+                this.getId(), this.getLoginId(), this.getUserName(), this.getOrganization());
+    }
 }

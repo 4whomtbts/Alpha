@@ -335,7 +335,6 @@
             url: "/users/user/" + loginId,
             method: "DELETE",
             cache: false,
-            dataType: "json",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader(csrfHeader, csrfToken);
             },
@@ -344,7 +343,7 @@
                 location.reload()
             },
             error: function (jqXHR, status, e) {
-                alert("유저 삭제에 실패했습니다.\n" + jqXHR.responseText)
+                alert("유저 삭제에 실패했습니다.\n" + JSON.stringify(jqXHR) + ", " + status + ", " + JSON.stringify(e));
             }
         });
     }
