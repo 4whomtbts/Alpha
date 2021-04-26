@@ -15,4 +15,7 @@ public interface UserService {
     UserDto fetchUserMyPage(final String loginId);
 
     void deleteUser(final long userId);
+
+    void updateTicketCount(final long userId, final int numOfTicket);
+
 }

@@ -54,6 +54,8 @@ public class User extends BaseAuditorEntity {
     @Column(nullable = false)
     private String email;
 
+    private int ticketCount;
+
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     private List<Instance> instanceList;
 
@@ -85,6 +87,7 @@ public class User extends BaseAuditorEntity {
         this.groupUserList = new ArrayList<>();
         this.phone = phone;
         this.email = email;
+        this.ticketCount = 0;
     }
 
     public static User of(final String loginId, final String userName, final String password,

@@ -54,4 +54,11 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.delete(targetUser);
     }
+
+    @Override
+    @Transactional
+    public void updateTicketCount(final long userId, final int numOfTicket) {
+        User targetUser =  userRepository.findUserById(userId);
+        targetUser.setTicketCount(numOfTicket);
+    }
 }

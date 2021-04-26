@@ -331,7 +331,7 @@
 
     function deleteUsers(self) {
         var loginId = $(self).attr('data-source');
-        var result = $.ajax({
+        $.ajax({
             url: "/users/user/" + loginId,
             method: "DELETE",
             cache: false,
@@ -346,6 +346,35 @@
                 alert("유저 삭제에 실패했습니다.\n" + JSON.stringify(jqXHR) + ", " + status + ", " + JSON.stringify(e));
             }
         });
+    }
+
+    function updateTicket(self) {
+        var id = $(self).attr('data-source');
+        var numOfTicket = $("#" + id + "-ticket").val()
+        var body = {
+            "userId": id,
+            "numOfTicket": numOfTicket,
+        };
+
+        $.ajax({
+            url: "/users/ticket",
+            method: "PUT",
+            cache: false,
+            data: JSON.stringify(body),
+            contentType: 'application/json;charset=UTF-8',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
+            success: function (res) {
+                alert("티켓 갯수 변경이 완료되었습니다!");
+                location.reload()
+            },
+            error: function (jqXHR, status, e) {
+                alert("티켓 갯수 변경에 실패했습니다.\n" + JSON.stringify(jqXHR) + ", " + status + ", " + JSON.stringify(e));
+                location.reload()
+            }
+        })
+
     }
 
 </script>
@@ -404,7 +433,7 @@
                      th:text="${user.getPhone()}"></div>
             </div>
             <div class="table_even_row">
-                <div th:class="table_even_row_title">핸드폰</div>
+                <div th:class="table_even_row_title">이메일</div>
                 <div th:class="table_even_row_content"
                      th:text="${user.getEmail()}"></div>
             </div>
@@ -417,6 +446,13 @@
                     <th:block th:if="${isMemberList.get(stat.index) == false}">
                         <button th:id="${userList.get(stat.index).getLoginId()}" class="confirm_signup">가입승인</button>
                     </th:block>
+                </div>
+            </div>
+            <div class="table_even_row">
+                <div th:class="table_even_row_title">티켓</div>
+                <div th:class="table_even_row_content">
+                    <input type="text" th:value="${userList.get(stat.index).getTicketCount()}" th:id="|${userList.get(stat.index).getId()}-ticket|" />
+                    <input type="button" th:data-source="${userList.get(stat.index).getId()}" onclick="updateTicket(this)" th:value="티켓적용"/>
                 </div>
             </div>
             <div class="table_even_row">

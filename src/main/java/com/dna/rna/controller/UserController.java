@@ -3,6 +3,7 @@ package com.dna.rna.controller;
 import com.dna.rna.DCloudResponse;
 import com.dna.rna.domain.user.User;
 import com.dna.rna.domain.user.UserType;
+import com.dna.rna.dto.TicketDTO;
 import com.dna.rna.security.MainUserDetails;
 import com.dna.rna.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,12 @@ public class UserController {
                         "권한이 없습니다",
                         String.format("userId = %s 삭제를- 요청한 userId %s 는 동일한 유저 혹은 관리자가 아닙니다.",
                                 userId, user.getId())), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ResponseBody
+    @PutMapping("/users/ticket")
+    public ResponseEntity<DCloudResponse> updateTicket(@RequestBody TicketDTO.UpdateTicket body) {
+        userService.updateTicketCount(body.getUserId(), body.getNumOfTicket());
+        return new ResponseEntity<>(DCloudResponse.ofSuccess("티켓 갯수 수정이 반영되었습니다!"), HttpStatus.OK);
     }
 }
