@@ -157,18 +157,6 @@ public class InstanceMvcController {
         User owner = userRepository.findUserByLoginId(principal.getName());
         instance.setOwner(owner);
 
-        /*
-        if (instance.getSudoerId() == null || instance.getSudoerId().length() < 4) {
-            logger.warn("유저 [{}, {}] 가 입력한 sudoerId 가 [{}] 로 4자 보다 짧습니다 ",
-                    owner.getLoginId(), owner.getUserName(), instance.getSudoerId());
-            return "instances/instance/create";
-        }
-        if (instance.getSudoerPwd() == null || instance.getSudoerPwd().length() < 8) {
-            logger.warn("유저 [{}, {}] 가 입력한 sudoer 비밀번호가 [{}] 로 8자 보다 짧습니다 ",
-                    owner.getLoginId(), owner.getUserName(), instance.getSudoerPwd());
-            return "instances/instance/create";
-        }
-        */
         instance.setIndefinitelyUse(true);
         new Thread(() -> {
             LocalDateTime expiredAt = null;

@@ -56,7 +56,6 @@ public class InstanceService {
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void deleteInstance(long instanceId) throws IOException, JSchException {
-        System.out.println("현재 쓰레드 = " + Thread.currentThread().getId());
         Instance instance = instanceRepository.findById(instanceId)
                 .orElseThrow(() ->
                         new NullPointerException(String.format("인스턴스 %s 가 존재하지 않습니다", instanceId)));
@@ -76,6 +75,12 @@ public class InstanceService {
     public DCloudError createInstance(String newInstanceUUID, final InstanceDto.Post instanceDto, LocalDateTime expiredAt) throws Exception {
         DCloudError error = null;
         User owner = instanceDto.getOwner();
+        if (owner.getTicketCount() < 1) {
+            throw DCloudException.ofIllegalArgumentException(
+                    "사용할 수 있는 티켓이 없습니다", String.format("유저 [%s] 가 보유한 티켓이 없습니다", owner));
+        }
+        owner.setTicketCount(owner.getTicketCount() - 1);
+
         Instance newInstance = Instance.skeletonInstance(newInstanceUUID, owner, instanceDto.getInstanceName());
         // 중간에 에러로 리턴되는 경우 계속 초기화 작업이 진행중이라고 뜨는 것을 막기 위함
         newInstance.setInitialized(true);
