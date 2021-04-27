@@ -130,10 +130,8 @@ public class SshExecutor {
             }
 
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
                 String status = outputBuffer.toString();
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
                 session.disconnect();
 
@@ -341,9 +339,7 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
                 session.disconnect();
 
@@ -398,9 +394,7 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
 
                 int exitStatus = channel.getExitStatus();
@@ -444,9 +438,7 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
                 session.disconnect();
                 int exitStatus = channel.getExitStatus();
@@ -529,14 +521,10 @@ public class SshExecutor {
                 if (i < 0) break;
             }
             if (channel.isClosed()) {
-                System.out.println("결과");
                 System.out.println(outputBuffer.toString());
-                System.out.println("에러 = " + channel.getExitStatus());
                 channel.disconnect();
                 String lineSeparator = System.lineSeparator();
-                String result = outputBuffer.toString().replaceAll(lineSeparator, "");
-
-                return result;
+                return outputBuffer.toString().replaceAll(lineSeparator, "");
             }
         }
     }

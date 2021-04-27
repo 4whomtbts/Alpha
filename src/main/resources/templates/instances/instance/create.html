@@ -156,7 +156,6 @@
         $("#top_nav").load("/topNav");
 
         $("#instance_create_button").click(function() {
-            console.log("실행이 안 되나?");
             var form = $("#instance_create_form");
             var actionURL = form.attr("action");
             $.ajax({
@@ -176,15 +175,6 @@
         })
     });
 
-    function indefinitelyUseOnChange(self) {
-        if (self.checked) {
-            $("#reserveHour").prop('disabled', true);
-            $("#reserveHour").val("");
-        } else {
-            $("#reserveHour").prop('disabled', false);
-        }
-    }
-
 </script>
 
 <body>
@@ -195,70 +185,75 @@
         <span th:class="table_title">새로운 인스턴스 생성</span>
     </div>
     <div th:class="table_container">
-        <form id="instance_create_form" th:action="@{/instance/create}" th:object="${instance}" th:method="POST">
-            <div class="row">
-                <div th:class="row_title">인스턴스 이름</div>
-                <input type="text" th:class="row_content"
-                       th:field="*{instanceName}" placeholder="">
-            </div>
-            <div class="row">
-                <div th:class="row_title">사용시간(Hour)</div>
-                <div th:class="reserve_hour_container">
-                    <input type="text" id="reserveHour" th:class="row_content"
-                           th:field="*{reserveHour}" placeholder="(예시)15">
-                    <!--
-                    <label><input th:disabled="true" th:checked=true onchange="indefinitelyUseOnChange(this)" type="checkbox" name="indefinitelyUse"
-                                  th:field="*{indefinitelyUse}">무기한사용(허가필요)</label>
-                                  -->
-
+        <th:block th:if="${numOfTicket < 1}">
+            <p style="font-size:16px;color:red;margin:0">티켓이 부족하여 생성할 수 없습니다!</p>
+        </th:block>
+        <th:block th:unless="${numOfTicket < 1}">
+            <form id="instance_create_form" th:action="@{/instance/create}" th:object="${instance}" th:method="POST">
+                <div class="row">
+                    <div th:class="row_title">인스턴스 이름</div>
+                    <input type="text" th:class="row_content"
+                           th:field="*{instanceName}" placeholder="">
                 </div>
-            </div>
-            <div class="row">
-                <div th:class="row_title">사용목적</div>
-                <input type="text" th:class="row_content"
-                       th:field="*{purpose}" placeholder="**대회 준비, **연구실 모델학습">
-            </div>
-            <div class="row">
-                <div th:class="row_title">이미지 선택</div>
-                <select id="testOrder" th:field="*{containerImageId}">
-                    <option value=""> Docker 이미지 선택하세요.</option>
-                    <option th:each="image : ${containerImageList}" th:value="${image.containerImageId}"
-                            th:text="|${image.containerImageNickName} / ${image.containerImageDescription}|">\
-                    </option>
-                </select>
-            </div>
+                <div class="row">
+                    <div th:class="row_title">사용시간(Hour)</div>
+                    <div th:class="reserve_hour_container">
+                        <input type="text" id="reserveHour" th:class="row_content"
+                               th:field="*{reserveHour}" placeholder="(예시)15">
+                        <!--
+                        <label><input th:disabled="true" th:checked=true onchange="indefinitelyUseOnChange(this)" type="checkbox" name="indefinitelyUse"
+                                      th:field="*{indefinitelyUse}">무기한사용(허가필요)</label>
+                                      -->
 
-            <div class="row">
-                <div th:class="row_title">사용 GPU 선택</div>
-                <div th:class="reserve_hour_container">
-                    <select id="gpuSelection" th:field="*{numberOfGpuToUse}">
-                        <option value=""> 사용할 GPU의 개수</option>
-                        <th:block th:each="i: ${#numbers.sequence(1, maxGpu)}">
-                            <option th:value="${i}" th:text="${i}"></option>
-                        </th:block>
+                    </div>
+                </div>
+                <div class="row">
+                    <div th:class="row_title">사용목적</div>
+                    <input type="text" th:class="row_content"
+                           th:field="*{purpose}" placeholder="**대회 준비, **연구실 모델학습">
+                </div>
+                <div class="row">
+                    <div th:class="row_title">이미지 선택</div>
+                    <select id="testOrder" th:field="*{containerImageId}">
+                        <option value=""> Docker 이미지 선택하세요.</option>
+                        <option th:each="image : ${containerImageList}" th:value="${image.containerImageId}"
+                                th:text="|${image.containerImageNickName} / ${image.containerImageDescription}|">\
+                        </option>
                     </select>
-                    <label><input type="checkbox" name="useGpuExclusively" th:field="*{useGpuExclusively}"
-                                  th:disabled=true
-                                  th:checked="${useGpuExclusively}">독점적GPU사용</label>
                 </div>
-            </div>
-            <p style="font-size:12px;color:#4285F4;margin:0">포트매핑 예시) 태그 : ssh, 9000:22 일 시</p>
-            <p style="font-size:12px;color:#4285F4;margin-top:0">태그는 단순 이름이며, 9000포트로 요청 시 인스턴스 22포트로 매핑</p>
 
-            <div th:class="row" th:each="externalPort,status : *{externalPorts}">
-                <div th:class="row_title">포트매핑</div>
-                <input type="text" th:field="*{externalPorts[__${status.index}__].tag}" placeholder="태그">
-                <input type="text" th:field="*{externalPorts[__${status.index}__].to}" placeholder="목적지포트">
-            </div>
-            <div th:class="row">
-                <!--
-                <button type="submit" name="addExternalPort">외부포트 추가</button>
-                -->
-            </div>
-            <div th:class="row">
-                <input id="instance_create_button" type="submit" value="생성">
-            </div>
-        </form>
+                <div class="row">
+                    <div th:class="row_title">사용 GPU 선택</div>
+                    <div th:class="reserve_hour_container">
+                        <select id="gpuSelection" th:field="*{numberOfGpuToUse}">
+                            <option value=""> 사용할 GPU의 개수</option>
+                            <th:block th:each="i: ${#numbers.sequence(1, maxGpu)}">
+                                <option th:value="${i}" th:text="${i}"></option>
+                            </th:block>
+                        </select>
+                        <label><input type="checkbox" name="useGpuExclusively" th:field="*{useGpuExclusively}"
+                                      th:disabled=true
+                                      th:checked="${useGpuExclusively}">독점적GPU사용</label>
+                    </div>
+                </div>
+                <p style="font-size:12px;color:#4285F4;margin:0">포트매핑 예시) 태그 : ssh, 9000:22 일 시</p>
+                <p style="font-size:12px;color:#4285F4;margin-top:0">태그는 단순 이름이며, 9000포트로 요청 시 인스턴스 22포트로 매핑</p>
+
+                <div th:class="row" th:each="externalPort,status : *{externalPorts}">
+                    <div th:class="row_title">포트매핑</div>
+                    <input type="text" th:field="*{externalPorts[__${status.index}__].tag}" placeholder="태그">
+                    <input type="text" th:field="*{externalPorts[__${status.index}__].to}" placeholder="목적지포트">
+                </div>
+                <div th:class="row">
+                    <!--
+                    <button type="submit" name="addExternalPort">외부포트 추가</button>
+                    -->
+                </div>
+                <div th:class="row">
+                    <input id="instance_create_button" type="submit" value="생성">
+                </div>
+            </form>
+        </th:block>
     </div>
 </div>
 </body>

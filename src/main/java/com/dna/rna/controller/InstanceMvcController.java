@@ -112,6 +112,7 @@ public class InstanceMvcController {
     @Secured(value = {"ROLE_MEMBER", "ROLE_ADMIN"})
     @GetMapping("/instance/create")
     public String instanceCreateGET(Principal principal, Model model) {
+        User user = userRepository.findUserByLoginId(principal.getName());
         List<ContainerImage> containerImageList = containerImageRepository.findAll();
         List<Server> servers = serverRepository.findAll();
         int maxGpu = -1;
@@ -121,6 +122,7 @@ public class InstanceMvcController {
         model.addAttribute("instance", instance);
         model.addAttribute("containerImageList", containerImageList);
         model.addAttribute("maxGpu", maxGpu);
+        model.addAttribute("numOfTicket", user.getTicketCount());
         return "instances/instance/create";
     }
 
